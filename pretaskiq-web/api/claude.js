@@ -6,16 +6,18 @@
 //
 // Settings (environment variables on the host, never in the code):
 //   ANTHROPIC_API_KEY  required  your Anthropic API key
-//   ACCESS_CODE        required  shared code visitors must enter before the AI will answer
+//   ACCESS_CODE        required  a shared code visitors enter before the AI will answer
 //   ANTHROPIC_MODEL    optional  model to use for every request (default below)
 //
+// THIS IS THE STAND-ALONE VERSION: it replaces api/claude.js in a project that does not have the server/ folder (the
+// version before sign-in was added). It fixes cut-off and empty replies from Claude Sonnet 5.5 (see thinkingFor below).
 // Written against plain Node request/response objects so it runs on Vercel, in `npm run dev`, and in the tests.
 import { createHash, timingSafeEqual } from 'node:crypto';
 
 const DEFAULT_MODEL = 'claude-sonnet-5-5';
 const UPSTREAM_URL = process.env.ANTHROPIC_API_URL || 'https://api.anthropic.com/v1/messages'; // override is for tests
 const ANTHROPIC_VERSION = '2023-06-01';
-const MAX_TOKENS_CAP = 4096;     // the prototype asks for at most 3000
+const MAX_TOKENS_CAP = 8192;     // the prototype asks for at most 6000. Sonnet 5.5's tokenizer produces about 30% more tokens for the same text than Sonnet 4.6's did.
 const MAX_MESSAGES = 80;
 const MAX_BODY_CHARS = 3_500_000; // Vercel rejects request bodies over ~4.5 MB before this code runs
 
@@ -25,6 +27,13 @@ const send = (res, status, body) => {
   res.setHeader('Cache-Control', 'no-store');
   res.end(JSON.stringify(body));
 };
+
+// Claude Sonnet 5.5 "thinks" before it answers unless told not to, and the thinking counts against max_tokens (Anthropic's docs:
+// "max_tokens ... includes all thinking Claude generates in the current turn, is enforced as a strict limit"). The prototype asks for
+// short replies (700 tokens for the planning interview, 400 for Petey), so with thinking on the allowance was used up before or part
+// way through the visible answer: cut-off sentences and empty bubbles. "between_tools" is the lowest thinking setting the docs name for
+// this model (it rejects { type: "disabled" } with a 400). Other models are left alone: they either do not think by default or take other settings.
+const thinkingFor = (model) => (/^claude-sonnet-5-5($|-)/.test(model) ? { type: 'between_tools' } : undefined);
 
 const digest = (v) => createHash('sha256').update(String(v)).digest();
 const codeMatches = (given, expected) => Boolean(given) && timingSafeEqual(digest(given), digest(expected));
@@ -46,13 +55,14 @@ const validContent = (c) => typeof c === 'string' || (Array.isArray(c) && c.leng
 export default async function handler(req, res) {
   if (req.method === 'HEAD') { res.statusCode = 204; res.setHeader('Cache-Control', 'no-store'); res.end(); return; }   // the app's "am I online" check
   if (req.method === 'GET') {                                                                                         // status for the page; reveals no secrets
-    return send(res, 200, { ok: true, codeRequired: Boolean(process.env.ACCESS_CODE), configured: Boolean(process.env.ANTHROPIC_API_KEY && process.env.ACCESS_CODE) });
+    return send(res, 200, { ok: true, mode: 'code', codeRequired: Boolean(process.env.ACCESS_CODE), configured: Boolean(process.env.ANTHROPIC_API_KEY && process.env.ACCESS_CODE) });
   }
   if (req.method !== 'POST') { res.setHeader('Allow', 'GET, HEAD, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return send(res, 503, { error: 'server_not_configured', message: 'Set ANTHROPIC_API_KEY on the server.' });   // fail closed
   const accessCode = process.env.ACCESS_CODE;
-  if (!apiKey || !accessCode) return send(res, 503, { error: 'server_not_configured', message: 'Set ANTHROPIC_API_KEY and ACCESS_CODE on the server.' });   // fail closed
+  if (!accessCode) return send(res, 503, { error: 'server_not_configured', message: 'Set ACCESS_CODE on the server.' });   // fail closed
   if (!codeMatches(req.headers['x-access-code'], accessCode)) return send(res, 401, { error: 'invalid_access_code' });
 
   let body;
@@ -72,20 +82,32 @@ export default async function handler(req, res) {
   const max_tokens = Number.isFinite(requested) && requested > 0 ? Math.min(Math.floor(requested), MAX_TOKENS_CAP) : 1024;
 
   // Only these fields go upstream. The model is chosen here, not by the browser, and tools/streaming are not passed through.
-  const payload = { model: process.env.ANTHROPIC_MODEL || DEFAULT_MODEL, max_tokens, messages, ...(system ? { system } : {}) };
+  const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
+  const thinking = thinkingFor(model);
+  const payload = { model, max_tokens, messages, ...(system ? { system } : {}), ...(thinking ? { thinking } : {}) };
 
-  let upstream;
+  const callUpstream = (p) => fetch(UPSTREAM_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': ANTHROPIC_VERSION },
+    body: JSON.stringify(p),
+  });
+
+  let upstream, text;
   try {
-    upstream = await fetch(UPSTREAM_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': ANTHROPIC_VERSION },
-      body: JSON.stringify(payload),
-    });
+    upstream = await callUpstream(payload);
+    text = await upstream.text();
+    // Safety net: if Anthropic rejects the thinking setting itself (for example the docs and the live service disagree), answer without it
+    // rather than taking the whole app down. Replies may then be cut short again; the app says so instead of showing broken text.
+    if (upstream.status === 400 && payload.thinking && /thinking/i.test(text)) {
+      const { thinking: _dropped, ...withoutThinking } = payload;
+      upstream = await callUpstream(withoutThinking);
+      text = await upstream.text();
+    }
   } catch {
     return send(res, 502, { error: 'upstream_unreachable' });
   }
 
-  const text = await upstream.text();   // pass Anthropic's answer (or its error message) straight through
+  // pass Anthropic's answer (or its error message) straight through
   res.statusCode = upstream.status;
   res.setHeader('Content-Type', upstream.headers.get('content-type') || 'application/json');
   res.setHeader('Cache-Control', 'no-store');
