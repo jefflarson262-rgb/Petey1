@@ -32,19 +32,17 @@
   function cloudReady() { var S = cloudSpeech(); return !!(S && S.ready() && (!isIOS() || useServerListening())); }
   function canListenNow() { return !!SR || useServerListening(); }
 
-  // Browser voice: the one saved in Settings, otherwise the most natural-sounding English (US) voice the device offers.
-  // (Not the picker's automatic default: that can land on an old robotic voice such as "David".) Voices the device downloads from the
+  // Browser voice: the one picked in Settings, otherwise a male English (US) voice if the device has one (Petey is a man), otherwise the most
+  // natural-sounding English (US) voice. (peteyBestVoice is in 18-voice-picker.js: it guesses male voices from their names, because browsers
+  // do not say. It is not the old automatic default, which could land on a robotic voice such as "Fred".) Voices the device downloads from the
   // internet ("online", "natural", "neural", "premium", "enhanced") usually sound better than the small built-in ones.
-  function savedVoiceName() { try { return localStorage.getItem('petey_voice') || null; } catch (e) { return null; } }
+  function savedVoiceName() { return typeof peteyChosenVoiceName === 'function' ? peteyChosenVoiceName() : null; }
   function pickVoice() {
     if (!synth) return null;
     var voices = synth.getVoices() || [];
     var name = savedVoiceName();
-    var us = voices.filter(function (v) { return /^en[-_]US/i.test(v.lang); });
     return (name && voices.filter(function (v) { return v.name === name; })[0])
-      || us.filter(function (v) { return /natural|neural|premium|enhanced|siri/i.test(v.name); })[0]
-      || us.filter(function (v) { return v.localService === false; })[0]
-      || us[0]
+      || (typeof peteyBestVoice === 'function' ? peteyBestVoice(voices) : null)
       || voices.filter(function (v) { return /^en/i.test(v.lang); })[0]
       || null;
   }
@@ -123,6 +121,17 @@
       pending[k].catch(function () {});                       // handled where it is used; this only stops an "unhandled" warning
     }
     function markStarted() { if (!started) { started = true; if (cb.onStart) cb.onStart(); } }
+    // How long a piece of Petey's voice may take once it is playing: about twice as long as speech normally takes (voices run at roughly 70 ms a character).
+    function playingMs(k) { return Math.max(12000, list[k].length * 150); }
+    function armWatch(k, ms) {
+      clearTimeout(cloudTimer);
+      cloudTimer = setTimeout(function () {
+        if (token !== speakToken) return;
+        if (!started) { S.noteUnplayable(); fallBack(); } else play(k + 1);
+      }, ms);
+    }
+    // The sound has started: from here the timer allows the whole piece to play (a long first sentence used to be cut off by the 8-second start timer).
+    function playing(k) { if (done || i !== k) return; markStarted(); armWatch(k, playingMs(k)); }
     function fallBack() {
       if (token !== speakToken || done) return;
       stopCloudAudio();
@@ -142,20 +151,18 @@
         a.onended = function () { if (token !== speakToken) return; clearTimeout(cloudTimer); play(k + 1); };
         a.onerror = function () { if (token !== speakToken) return; S.noteUnplayable(); fallBack(); };
         a.src = cloudUrl;
-        clearTimeout(cloudTimer);
-        cloudTimer = setTimeout(function () {                 // never hang the conversation on a sound that will not start or finish
-          if (token !== speakToken) return;
-          if (!started) { S.noteUnplayable(); fallBack(); } else play(k + 1);
-        }, started ? Math.max(12000, list[k].length * 150) : 8000);
+        // Never hang the conversation on a sound that will not start or finish. Waiting for the sound to START is one timer; once it is
+        // playing, the timer is started again for the length of the piece (see playing), so a long sentence is never cut off by the first one.
+        armWatch(k, started ? playingMs(k) : 8000);
         var p; try { p = a.play(); } catch (e) { S.noteUnplayable(); fallBack(); return; }
         if (p && typeof p.then === 'function') {
-          p.then(function () { if (token === speakToken) markStarted(); }, function (e) {
+          p.then(function () { if (token === speakToken) playing(k); }, function (e) {
             if (token !== speakToken) return;
             if (e && e.name === 'AbortError') return;         // replaced by the next piece
             if (!(e && e.name === 'NotAllowedError')) S.noteUnplayable();   // blocked until a tap is the browser's rule, not the service's fault
             fallBack();
           });
-        } else markStarted();
+        } else playing(k);
       }, function (e) {
         if (token !== speakToken) return;
         if (e && e.name === 'AbortError') return;
@@ -182,14 +189,25 @@
       var v = pickVoice();
       if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-US';
       u.rate = 1.0; u.pitch = 1.0;
-      u.onstart = function () { if (token !== speakToken) return; if (!started) { started = true; if (cb.onStart) cb.onStart(); } };
-      u.onend = function () { next(); };
-      u.onerror = function (e) { if (token !== speakToken) return; if (e && (e.error === 'canceled' || e.error === 'interrupted')) return; next(); };
-      // If the browser never starts (blocked until a tap, no audio), do not hang the conversation.
-      speakTimer = setTimeout(function () {
-        if (token !== speakToken) return;
-        if (!started) { cancelSpeech(); finish(false); } else { try { synth.cancel(); } catch (e) {} next(); }
-      }, started ? Math.max(9000, piece.length * 140) : 5000);
+      var moved = false;                                      // this piece moves things on once only: a skipped piece may still report "end" later
+      function advance() { if (moved || token !== speakToken) return; moved = true; next(); }
+      // If the browser never starts (blocked until a tap, no audio), do not hang the conversation. Once the piece HAS started, the timer is
+      // started again for the length of the piece: it used to keep the 5-second "never started" timer, which cut off any piece longer than that.
+      function watch(ms) {
+        clearTimeout(speakTimer);
+        speakTimer = setTimeout(function () {
+          if (token !== speakToken || moved) return;
+          if (!started) { cancelSpeech(); finish(false); } else { try { synth.cancel(); } catch (e) {} advance(); }
+        }, ms);
+      }
+      u.onstart = function () {
+        if (token !== speakToken || moved) return;
+        if (!started) { started = true; if (cb.onStart) cb.onStart(); }
+        watch(Math.max(9000, piece.length * 140));            // about twice as long as speech normally takes
+      };
+      u.onend = function () { advance(); };
+      u.onerror = function (e) { if (token !== speakToken) return; if (e && (e.error === 'canceled' || e.error === 'interrupted')) return; advance(); };
+      watch(started ? Math.max(9000, piece.length * 140) : 5000);
       try { synth.speak(u); } catch (e) { finish(false); }
     }
     next();

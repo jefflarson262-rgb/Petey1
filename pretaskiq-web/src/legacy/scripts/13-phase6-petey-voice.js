@@ -189,7 +189,7 @@ function speakText(text, onDone) {
   utter.pitch = 1.0;
   const voices = window.speechSynthesis.getVoices();
   const preferred = (selectedVoiceName && voices.find(v => v.name === selectedVoiceName))
-    || voices.find(v => /en-US/i.test(v.lang) && /male|david|guy|fred/i.test(v.name))
+    || (typeof peteyBestVoice === 'function' ? peteyBestVoice(voices) : null)
     || voices.find(v => /en-US/i.test(v.lang))
     || voices[0];
   if (preferred) utter.voice = preferred;
