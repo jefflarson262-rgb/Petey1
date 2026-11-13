@@ -7,7 +7,7 @@ PreTaskIQ (Petey, the pre-task hazard analysis companion) as a Vite + React proj
 - **Real sign-in.** Only people you create accounts for can use the app. Three roles: Foreman, Construction Admin, Safety Admin. The roles are enforced on the server, not just hidden in the page.
 - **Saved plans with history.** Every plan Petey writes is saved. Hand edits and Petey's mid-shift updates are saved as new revisions of the same plan. "My plans" in the top bar lists them and opens them again.
 - **The site opens on planning,** not the guided demo. The demo is still there: account menu > Guided demo, or add `?demo` to the address.
-- **Talking with Petey (first version).** The morning planning conversation can be spoken: Petey reads each question aloud, listens for the answer, shows what he heard, and sends it after a short pause. The mid-shift companion screen has a "Tap and talk" button. See section 3.
+- **Talking with Petey.** The morning planning conversation can be spoken: Petey reads each question aloud, listens for the answer, shows what he heard, and sends it after a short pause. The mid-shift companion screen has a "Tap and talk" button. Optional: a natural-sounding voice and more reliable iPhone listening, through an ElevenLabs account you set up yourself (section 3; it costs money and sends voice to ElevenLabs).
 - **A per-person limit on AI requests** (150 per hour by default), so one lost password cannot quietly run up your Anthropic bill.
 
 Everything else (screens, Petey's planning interview, STKY, the knowledge base, RCA assistant, reenactments) is the prototype, moved over, not rewritten.
@@ -77,6 +77,8 @@ Project Settings > Environment Variables. Add these, then redeploy:
 | `SUPABASE_URL` | your project URL, like `https://abcdefgh.supabase.co` | Supabase **Connect** dialog |
 | `SUPABASE_PUBLISHABLE_KEY` | starts with `sb_publishable_` | Supabase **Connect** dialog |
 | `SUPABASE_SECRET_KEY` | starts with `sb_secret_` | Supabase **Settings > API Keys** |
+| `ELEVENLABS_API_KEY` | *optional.* Switches on the natural voice and iPhone listening (section 3). Costs money. | Your ElevenLabs account |
+| `ELEVENLABS_VOICE_ID` | *optional.* Which voice. Leave empty for the default | ElevenLabs voice library |
 | `AI_CALLS_PER_HOUR` | *optional.* Default 150 per person | |
 | `ANTHROPIC_MODEL` | *optional.* Leave empty to use `claude-sonnet-5-5` | |
 
@@ -113,7 +115,7 @@ npm run dev                     # then open http://localhost:5173 in your browse
 |---|---|
 | `npm run build` | Builds the site into `dist/` |
 | `npm run preview` | Serves the built site. The `api/` functions are **not** included, so it falls back to the old shared-code mode. Use `npm run dev` for the full app. |
-| `npm test` | Runs the 39 automated tests (no network, no real keys needed) |
+| `npm test` | Runs the 64 automated tests (no network, no real keys needed) |
 
 ---
 
@@ -122,19 +124,57 @@ npm run dev                     # then open http://localhost:5173 in your browse
 **How to use it**
 
 - **Planning, hands busy:** on the first screen tap **Talk to Petey**, say the day's tasks, and pause. Petey shows what he heard, then starts the conversation. He reads each question aloud, listens, shows your answer for about a second and a half, and sends it. **Typing in the box, or tapping the mic, cancels the automatic send.** Tapping the mic while Petey is talking cuts him off so you can answer. Tap it again to turn voice off. The mic button next to the answer box starts voice mode in the middle of a conversation.
-- **During the shift:** open the plan, then **Petey**. **Tap and talk** needs no wake word: tap, say it, and Petey answers aloud. "Hey Petey" (always listening) is still there, but see the limits below.
-- If a browser cannot listen, Petey can still read his questions aloud while you type.
+- **On an iPhone** (with the voice service below switched on) Petey records your answer instead of using the phone's built-in listening. Say your answer; he finishes by himself after a short pause, or tap the mic as soon as you are done. The screen then says "working out what you said" for a moment before your words appear.
+- **During the shift:** open the plan, then **Petey**. **Tap and talk** needs no wake word: tap, say it, tap again when done (or pause), and Petey answers aloud. "Hey Petey" (always listening) is still there, but see the limits below.
+- If a device cannot listen, Petey can still read his questions aloud while you type.
 
-**What this version uses.** The browser's built-in speech: the browser turns your voice into text and reads Petey's words aloud. There is nothing extra to buy or set up. The voice you hear is whatever voice your device offers (or the one chosen in Settings), so it sounds different on different devices. Sources I found say Chrome and Edge on a computer offer decent voices, while phone voices vary by phone and browser (see the sources list in my message; they are articles, not the browsers' own documentation).
+**Two ways Petey can talk and listen**
+
+| | Without the voice service (the default) | With the voice service (optional) |
+|---|---|---|
+| Petey's voice | The device's built-in voice. It now prefers the better ("natural", "enhanced", "premium") voices a device offers, but many devices only have robotic ones. | A natural-sounding voice from ElevenLabs, the same on every device. |
+| Listening on iPhone | The browser's built-in listening, with fixes for the problems reported on iPhones (below). | Petey records your answer and ElevenLabs turns it into text. |
+| Listening elsewhere | The browser's built-in listening. | The same (the browser's). It can be switched to the recording method with `?listen=server`. |
+| Cost | Nothing. | A paid ElevenLabs plan (see below). |
+| If it fails | Nothing to fall back to: you type. | Petey quietly goes back to the left-hand column for a few minutes, so a conversation never stops. |
+
+**Switching on the voice service (about 10 minutes)**
+
+1. Create an account at elevenlabs.io. As I read ElevenLabs' documentation, the free plan has no commercial licence and requires attribution, and paid plans include a commercial licence. Using it for your company means a paid plan. **Check the current plans and licence terms yourself on their site.**
+2. In your ElevenLabs account, create an **API key**. I do not know the exact menu names in their dashboard today (look for "API keys" in the account or developer settings). If you can set a spending or usage limit there, do that.
+3. In Vercel, Project Settings > Environment Variables, add `ELEVENLABS_API_KEY` with that key, then redeploy. **The key goes only in Vercel. Never in GitHub or a chat.**
+4. Optional: to choose the voice, find one in the ElevenLabs voice library, copy its voice ID, and add it as `ELEVENLABS_VOICE_ID`. If you do not, Petey uses the voice ID printed in ElevenLabs' own documentation example. **I could not confirm that ID works on every account.** If Petey is silent or falls back to the robotic voice, set a voice ID from your own account.
+5. Check: `https://YOUR-SITE/api/health` should show `ELEVENLABS_API_KEY: true` (yes/no only, never the key), and `https://YOUR-SITE/api/speak` should answer `configured: true`. That only proves the key is present, not that ElevenLabs accepts it. Then open the site, start a conversation, and listen.
+
+Two more optional settings exist (`ELEVENLABS_MODEL_ID` and `ELEVENLABS_STT_MODEL_ID`); the defaults are the fast speaking model and the "scribe_v2" listening model named in ElevenLabs' documentation. They are listed in `.env.example`.
+
+**Trying it on an iPhone**
+
+Open the site on the phone and have a conversation. To compare the two listening methods, add `?listen=server` (record and send) or `?listen=browser` (the phone's built-in) to the address once; the phone remembers the choice. `?listen=auto` returns to the default (recording on iPhone, built-in elsewhere). If it still fails, note which of these happened: it hears nothing, it hears the wrong words, it cuts you off too early, or it never stops. Those point to different fixes.
+
+Typing is always available, and so is the keyboard's own dictation key, which uses the phone's regular dictation instead of the page.
+
+**Cost (verify these yourself)**
+
+From ElevenLabs' pricing page as I read it, **approximately**: a paid plan from about $6 a month (Starter) and $22 a month (Creator); speaking is billed around $0.04 per 1,000 characters on the fast models, and speech-to-text around $0.20 per hour of audio. I read the page through a translation, so **these numbers may be wrong or out of date; confirm them on elevenlabs.io/pricing.** I also do not know whether a plan stops at its limit or bills extra, or whether that can be switched off. Rough illustration only, using those unconfirmed rates and my own guess of 3,000 characters of Petey's speech in one planning conversation: about 12 cents of speaking, and a 10-second spoken answer is a fraction of a cent of listening. Your real usage will differ.
+
+**Privacy: what goes to ElevenLabs**
+
+- **Petey's words.** Everything Petey says aloud while the voice service is on is sent to ElevenLabs as text, including job details he reads back (location, tasks, hazards, names).
+- **Your voice.** On iPhones (and anywhere you use `?listen=server`), the recording of each answer, up to about a minute, is sent to ElevenLabs. Anyone talking near the phone is in that recording. Petey's own server passes it on and does not keep it.
+- ElevenLabs' documentation says request logging is on by default and that turning it off ("zero retention") is for enterprise customers. I do not know how long ElevenLabs keeps anything. **Read their privacy policy and terms, and your company's policy, before using this with real job information.**
+- "Hey Petey" always-listening is the prototype's own, still uses the browser's built-in listening, and is not sent to ElevenLabs. Browser listening itself sends audio to the browser maker (below).
+- The voice service needs the same sign-in (or access code, in the older shared-code mode) as the AI, so people who are not signed in cannot run up your ElevenLabs bill. Speaking does not use up the hourly limit on AI requests.
 
 **Limits you should know about**
 
-- **It is not a single "narrator" voice.** A consistent, natural narrator voice on every phone and laptop needs a cloud voice service (a paid service that turns text into audio). That is a separate decision with a monthly cost, an account, a key and a privacy question (Petey's words go to that company). It is not built. The code is arranged so it would change in one place (`Voice.speak` in `30-voice-conversation.js`).
-- **Listening sends audio to the browser maker.** Sources I found say Chrome and Edge send the audio to Google and Microsoft to turn it into text, and Safari uses Apple's speech service. It needs an internet connection. Firefox cannot listen at all. I replaced the prototype's line "does not record or listen to background conversations" with a plain description of this, because with "Hey Petey" the microphone stays open. Check your company's policy before using voice near sensitive information.
-- **"Hey Petey" always-listening is unreliable on phones.** A source I found says browsers end listening sessions after silence, a time limit, or when the tab loses focus, and more aggressively on phones. A phone browser also cannot listen with the screen locked. Use **Tap and talk** on phones. A truly hands-free, always-listening Petey on a phone needs a phone app or a speech service, which is a bigger project.
-- **Wrong words.** Speech recognition mishears, especially with machinery noise, accents and trade words. That is why Petey shows what he heard before sending, and why the plan itself is always shown for the foreman to read and correct.
-- **Not tested with real sound.** Everything was checked with a stand-in microphone and speaker (46 checks of the logic: who speaks when, when it listens, when it sends, what happens when the microphone is blocked or nothing is heard). I have not heard it, and I have not tried it on a real phone. In particular I do not know whether iPhone and Android browsers will let Petey speak after the first question without another tap; the code speaks a silent sound inside your tap to try to allow it, but that is a known workaround I could not test.
-- Petey speaks in English (US) only for now. The plan screens themselves are not read aloud.
+- **I could not identify the narrator voice from the walkthrough video.** The voice service gives one consistent voice, but it is a voice I can set, not the one in the video. If you find out which service and voice made that narration, tell me, and it may be possible to set the same voice here (via `ELEVENLABS_VOICE_ID`) if it is available in ElevenLabs.
+- **Browser listening sends audio to the browser maker.** Sources I found say Chrome and Edge send the audio to Google and Microsoft to turn it into text, and Safari uses Apple's speech service. It needs an internet connection. Firefox cannot listen at all. Check your company's policy before using voice near sensitive information.
+- **The iPhone problems are from user reports, not from Apple.** The "doubled words", "goes deaf after Petey speaks" and "does not work from a Home Screen icon" problems come from reports on WebKit, GitHub and Apple developer forums. I could not confirm them with Apple's documentation, and they may differ by iOS version. That is why iPhones record the answer instead.
+- **"Hey Petey" always-listening is unreliable on phones.** A source I found says browsers end listening sessions after silence, a time limit, or when the tab loses focus, and more aggressively on phones. A phone browser also cannot listen with the screen locked. Use **Tap and talk** on phones. A truly hands-free Petey on a phone needs a phone app, which is a bigger project.
+- **Wrong words.** Recognition mishears, especially with machinery noise, accents and trade words. Recording near running equipment may pick up more noise than the phone's own listening does; I do not know how well it copes. That is why Petey shows what he heard before sending, and why the plan itself is always shown for the foreman to read and correct.
+- **Not tested with real sound, a real iPhone, or the real ElevenLabs service.** Everything was checked with stand-ins: a fake microphone playing a recorded clip, a fake speaker, and a pretend ElevenLabs. That proves the logic (who speaks when, when listening starts and ends, what is sent, what happens on failures), not how it sounds or how accurate it is. In particular I do not know: whether ElevenLabs accepts the exact requests the server sends, how long a spoken answer takes to come back on a real connection, whether an iPhone keeps the microphone permission between visits, whether the phone's volume changes after the microphone has been used, or whether the speaker unlocks after the first tap on every iOS version.
+- Petey speaks and listens in English only for now. The plan screens themselves are not read aloud.
 
 ---
 
@@ -146,21 +186,24 @@ api/config.js            tells the page how sign-in is set up (never returns a s
 api/me.js                who am I, and what role
 api/plans.js             save a plan, list plans, open a plan, revision history
 api/health.js            the setup checklist
+api/speak.js             optional: text to natural speech (ElevenLabs); checks who you are, keeps the key on the server
+api/transcribe.js        optional: a recording of the foreman's answer to text (ElevenLabs), used on iPhones
 server/                  shared server code: sign-in checks, roles, limits, error handling
 supabase/setup.sql       creates the tables and locks them (run once in the SQL Editor)
 index.html, vercel.json  page shell; function timeout and two security headers
 src/main.jsx, App.jsx    start-up; React draws the screens once, then the original scripts take over
 src/auth/                sign-in state: who is signed in, token refresh, sign out
 src/plans/               the saved-plans store: remembers which plan is on screen and saves changes in order
-src/api/                 adds the person's token to AI calls and turns server errors into plain sentences
+src/api/                 adds the person's token to AI calls and turns server errors into plain sentences; speech.js talks to the two voice functions and rests them after repeated trouble
 src/components/          sign-in form, account menu, "My plans" list, save indicator, access-code dialog (React)
 src/markup/              the prototype's screens as separate HTML pieces
 src/styles/              the prototype's CSS plus auth.css and voice.css
 src/data/kb.json         the built-in knowledge base
 src/legacy/scripts/      the prototype's JavaScript in its original run order (01-28), plus
                          29-persistence-bridge.js, which saves plans and limits role views, and
-                         30-voice-conversation.js, which lets Petey speak and listen
-tests/                   39 tests: the proxy, sign-in and plans (against a stand-in Supabase), and setup.sql run in a real Postgres
+                         30-voice-conversation.js, which lets Petey speak and listen (natural or built-in voice;
+                         built-in or recorded listening)
+tests/                   64 tests: the proxy, the voice functions, sign-in and plans (against a stand-in Supabase and a stand-in ElevenLabs), and setup.sql run in a real Postgres
 public/                  favicon and home-screen icon
 ```
 
@@ -169,7 +212,7 @@ public/                  favicon and home-screen icon
 - Every request to `api/me`, `api/plans` and `api/claude` must carry a valid sign-in. The server checks the token with Supabase and then checks the person's profile in the database: not approved means no access (403); wrong role means no access.
 - A foreman asking for someone else's plan gets "not found", not "forbidden", so the plan's existence is not revealed.
 - The browser holds only the publishable key. The tables have row-level security switched on with no rules and all browser access revoked, so the publishable key cannot read or write them even if someone tries it directly. Only the server's secret key can.
-- Sends Anthropic only the messages, the system prompt and a token limit (capped at 4096). The model is chosen on the server.
+- Sends Anthropic only the messages, the system prompt and a token limit (capped at 8192). The model is chosen on the server.
 - Never returns a key. Does not store or log what people type into Petey, except that each AI request is counted (who and when, no content) for the hourly limit. Saved plans are stored in full.
 
 ---
@@ -178,9 +221,10 @@ public/                  favicon and home-screen icon
 
 **Checked here (against stand-ins, not the real services)**
 
-- 39 automated tests pass: the proxy, sign-in and roles, saved plans, the hourly limit, the setup check, and `setup.sql` run in a real (in-memory) Postgres, including that the browser keys are locked out and that the approve statement above works.
+- 64 automated tests pass: the proxy, sign-in and roles, saved plans, the hourly limit, the setup check, and `setup.sql` run in a real (in-memory) Postgres, including that the browser keys are locked out and that the approve statement above works. 25 of them cover the two voice functions against a stand-in ElevenLabs: the key never leaves the server, people who are not signed in are refused before anything is sent, the browser cannot choose the voice, model or language, bad or oversized recordings are refused, ElevenLabs' own error messages are never passed on, and speaking does not use up the hourly AI limit.
 - A browser test of 62 checks against the built site, the real `api/` functions, a stand-in Supabase and a stand-in Anthropic: sign-in and wrong password; an unapproved person gets no access; the setup questions then planning on a new device; a plan is saved at revision 1; a hand edit saves revision 2 and Petey's mid-shift update revision 3, all on the same plan; reload keeps you signed in; "My plans" lists, shows history, and reopens; a second foreman cannot see the first foreman's plan; the safety admin sees and can change everything; the construction admin can read but not change others' plans; the safety view stays closed to people without the role; a session timeout keeps the plan on screen and signing back in resumes it; the hourly limit gives a plain sentence; sign out clears this device; and neither secret key is in the page or built files. Deliberately breaking the role guard and the plan-overwrite guard makes the right checks fail. This browser test is not included in this folder.
 - A browser test of 46 checks for voice, with a stand-in microphone and speaker: Petey speaks, listens, shows what he heard, sends, and loops; typing cancels the send; the mic can cut Petey off; the microphone is closed when the plan is built; a browser that cannot listen, a blocked microphone, silence, and a browser that never starts speaking are all handled; and Tap and talk on the companion screen; and a reply that arrives cut off or empty is never shown as a broken bubble. This test is not included in this folder. It cannot prove real audio or phone behavior (see section 3).
+- Two more browser tests for the optional voice service (not included in this folder): **43 checks for the natural voice** with a pretend ElevenLabs returning a generated sound clip (Petey's reply is cut into pieces, the first sentence is fetched alone so he starts sooner, the next piece is fetched while the current one plays, tapping the mic stops him at once, acronyms such as JHA and PPE are spelled out, and when the service fails or returns something unplayable Petey carries on in the browser's voice and leaves the service alone for five minutes), and **44 checks for recorded listening** using Chromium's fake microphone playing a computer-generated clip of speech-like sound and a clip of silence (the page records, finds the end of the speech by itself, trims the silence, sends a 16 kHz recording, shows the returned words, closes the microphone afterwards, shows an error for a blocked microphone or no microphone, and falls back to the browser's listening if recording cannot start). Neither clip is a human voice, so these show the plumbing works, not that real speech is recognised. To check that the tests can actually fail, I deliberately broke the listening and voice code nine ways (never finding the end of speech, leaving the microphone open, sending the whole recording, not merging doubled phrases, keeping iPhone listening continuous, not stopping Petey's audio, throwing the answer away on the second tap, keeping sound tags in the text, accepting files that are not WAV recordings) and each one made the intended checks fail; the code was then put back.
 - The three original prototype test suites (22, 27 and 28 checks) give the same results as before on this build, and the older shared-code mode still passes its own 30-check browser test.
 
 **Not checked: please verify**
@@ -188,6 +232,7 @@ public/                  favicon and home-screen icon
 - **A real Supabase project and a real Vercel deployment of this version.** The stand-in Supabase answers the way I understand the real one does (checked against the installed client library's code), but I have not talked to the real thing.
 - **Dashboard button names.** See the notes in section 1. "Add user > Create new user" and "Auto Confirm User" come from a community report, not current documentation.
 - **Error codes from Supabase's sign-in.** The app recognises a wrong password by the code `invalid_credentials` or the words "invalid login credentials". If the real service words it differently, the person would see a generic "Could not sign in" message plus Supabase's own text.
+- **Real ElevenLabs and a real iPhone.** Nothing here has been run against the real ElevenLabs service, with real speech, or on a real iPhone. See section 3 for the list of what that leaves unknown (whether ElevenLabs accepts the exact requests, whether the default voice ID exists on your account, how accurate and how fast the listening is on a noisy site, how iOS treats the microphone and speaker). The numbers for cost are from a page I read through a translation and must be confirmed.
 - **A live Anthropic call and Vercel details**, as before: that the functions run as written with `"type": "module"`; that `maxDuration: 60` in `vercel.json` is allowed on your plan (if the deploy complains, lower or delete that block); and that request bodies over roughly 4.5 MB are refused. Check Vercel's current docs.
 - **The model, and thinking.** The prototype asked for `claude-sonnet-4-6`. The proxy defaults to `claude-sonnet-5-5`. Anthropic's docs say that model "thinks" by default and that thinking counts against `max_tokens`, which made Petey's replies come back cut off or empty. The proxy now sends `thinking: {"type": "between_tools"}` (the lowest setting the docs name for this model; it rejects `disabled`), and if Anthropic ever refuses that setting the proxy repeats the request without it. The app also refuses to show a reply that hit its limit or is empty, and says "send that again". I could not call the live service from here, so the real effect is **unconfirmed until you try it**. The docs also say Sonnet 5.5 produces about 30 percent more tokens for the same text, so the limits for the written plan were raised (6000, and the server ceiling to 8192). Long plans take longer to write; if Vercel stops a request, `maxDuration` in `vercel.json` (60 seconds) may need raising on a plan that allows it. If you set `ANTHROPIC_MODEL` to a different model, check that model's thinking default in Anthropic's docs, because the proxy only adjusts `claude-sonnet-5-5`.
 
@@ -199,6 +244,6 @@ public/                  favicon and home-screen icon
 - A plan opened from the offline cache or built on the offline form is treated as a new plan the first time it is changed. It never overwrites a saved one.
 - On a new device the first sign-in shows the prototype's five short setup questions (they can be skipped).
 - **No "change my password", no self-service password reset, and no screen for approving people.** Use the Supabase dashboard and the SQL above.
-- **Voice is a first version** (section 3): no single narrator voice, no hands-free phone mode.
+- **Voice** (section 3): without the optional ElevenLabs setup Petey uses the device's own voice. Even with it there is no hands-free phone mode, and I have not identified the narrator voice from the walkthrough video.
 - Offline caching does not work as a web app (the prototype's service worker was created from inline text, which browsers refuse on a real website; it needs a real `public/sw.js`). Fonts load from Google Fonts, so the first load needs internet.
 - The prototype's JavaScript is kept as it was (not broken into React components). It can be converted screen by screen later.

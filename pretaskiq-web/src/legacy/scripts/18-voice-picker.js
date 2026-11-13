@@ -21,7 +21,9 @@ function populateVoicePicker() {
 
   // Auto-select current preferred if none saved
   if (!selectedVoiceName) {
-    var pref = voices.find(function(v) { return /en-US/i.test(v.lang) && /male|david|guy|fred/i.test(v.name); })
+    var pref = voices.find(function(v) { return /en-US/i.test(v.lang) && /natural|neural|premium|enhanced|siri/i.test(v.name); })
+      || voices.find(function(v) { return /en-US/i.test(v.lang) && v.localService === false; })
+      || voices.find(function(v) { return /en-US/i.test(v.lang) && /male|david|guy|fred/i.test(v.name); })
       || voices.find(function(v) { return /en-US/i.test(v.lang); });
     if (pref) {
       select.value = pref.name;

@@ -5,9 +5,12 @@
      2. Planning conversation: the mic starts "voice mode". Petey reads each question aloud, listens for the answer,
         shows what he heard, and sends it after a short pause (typing or tapping cancels the send).
      3. The shift companion screen: a "Tap and talk" button that needs no wake word, and chunked speech for Petey's replies.
-   Everything here uses what the browser provides. The voice is whatever voice the person's device offers (or the one chosen in
-   Settings), so it sounds different on different devices. A single consistent "narrator" voice would need a cloud voice
-   service; Voice.speak is the one place that would change.
+   Petey's voice: when the server has the natural-voice service switched on (api/speak.js, ElevenLabs), his words are played from
+   that, one or two sentences at a time. If it is not switched on, or anything about it fails, he speaks with the browser's own voice
+   (the one saved in Settings, otherwise the most natural-sounding one the device offers), so he never goes silent.
+   Listening: iPhones' built-in recognition is unreliable for web pages (words doubled, going deaf after audio plays, not available from a
+   Home Screen icon), so on iPhones, when the voice service is on, the page records the answer itself and the server turns it into text
+   (api/transcribe.js). Everywhere else, and whenever the service is off or fails, it uses the browser's own recognition.
    ============================================================ */
 (function () {
   var PT = (window.PreTaskIQ = window.PreTaskIQ || {});
@@ -16,44 +19,160 @@
 
   // ---- 1. Voice helper ---------------------------------------------------------------------------
   var speakToken = 0, speakTimer = null, activeListen = null;
+  var cloudAbort = null, cloudTimer = null, cloudAudio = null, cloudUrl = null;
+  var SILENT_WAV = 'data:audio/wav;base64,UklGRnQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
 
-  function chosenVoiceName() { try { return typeof selectedVoiceName !== 'undefined' ? selectedVoiceName : null; } catch (e) { return null; } }
+  // The natural-voice service (src/api/speech.js). Null when this page has none; ready() is true only when the server has it switched on.
+  function cloudSpeech() { var S = window.PreTaskIQSpeech; return (S && typeof S.ready === 'function' && typeof window.Audio === 'function') ? S : null; }
+  function isIOS() { var ua = navigator.userAgent || ''; return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && (navigator.maxTouchPoints || 0) > 1); }
+  // Should this device record the answer and have the server transcribe it? (Decided by src/api/speech.js.)
+  function useServerListening() { var S = window.PreTaskIQSpeech; return !!(S && typeof S.listenViaServer === 'function' && S.listenViaServer()); }
+  // On iPhones, playing audio is one of the things that reportedly makes the built-in recognition go deaf, so the natural voice is only used
+  // there when listening also goes through the server.
+  function cloudReady() { var S = cloudSpeech(); return !!(S && S.ready() && (!isIOS() || useServerListening())); }
+  function canListenNow() { return !!SR || useServerListening(); }
 
+  // Browser voice: the one saved in Settings, otherwise the most natural-sounding English (US) voice the device offers.
+  // (Not the picker's automatic default: that can land on an old robotic voice such as "David".) Voices the device downloads from the
+  // internet ("online", "natural", "neural", "premium", "enhanced") usually sound better than the small built-in ones.
+  function savedVoiceName() { try { return localStorage.getItem('petey_voice') || null; } catch (e) { return null; } }
   function pickVoice() {
     if (!synth) return null;
     var voices = synth.getVoices() || [];
-    var name = chosenVoiceName();
+    var name = savedVoiceName();
+    var us = voices.filter(function (v) { return /^en[-_]US/i.test(v.lang); });
     return (name && voices.filter(function (v) { return v.name === name; })[0])
-      || voices.filter(function (v) { return /^en[-_]US/i.test(v.lang) && /natural|neural|online/i.test(v.name); })[0]
-      || voices.filter(function (v) { return /^en[-_]US/i.test(v.lang); })[0]
+      || us.filter(function (v) { return /natural|neural|premium|enhanced|siri/i.test(v.name); })[0]
+      || us.filter(function (v) { return v.localService === false; })[0]
+      || us[0]
       || voices.filter(function (v) { return /^en/i.test(v.lang); })[0]
       || null;
   }
 
+  function tidy(text) { return String(text || '').replace(/[*#`_]/g, '').replace(/\s+/g, ' ').trim(); }
+  var SENTENCES = /[^.!?]+[.!?]+["')\]]*|[^.!?]+$/g;
+
+  // Letter-by-letter abbreviations that voices tend to read as odd words.
+  function speakable(text) {
+    return String(text || '')
+      .replace(/\bJHA(s?)\b/g, 'J H A$1').replace(/\bPPE\b/g, 'P P E').replace(/\bPTP\b/g, 'P T P').replace(/\bSTKY\b/g, 'S T K Y');
+  }
+
   // Long utterances can stall in some browsers (Chrome desktop is reported to have trouble past about 14 seconds), so speak sentence by sentence.
   function chunks(text) {
-    var clean = String(text || '').replace(/[*#`_]/g, '').replace(/\s+/g, ' ').trim();
+    var clean = tidy(text);
     if (!clean) return [];
-    var parts = clean.match(/[^.!?]+[.!?]+["')\]]*|[^.!?]+$/g) || [clean];
+    var parts = clean.match(SENTENCES) || [clean];
     var out = [], cur = '';
     parts.forEach(function (s) { if (cur && (cur + s).length > 180) { out.push(cur.trim()); cur = s; } else cur += s; });
     if (cur.trim()) out.push(cur.trim());
     return out;
   }
 
+  // For the natural voice: the first sentence on its own (so Petey starts quickly), then the rest in pieces of about 260 characters.
+  // No piece is longer than 500 (the server accepts 600).
+  function cloudChunks(text) {
+    var clean = tidy(text);
+    if (!clean) return [];
+    var parts = clean.match(SENTENCES) || [clean];
+    var out = [parts[0].trim()], cur = '';
+    parts.slice(1).forEach(function (s) { if (cur && (cur + s).length > 260) { out.push(cur.trim()); cur = s; } else cur += s; });
+    if (cur.trim()) out.push(cur.trim());
+    var result = [];
+    out.forEach(function (piece) {
+      while (piece.length > 500) { var cut = piece.lastIndexOf(' ', 400); if (cut < 100) cut = 400; result.push(piece.slice(0, cut).trim()); piece = piece.slice(cut).trim(); }
+      if (piece) result.push(piece);
+    });
+    return result;
+  }
+
+  // One audio element is reused, so one tap (see prime) unlocks it for all of Petey's later sentences.
+  function ensureAudio() { if (!cloudAudio) { cloudAudio = new window.Audio(); cloudAudio.preload = 'auto'; } return cloudAudio; }
+  function releaseUrl() { if (cloudUrl) { try { URL.revokeObjectURL(cloudUrl); } catch (e) {} cloudUrl = null; } }
+  function stopCloudAudio() {
+    clearTimeout(cloudTimer);
+    if (cloudAbort) { try { cloudAbort.abort(); } catch (e) {} cloudAbort = null; }
+    if (cloudAudio) { try { cloudAudio.onended = null; cloudAudio.onerror = null; cloudAudio.pause(); } catch (e) {} }
+    releaseUrl();
+  }
+
   function cancelSpeech() {
     speakToken++; clearTimeout(speakTimer);
+    stopCloudAudio();
     if (synth) { try { synth.cancel(); } catch (e) {} }
   }
 
   // cb: { onStart(), onEnd(spoke) }. onEnd runs once, also when speech is blocked or unsupported (spoke = false).
   function speak(text, cb) {
     cb = cb || {};
-    var list = chunks(text), i = 0, started = false, done = false;
+    var spoken = speakable(text);
+    if (cloudReady()) { var cl = cloudChunks(spoken); if (cl.length) return speakCloud(cl, cb); }
+    return speakBrowser(chunks(spoken), cb);
+  }
+
+  // The natural voice. Each piece is fetched from the server as audio; the next piece is fetched while the current one plays.
+  // Any trouble (server error, sound that will not play, nothing starting in time) hands the rest over to the browser voice.
+  function speakCloud(list, cb) {
+    cancelSpeech();
+    var token = speakToken, S = cloudSpeech(), ctl = new AbortController(), pending = {}, i = 0, started = false, done = false;
+    cloudAbort = ctl;
+    function finish(spoke) { if (done) return; done = true; clearTimeout(cloudTimer); releaseUrl(); if (cb.onEnd) cb.onEnd(spoke || started); }
+    function load(k) {
+      if (k >= list.length || pending[k]) return;
+      pending[k] = S.fetchAudio(list[k], ctl.signal);
+      pending[k].catch(function () {});                       // handled where it is used; this only stops an "unhandled" warning
+    }
+    function markStarted() { if (!started) { started = true; if (cb.onStart) cb.onStart(); } }
+    function fallBack() {
+      if (token !== speakToken || done) return;
+      stopCloudAudio();
+      var rest = list.slice(i).join(' ');
+      if (!synth || !rest) { finish(started); return; }
+      speakBrowser(chunks(rest), { onStart: markStarted, onEnd: function (spoke) { finish(spoke); } }, token);
+    }
+    function play(k) {
+      if (token !== speakToken || done) return;
+      if (k >= list.length) { finish(true); return; }
+      i = k; load(k);
+      pending[k].then(function (blob) {
+        if (token !== speakToken || done) return;
+        load(k + 1);                                          // get the next piece while this one plays
+        releaseUrl(); cloudUrl = URL.createObjectURL(blob);
+        var a = ensureAudio();
+        a.onended = function () { if (token !== speakToken) return; clearTimeout(cloudTimer); play(k + 1); };
+        a.onerror = function () { if (token !== speakToken) return; S.noteUnplayable(); fallBack(); };
+        a.src = cloudUrl;
+        clearTimeout(cloudTimer);
+        cloudTimer = setTimeout(function () {                 // never hang the conversation on a sound that will not start or finish
+          if (token !== speakToken) return;
+          if (!started) { S.noteUnplayable(); fallBack(); } else play(k + 1);
+        }, started ? Math.max(12000, list[k].length * 150) : 8000);
+        var p; try { p = a.play(); } catch (e) { S.noteUnplayable(); fallBack(); return; }
+        if (p && typeof p.then === 'function') {
+          p.then(function () { if (token === speakToken) markStarted(); }, function (e) {
+            if (token !== speakToken) return;
+            if (e && e.name === 'AbortError') return;         // replaced by the next piece
+            if (!(e && e.name === 'NotAllowedError')) S.noteUnplayable();   // blocked until a tap is the browser's rule, not the service's fault
+            fallBack();
+          });
+        } else markStarted();
+      }, function (e) {
+        if (token !== speakToken) return;
+        if (e && e.name === 'AbortError') return;
+        fallBack();
+      });
+    }
+    play(0);
+    return { cancel: function () { if (token === speakToken) cancelSpeech(); done = true; clearTimeout(cloudTimer); releaseUrl(); } };
+  }
+
+  // The browser's own voice. `handoffToken` is passed when the natural voice gave up part-way and this finishes the job.
+  function speakBrowser(list, cb, handoffToken) {
+    var i = 0, started = false, done = false;
     function finish(spoke) { if (done) return; done = true; clearTimeout(speakTimer); if (cb.onEnd) cb.onEnd(spoke); }
     if (!synth || !list.length) { finish(false); return { cancel: function () {} }; }
-    cancelSpeech();
-    var token = speakToken;
+    if (handoffToken === undefined) cancelSpeech();
+    var token = handoffToken === undefined ? speakToken : handoffToken;
     function next() {
       if (token !== speakToken) return;
       clearTimeout(speakTimer);
@@ -79,24 +198,50 @@
 
   // Some phone browsers only allow speech that begins inside a tap. Call this from the tap handler.
   function prime() {
-    if (!synth) return;
-    try { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch (e) {}
+    if (synth) { try { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch (e) {} }
+    if (cloudReady()) {                                       // the same for the natural voice: play a silent moment so the page may play Petey's audio later
+      try { var a = ensureAudio(); a.src = SILENT_WAV; var p = a.play(); if (p && typeof p.catch === 'function') p.catch(function () {}); } catch (e) {}
+    }
+    if (useServerListening()) { try { var c = audioCtx(); if (c && c.state === 'suspended') c.resume(); } catch (e) {} }   // iPhones only start recording audio that was woken inside a tap
   }
 
-  // Listens until the person stops talking. opts: { silenceMs, maxMs, onText(text), onDone(text, reason) }
+  // Joins what the recognizer returned. iPhone Safari can return overlapping results (a phrase, then the same phrase extended, or the same
+  // phrase twice), which doubles words if every result is simply joined.
+  function collapse(phrases) {
+    var out = [];
+    phrases.forEach(function (p) {
+      p = String(p || '').replace(/\s+/g, ' ').trim();
+      if (!p) return;
+      var last = out.length ? out[out.length - 1] : null;
+      if (last === null) { out.push(p); return; }
+      var lp = last.toLowerCase(), pp = p.toLowerCase();
+      if (pp === lp || lp.indexOf(pp) === 0) return;                  // a repeat, or a shorter start of the previous phrase
+      if (pp.indexOf(lp) === 0) { out[out.length - 1] = p; return; }   // the previous phrase, extended
+      out.push(p);
+    });
+    return out.join(' ');
+  }
+
+  // Listens until the person stops talking. opts: { silenceMs, maxMs, onText(text), onStage(stage), onDone(text, reason) }
   // reason: 'ok' | 'no-speech' | 'denied' | 'no-mic' | 'network' | 'unsupported' | 'error' | 'cancelled'
-  function listen(opts) {
+  // The returned object has stop() (throw it away) and finish() (I am done talking: use what you have).
+  function listen(opts) { return useServerListening() ? listenServer(opts) : listenBrowser(opts); }
+
+  // The browser's own recognition.
+  function listenBrowser(opts) {
     stopListening();
-    if (!SR) { setTimeout(function () { opts.onDone('', 'unsupported'); }, 0); return { stop: function () {} }; }
+    if (!SR) { setTimeout(function () { opts.onDone('', 'unsupported'); }, 0); return { stop: function () {}, finish: function () {} }; }
+    var ios = isIOS();
     var rec = new SR();
-    rec.lang = 'en-US'; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+    // iPhone Safari: continuous mode returns overlapping results; a single-answer session behaves better (reported on WebKit's bug tracker).
+    rec.lang = 'en-US'; rec.continuous = !ios; rec.interimResults = true; rec.maxAlternatives = 1;
     var finals = '', interim = '', heard = false, finished = false, errCode = '', cancelled = false, quietTimer = null, maxTimer = null, startTimer = null;
-    function currentText() { return (finals + (finals ? ' ' : '') + interim).replace(/\s+/g, ' ').trim(); }
+    function currentText() { return collapse([finals, interim]); }
     function done() {
       if (finished) return; finished = true;
       clearTimeout(quietTimer); clearTimeout(maxTimer); clearTimeout(startTimer);
       if (activeListen === ctl) activeListen = null;
-      var text = (finals.trim() || interim.trim());
+      var text = currentText();
       var reason = cancelled ? 'cancelled' : text ? 'ok'
         : (errCode === 'not-allowed' || errCode === 'service-not-allowed') ? 'denied'
         : errCode === 'audio-capture' ? 'no-mic' : errCode === 'network' ? 'network'
@@ -106,23 +251,157 @@
     function endSoon() { try { rec.stop(); } catch (e) {} setTimeout(done, 1500); }     // 'end' normally fires first; this is the safety net
     var ctl = { stop: function () { cancelled = true; try { rec.abort(); } catch (e) {} setTimeout(done, 0); }, finish: endSoon };
     rec.onresult = function (ev) {
-      heard = true; interim = ''; var f = '';
-      for (var i = 0; i < ev.results.length; i++) { var r = ev.results[i]; if (r.isFinal) f += (f ? ' ' : '') + r[0].transcript; else interim += r[0].transcript; }
-      finals = f;
+      heard = true;
+      var fin = [], inter = [];
+      for (var i = 0; i < ev.results.length; i++) { var r = ev.results[i]; (r.isFinal ? fin : inter).push(r[0].transcript); }
+      finals = collapse(fin); interim = collapse(inter);
       if (opts.onText) opts.onText(currentText());
-      clearTimeout(quietTimer); quietTimer = setTimeout(endSoon, opts.silenceMs || 1800);
+      // Elsewhere: stop after a pause. iPhone Safari ends a single-answer session by itself, and reports say cutting a session short with
+      // stop() can leave later sessions deaf, so there stop() is only a late safety net.
+      clearTimeout(quietTimer); quietTimer = setTimeout(endSoon, ios ? Math.max(opts.silenceMs || 1800, 4500) : (opts.silenceMs || 1800));
     };
     rec.onerror = function (ev) { errCode = ev && ev.error || 'error'; };
     rec.onend = function () { done(); };
+    // Reported on WebKit's bug tracker (unconfirmed by Apple): a short utterance before each session helps iPhone recognition start hearing again.
+    if (ios && synth) { try { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch (e) {} }
     try { rec.start(); } catch (e) { errCode = 'error'; setTimeout(done, 0); return ctl; }
     startTimer = setTimeout(function () { if (!heard) endSoon(); }, 9000);              // nothing said at all
     maxTimer = setTimeout(endSoon, opts.maxMs || 60000);
     activeListen = ctl;
     return ctl;
   }
-  function stopListening() { if (activeListen) { var c = activeListen; activeListen = null; c.stop(); } }
 
-  PT.voice = { canSpeak: !!synth, canListen: !!SR, speak: speak, cancelSpeech: cancelSpeech, listen: listen, stopListening: stopListening, prime: prime, chunks: chunks };
+  // ---- Recording the answer and sending it to the server ----
+  var sharedCtx = null;
+  function audioCtx() {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!sharedCtx || sharedCtx.state === 'closed') sharedCtx = new AC();
+    return sharedCtx;
+  }
+
+  // 16 kHz, 16-bit, mono WAV from the recorded pieces (Float32 samples at the device's own rate).
+  function encodeWav(parts, inRate) {
+    var total = 0; parts.forEach(function (p) { total += p.length; });
+    var flat = new Float32Array(total), off = 0; parts.forEach(function (p) { flat.set(p, off); off += p.length; });
+    var ratio = inRate / 16000, outLen = Math.floor(total / ratio);
+    var bytes = new Uint8Array(44 + outLen * 2), dv = new DataView(bytes.buffer);
+    function str(o, t) { for (var k = 0; k < t.length; k++) dv.setUint8(o + k, t.charCodeAt(k)); }
+    str(0, 'RIFF'); dv.setUint32(4, 36 + outLen * 2, true); str(8, 'WAVE'); str(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true);
+    dv.setUint16(22, 1, true); dv.setUint32(24, 16000, true); dv.setUint32(28, 32000, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+    str(36, 'data'); dv.setUint32(40, outLen * 2, true);
+    for (var i = 0; i < outLen; i++) {                         // average the input samples that fall into each output sample (a simple low-pass)
+      var a = Math.floor(i * ratio), b = Math.max(a + 1, Math.floor((i + 1) * ratio)), sum = 0, n = 0;
+      for (var j = a; j < b && j < total; j++) { sum += flat[j]; n++; }
+      var v = n ? sum / n : 0; v = Math.max(-1, Math.min(1, v));
+      dv.setInt16(44 + i * 2, Math.round(v < 0 ? v * 32768 : v * 32767), true);
+    }
+    return bytes;
+  }
+  function toBase64(bytes) {
+    var out = '', step = 0x8000;
+    for (var i = 0; i < bytes.length; i += step) out += String.fromCharCode.apply(null, bytes.subarray(i, i + step));
+    return btoa(out);
+  }
+
+  function listenServer(opts) {
+    stopListening();
+    var S = window.PreTaskIQSpeech;
+    var stage = 'starting', finished = false, heard = false, abort = new AbortController();
+    var stream = null, src = null, proc = null, mute = null, startTimer = null;
+    var chunks = [], rate = 44100, t = 0, floor = null, loudRun = 0, lastLoud = 0, firstLoudIdx = -1, lastLoudIdx = -1;
+    var silenceMs = opts.silenceMs || 1800, maxMs = Math.min(opts.maxMs || 60000, 55000), noSpeechMs = opts.noSpeechMs || 9000;   // 55 s: what the server accepts
+
+    function release() {                                       // let go of the microphone (so the phone's speaker goes back to normal)
+      clearTimeout(startTimer);
+      try { if (proc) { proc.onaudioprocess = null; proc.disconnect(); } } catch (e) {}
+      try { if (src) src.disconnect(); } catch (e) {}
+      try { if (mute) mute.disconnect(); } catch (e) {}
+      try { if (stream) stream.getTracks().forEach(function (tr) { tr.stop(); }); } catch (e) {}
+      proc = src = mute = stream = null;
+    }
+    function done(text, reason) {
+      if (finished) return; finished = true;
+      if (activeListen === ctl) activeListen = null;
+      try { abort.abort(); } catch (e) {}
+      release();
+      opts.onDone(text, reason);
+    }
+    function endTalking() {                                    // I am done talking: send what was recorded
+      if (finished || stage !== 'recording') { if (stage === 'starting') done('', 'no-speech'); return; }
+      release();
+      if (!heard) { done('', 'no-speech'); return; }
+      stage = 'transcribing'; if (opts.onStage) { try { opts.onStage('transcribing'); } catch (e) {} }
+      var wav;
+      try { wav = encodeWav(chunks.slice(Math.max(0, firstLoudIdx - 4), Math.min(chunks.length, lastLoudIdx + 7)), rate); } catch (e) { done('', 'error'); return; }
+      chunks = [];
+      S.transcribe(toBase64(wav), abort.signal).then(
+        function (text) { done(text, text ? 'ok' : 'no-speech'); },
+        function (e) { if (e && e.name === 'AbortError') return; done('', 'error'); });
+    }
+    var ctl = { cloud: true, stop: function () { done('', 'cancelled'); }, finish: endTalking };
+
+    // Which buffers hold speech? A running estimate of the background level (it falls fast, rises slowly, and is capped so constant machinery
+    // noise cannot make speech undetectable) sets the bar: speech has to stand clearly above it.
+    function onAudio(e) {
+      if (stage !== 'recording') return;
+      var d = e.inputBuffer.getChannelData(0), n = d.length, sum = 0;
+      for (var i = 0; i < n; i++) sum += d[i] * d[i];
+      var rms = Math.sqrt(sum / n);
+      chunks.push(new Float32Array(d)); t += n / rate * 1000;
+      var idx = chunks.length - 1;
+      floor = floor === null ? Math.min(rms, 0.02) : (rms < floor ? rms : floor + (rms - floor) * 0.03);
+      floor = Math.min(floor, 0.03);
+      if (rms > Math.max(0.012, floor * 3)) {
+        loudRun++;
+        if (loudRun >= 2) { if (!heard) { heard = true; firstLoudIdx = idx - 1; } lastLoud = t; lastLoudIdx = idx; }
+      } else loudRun = 0;
+      if (heard && t - lastLoud > silenceMs) endTalking();
+      else if (!heard && t > noSpeechMs) done('', 'no-speech');
+      else if (t > maxMs) endTalking();
+    }
+
+    var md = navigator.mediaDevices;
+    var ctx = audioCtx();
+    if (!md || !ctx) { setTimeout(function () { if (!finished) { finished = true; listenBrowser(opts); } }, 0); return ctl; }
+    activeListen = ctl;
+    function fallBackToBrowser() {                              // use the browser's own listening instead; the person just sees it listening
+      if (finished) return;
+      finished = true; if (activeListen === ctl) activeListen = null; try { abort.abort(); } catch (e) {} release();
+      listenBrowser(opts);
+    }
+    md.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function (s) {
+      if (finished) { try { s.getTracks().forEach(function (tr) { tr.stop(); }); } catch (e) {} return; }
+      stream = s;
+      try {
+        try { if (ctx.state === 'suspended') ctx.resume(); } catch (e) {}
+        rate = ctx.sampleRate || 44100;
+        src = ctx.createMediaStreamSource(s); proc = ctx.createScriptProcessor(4096, 1, 1);
+        mute = ctx.createGain(); mute.gain.value = 0;            // the recorder must be connected to the output to run; muted so nothing is heard
+        proc.onaudioprocess = onAudio;
+        src.connect(proc); proc.connect(mute); mute.connect(ctx.destination);
+      } catch (e) { fallBackToBrowser(); return; }               // this browser cannot record the way we need: never leave the microphone open or the person waiting
+      stage = 'recording';
+      // If no sound arrives at all (the phone's audio system was not woken by a tap), do not sit there: use the browser's own listening instead.
+      startTimer = setTimeout(function () { if (!chunks.length) fallBackToBrowser(); }, 2500);
+    }, function (err) {
+      var n = err && err.name;
+      done('', (n === 'NotAllowedError' || n === 'SecurityError') ? 'denied' : (n === 'NotFoundError' || n === 'OverconstrainedError') ? 'no-mic' : 'error');
+    });
+    return ctl;
+  }
+
+  function stopListening() { if (activeListen) { var c = activeListen; activeListen = null; c.stop(); } }
+  // "I am done talking": use what has been heard so far (as opposed to stopListening, which throws it away).
+  function finishListening() { if (activeListen && activeListen.finish) activeListen.finish(); }
+
+  PT.voice = {
+    get canSpeak() { return !!synth || cloudReady(); },
+    get naturalVoice() { return cloudReady(); },
+    get canListen() { return canListenNow(); }, get listeningViaServer() { return useServerListening(); },
+    speak: speak, cancelSpeech: cancelSpeech, listen: listen, stopListening: stopListening, finishListening: finishListening, prime: prime, chunks: chunks, cloudChunks: cloudChunks,
+    testing: { encodeWav: encodeWav, collapse: collapse, isIOS: isIOS },
+  };
 
   function problemText(reason) {
     return reason === 'denied' ? 'The microphone is blocked. Allow it for this site in your browser settings, or type instead.'
@@ -171,11 +450,12 @@
 
   function cvListen() {
     if (!cv.on) return;
-    if (!SR) { cvPhase('paused', problemText('unsupported'), 'problem'); convInputEl.focus(); return; }
+    if (!canListenNow()) { cvPhase('paused', problemText('unsupported'), 'problem'); convInputEl.focus(); return; }
     if (convInputEl.disabled) { cvPhase('thinking', 'Petey is thinking…'); return; }   // the next question will start the listening
-    cvPhase('listening', 'Listening… say your answer.', 'listening');
+    cvPhase('listening', useServerListening() ? 'Listening… say your answer, then tap the mic when you are done.' : 'Listening… say your answer.', 'listening');
     listen({
       silenceMs: 1800,
+      onStage: function (st) { if (st === 'transcribing' && cv.on) cvPhase('thinking', 'Got it… working out what you said.'); },
       onText: function (t) { convInputEl.value = t; },
       onDone: function (text, reason) {
         if (!cv.on) return;
@@ -213,6 +493,7 @@
     if (!cv.on) return cvStart();
     if (cv.phase === 'speaking') { if (cv.speak) { cv.speak.cancel(); cv.speak = null; } cvListen(); return; }   // answer without waiting for Petey to finish
     if (cv.phase === 'paused') { cv.quietRetries = 0; cvListen(); return; }
+    if (cv.phase === 'listening' && activeListen && activeListen.cloud) { finishListening(); return; }   // recorded answer: "I am done talking"
     cvStop('');
   });
   // Typing means "I'll type this one": cancel the pending send and wait.
@@ -251,14 +532,15 @@
   function intakeFieldChanged() { intakeSubmitBtn.disabled = !intakeBox.value.trim(); }
 
   if (intakeMic) intakeMic.addEventListener('click', function () {
-    if (intakeVoice.listening) { stopListening(); return; }              // second tap: done talking
+    if (intakeVoice.listening) { finishListening(); return; }            // second tap: done talking
     intakeCancelSend(); prime();
     intakeVoice.wanted = true;                                           // Petey will then talk the plan through aloud
-    if (!SR) { setStatus(intakeStatusEl, problemText('unsupported'), 'problem'); intakeUi(); intakeBox.focus(); return; }
+    if (!canListenNow()) { setStatus(intakeStatusEl, problemText('unsupported'), 'problem'); intakeUi(); intakeBox.focus(); return; }
     var base = intakeBox.value.trim();
     intakeVoice.listening = true; intakeUi(); setStatus(intakeStatusEl, 'Listening… tell Petey what is planned today.', 'listening');
     listen({
       silenceMs: 2600, maxMs: 90000,
+      onStage: function (st) { if (st === 'transcribing') setStatus(intakeStatusEl, 'Got it… working out what you said.'); },
       onText: function (t) { intakeBox.value = (base ? base + ' ' : '') + t; intakeFieldChanged(); },
       onDone: function (text, reason) {
         intakeVoice.listening = false; intakeUi();
@@ -293,15 +575,16 @@
   var ptt = document.getElementById('petey-ptt');
   var pttListening = false;
   if (ptt) ptt.addEventListener('click', function () {
-    if (pttListening) { stopListening(); return; }
+    if (pttListening) { finishListening(); return; }
     if (typeof peteyEnabled !== 'undefined' && peteyEnabled) { addPeteyLogEntry('system', 'Petey is already listening for “Hey Petey”. Say it, or turn that off to use Tap and talk.'); return; }
     prime();
-    if (!SR) { addPeteyLogEntry('system', problemText('unsupported')); return; }
+    if (!canListenNow()) { addPeteyLogEntry('system', problemText('unsupported')); return; }
     cancelSpeech();
     pttListening = true; ptt.classList.add('listening'); ptt.textContent = 'Listening… tap when done';
     setPeteyState('active');
     listen({
       silenceMs: 1800,
+      onStage: function (st) { if (st === 'transcribing') ptt.textContent = 'Working out what you said…'; },
       onDone: function (text, reason) {
         pttListening = false; ptt.classList.remove('listening'); ptt.innerHTML = '&#127897; Tap and talk';
         setPeteyState('idle');

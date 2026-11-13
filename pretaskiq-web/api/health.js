@@ -17,6 +17,7 @@ export default handle(async (req, res) => {
       SUPABASE_PUBLISHABLE_KEY: Boolean(cfg.publishableKey),
       SUPABASE_SECRET_KEY: Boolean(cfg.secretKey),
       ACCESS_CODE: Boolean(process.env.ACCESS_CODE),
+      ELEVENLABS_API_KEY: Boolean(process.env.ELEVENLABS_API_KEY),   // optional: the natural voice. Without it Petey uses the browser's voice.
     },
   };
   if (cfg.urlProblem) out.problem = cfg.urlProblem;
