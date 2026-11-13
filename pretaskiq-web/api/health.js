@@ -21,6 +21,7 @@ export default handle(async (req, res) => {
     },
   };
   if (cfg.urlProblem) out.problem = cfg.urlProblem;
+  if (cfg.ignored) { out.signInSwitchedOff = true; out.note = 'Sign-in is switched off: the Supabase settings are set but ignored, and the shared access code is used.'; }
   if (cfg.mode === 'supabase') {
     const admin = adminClient(cfg);
     out.tables = {};

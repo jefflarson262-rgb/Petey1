@@ -3,8 +3,9 @@
 import test, { before, after, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 process.env.NODE_ENV = 'test';
+process.env.PRETASKIQ_SIGN_IN = 'on';   // these tests are about sign-in mode; the switch itself is tested below
 import { startFakeSupabase, makeJwt } from './helpers/fakeSupabase.mjs';
-import { readConfig, publicConfig } from '../server/config.js';
+import { readConfig, publicConfig, SIGN_IN_DEFAULT } from '../server/config.js';
 import configApi from '../api/config.js';
 import healthApi from '../api/health.js';
 import meApi from '../api/me.js';
@@ -53,11 +54,36 @@ test('config: three settings means Supabase mode, and the secret key is never in
   assert.ok(!pub.includes(fake.secretKey));
 });
 test('config: none set is the shared-code mode; some set is flagged, not guessed', () => {
-  assert.equal(readConfig({}).mode, 'code');
-  const partial = readConfig({ SUPABASE_URL: 'https://x.supabase.co', SUPABASE_PUBLISHABLE_KEY: 'k' });
+  const ON = { PRETASKIQ_SIGN_IN: 'on' };
+  assert.equal(readConfig({ ...ON }).mode, 'code');
+  const partial = readConfig({ ...ON, SUPABASE_URL: 'https://x.supabase.co', SUPABASE_PUBLISHABLE_KEY: 'k' });
   assert.equal(partial.mode, 'misconfigured'); assert.deepEqual(partial.missing, ['SUPABASE_SECRET_KEY']);
-  assert.equal(readConfig({ SUPABASE_URL: 'http://evil.example.com', SUPABASE_PUBLISHABLE_KEY: 'k', SUPABASE_SECRET_KEY: 's' }).mode, 'misconfigured');
-  assert.equal(readConfig({ SUPABASE_URL: 'https://x.supabase.co/', SUPABASE_ANON_KEY: 'k', SUPABASE_SERVICE_ROLE_KEY: 's' }).mode, 'supabase');   // older key names still work
+  assert.equal(readConfig({ ...ON, SUPABASE_URL: 'http://evil.example.com', SUPABASE_PUBLISHABLE_KEY: 'k', SUPABASE_SECRET_KEY: 's' }).mode, 'misconfigured');
+  assert.equal(readConfig({ ...ON, SUPABASE_URL: 'https://x.supabase.co/', SUPABASE_ANON_KEY: 'k', SUPABASE_SERVICE_ROLE_KEY: 's' }).mode, 'supabase');   // older key names still work
+});
+test('sign-in switch: off (the repository default) uses the shared code even when all three Supabase settings are set', async () => {
+  const three = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_PUBLISHABLE_KEY: 'pk', SUPABASE_SECRET_KEY: 'sk' };
+  assert.equal(SIGN_IN_DEFAULT, 'off', 'the repository ships with sign-in switched off while the pilot is open to a tester');
+  for (const env of [three, { ...three, PRETASKIQ_SIGN_IN: 'off' }, { ...three, PRETASKIQ_SIGN_IN: 'nonsense' }, { ...three, PRETASKIQ_SIGN_IN: ' OFF ' }]) {
+    const cfg = readConfig(env);
+    assert.equal(cfg.mode, 'code'); assert.equal(cfg.ignored, true); assert.equal(cfg.signInOff, true);
+    assert.deepEqual(publicConfig(cfg), { auth: 'code' });                         // the browser is told "shared code", and is not given the Supabase address or key
+  }
+  assert.equal(readConfig({ ...three, PRETASKIQ_SIGN_IN: 'on' }).mode, 'supabase');
+  assert.equal(readConfig({ ...three, PRETASKIQ_SIGN_IN: ' On ' }).mode, 'supabase');
+  assert.equal(readConfig({ SUPABASE_URL: 'https://x.supabase.co', PRETASKIQ_SIGN_IN: 'off' }).mode, 'code');   // a half-filled set is not flagged while switched off
+  assert.equal(readConfig({}).ignored, false);                                      // nothing set: nothing is being ignored
+  // End to end: with the switch off the AI proxy wants the shared code, not a Supabase sign-in, and /api/health says what is going on.
+  const keep = process.env.PRETASKIQ_SIGN_IN; process.env.PRETASKIQ_SIGN_IN = 'off'; process.env.ACCESS_CODE = 'crew-2026';
+  try {
+    const h = await call(healthApi, { method: 'GET' });
+    assert.equal(h.json.mode, 'code'); assert.equal(h.json.signInSwitchedOff, true); assert.match(h.json.note, /ignored/); assert.equal(h.json.ok, true);
+    assert.ok(!JSON.stringify(h.json).includes(fake.secretKey));
+    const noCode = await call(claudeApi, { method: 'POST', body: { model: 'm', max_tokens: 5, messages: [{ role: 'user', content: 'hi' }] } });
+    assert.equal(noCode.status, 401);                                                // no code, no AI
+    const c = await call(configApi, { method: 'GET' });
+    assert.deepEqual(c.json, { auth: 'code' });
+  } finally { if (keep === undefined) delete process.env.PRETASKIQ_SIGN_IN; else process.env.PRETASKIQ_SIGN_IN = keep; delete process.env.ACCESS_CODE; }
 });
 test('GET /api/config returns what the browser needs and nothing secret', async () => {
   const r = await call(configApi, { method: 'GET' });

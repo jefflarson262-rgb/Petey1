@@ -80,12 +80,15 @@ Project Settings > Environment Variables. Add these, then redeploy:
 | `SUPABASE_SECRET_KEY` | starts with `sb_secret_` | Supabase **Settings > API Keys** |
 | `ELEVENLABS_API_KEY` | *optional.* Switches on the natural voice and iPhone listening (section 3). Costs money. | Your ElevenLabs account |
 | `ELEVENLABS_VOICE_ID` | *optional.* Which voice. Leave empty for the default | ElevenLabs voice library |
+| `PRETASKIQ_SIGN_IN` | *optional.* `on` or `off`. Overrides the sign-in switch (below). | |
 | `AI_CALLS_PER_HOUR` | *optional.* Default 150 per person | |
 | `ANTHROPIC_MODEL` | *optional.* Leave empty to use `claude-sonnet-5-5` | |
 
 Supabase's documentation says the Connect dialog shows the project URL and publishable key, and that secret keys live under Settings > API Keys. The **secret key** can do anything to your data. It goes only here, never in the browser, GitHub or a chat. (The app also refuses to start if only some of the three Supabase settings are filled in, and says which one is missing.)
 
 `ACCESS_CODE` is only used when the three Supabase settings are **not** set (the older shared-code mode). With Supabase set, it is ignored.
+
+**The sign-in switch.** `server/config.js` has a setting, `SIGN_IN_DEFAULT`, currently **`'off'`**. While it is off, the site uses the shared `ACCESS_CODE` and **ignores the Supabase settings even if all three are filled in on Vercel**, so people are not asked to sign in. Nothing is deleted: the database, your account and the Vercel settings stay as they are, and `/api/health` says "sign-in is switched off". Plans are not saved while it is off. To turn sign-in back on, change `'off'` to `'on'` in that file and redeploy (or set `PRETASKIQ_SIGN_IN=on` on the host, which overrides the file). Turning the shared code off completely would let anyone who finds the address run up your Anthropic bill, so the switch only chooses between the two modes.
 
 ### F. Check it
 

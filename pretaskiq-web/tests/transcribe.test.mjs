@@ -3,6 +3,7 @@
 import test, { before, after, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 process.env.NODE_ENV = 'test';
+process.env.PRETASKIQ_SIGN_IN = 'on';   // the sign-in tests here need Supabase mode (the repository default is the shared code)
 import { startFakeSupabase, makeJwt } from './helpers/fakeSupabase.mjs';
 import handler, { cleanTranscript } from '../api/transcribe.js';
 
