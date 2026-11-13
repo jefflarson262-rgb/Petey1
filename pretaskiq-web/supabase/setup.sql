@@ -79,3 +79,7 @@ end $$;
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- 7. The function above is only meant to run as a trigger. Supabase's security check flags it because the public API could try to call it
+--    directly; closing that costs nothing (the trigger itself keeps working).
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
