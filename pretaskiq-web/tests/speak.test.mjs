@@ -77,7 +77,7 @@ test('a valid request goes to ElevenLabs with the key in a header and the audio 
   assert.ok(Buffer.isBuffer(res.body) && res.body.equals(AUDIO));
   assert.equal(calls.length, 1);
   const c = calls[0];
-  assert.equal(c.url, 'https://api.elevenlabs.io/v1/text-to-speech/JBFqnCBsd6RMkjVDRZzb?output_format=mp3_44100_128');
+  assert.equal(c.url, 'https://api.elevenlabs.io/v1/text-to-speech/nPczCjzI2devNBz1zQrb?output_format=mp3_44100_128');
   assert.equal(c.init.method, 'POST'); assert.equal(c.init.headers['xi-api-key'], SECRET);
   assert.deepEqual(c.payload, { text: good.text, model_id: 'eleven_flash_v2_5' });   // only these two fields; nothing about the person or the plan
   assert.ok(!String(res.body).includes(SECRET));

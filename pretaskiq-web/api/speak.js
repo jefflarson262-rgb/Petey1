@@ -18,10 +18,11 @@ import { requireVoiceAccess } from '../server/gate.js';
 import { HttpError, send, readJson, handle } from '../server/http.js';
 
 const UPSTREAM_BASE = (process.env.ELEVENLABS_API_URL || 'https://api.elevenlabs.io').replace(/\/+$/, '');   // override is for tests
-// "George": a male, British-accent voice, listed on ElevenLabs' "Default Voices" page (elevenlabs.io/docs/voices/default-voices), and the voice ID in
-// their own API example. That it is available on every account and plan is NOT verified here: if it is not, requests fail and the site falls back
-// to the browser voice. Set ELEVENLABS_VOICE_ID to the voice you actually want.
-const DEFAULT_VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb';
+// "Brian": a male, American-accent ("deep") voice, listed on ElevenLabs' "Default Voices" page (elevenlabs.io/docs/voices/default-voices); the ID agrees
+// with a second list (wavespeed.ai). Chosen because the owner asked for a male voice with an American accent; nobody has heard it yet. That it is
+// available on every account and plan is NOT verified here: if it is not, requests fail and the site falls back to the browser voice.
+// ELEVENLABS_VOICE_ID overrides this. (The earlier default, "George" JBFqnCBsd6RMkjVDRZzb, is male with a British accent.)
+const DEFAULT_VOICE_ID = 'nPczCjzI2devNBz1zQrb';
 const DEFAULT_MODEL_ID = 'eleven_flash_v2_5';      // named in ElevenLabs' model list as a ~100 ms, real-time model that supports English
 const OUTPUT_FORMAT = 'mp3_44100_128';             // the documented default; higher bit rates need a higher plan
 const MAX_CHARS = 600;                             // the browser sends one or two sentences at a time (about 260 characters)
