@@ -230,6 +230,15 @@ function parsePeteyReply(raw) {
   return { intent: "GENERAL_QUESTION", text: working, hazardSummary, incidentId: incParsed.incidentId };
 }
 
+// The AI is given the document without the signatures (pictures of handwriting: large, and no use to it). Names, and who has signed, stay.
+// (The crew list and signatures are added in 31-crew-signoff.js.)
+function jhaForAI(j) {
+  if (!j || !Array.isArray(j.crew)) return j;
+  const copy = Object.assign({}, j);
+  copy.crew = j.crew.map(p => ({ name: p.name, signed: !!(p.signature && p.signature.d) }));
+  return copy;
+}
+
 async function handlePeteyQuery(query) {
   if (!query || peteyBusy) return;
   peteyBusy = true;
@@ -237,7 +246,7 @@ async function handlePeteyQuery(query) {
   setPeteyState("thinking");
 
   try {
-    const activePlanJson = activeJHA ? JSON.stringify(activeJHA) : null;
+    const activePlanJson = activeJHA ? JSON.stringify(jhaForAI(activeJHA)) : null;
     const activeProcedureJson = activeProcedure ? JSON.stringify(activeProcedure) : null;
     const systemPrompt = buildPeteySystemPrompt(activePlanJson, activeProcedureJson);
     const rawReply = await callClaude({
@@ -275,7 +284,7 @@ async function updateActiveJHAFromReport(report) {
     addPeteyLogEntry("system", "Updating today's JHA...");
     const result = await callClaude({
       system: PETEY_UPDATE_SYSTEM_PROMPT,
-      messages: [{ role: "user", content: `ACTIVE HAZARD ANALYSIS DOCUMENT:\n${JSON.stringify(activeJHA)}\n\nFOREMAN'S REPORT:\n${report}\n\nReturn the complete updated document JSON now.` }],
+      messages: [{ role: "user", content: `ACTIVE HAZARD ANALYSIS DOCUMENT:\n${JSON.stringify(jhaForAI(activeJHA))}\n\nFOREMAN'S REPORT:\n${report}\n\nReturn the complete updated document JSON now.` }],
       maxTokens: 6000
     });
     const updated = extractJson(result);

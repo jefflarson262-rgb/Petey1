@@ -17,8 +17,8 @@ let failed = null;   // the last save that did not go through, so "Try again" ca
 const copy = (data) => JSON.parse(JSON.stringify(data));   // plans are plain JSON; copying freezes what is saved at this moment
 
 async function run(job) {
-  const { data, source, note } = job;
-  if (source === 'planning') set({ planId: null, revision: null });   // a freshly generated plan is always a new plan
+  const { data, source, note, continues } = job;
+  if (source === 'planning' && !continues) set({ planId: null, revision: null });   // a freshly generated plan is always a new plan (unless this save is only recording that it was submitted)
   set({ status: 'saving', error: '', canRetry: false });
   try {
     const out = await apiJson('/api/plans', { method: 'POST', body: { id: state.planId || undefined, data, source, note } });
@@ -33,15 +33,23 @@ async function run(job) {
   }
 }
 
-export function savePlan(data, { source = 'edit', note = '' } = {}) {
+export function savePlan(data, { source = 'edit', note = '', continues = false } = {}) {
   if (!enabled() || !data) return Promise.resolve(null);
-  const job = { data: copy(data), source, note };
+  const job = { data: copy(data), source, note, continues };
   const result = queue.then(() => run(job));
   queue = result;   // run() never throws
   return result;
 }
 
 export const retrySave = () => (failed ? savePlan(failed.data, failed) : Promise.resolve(null));
+
+// May this person change this saved plan? (The server decides for real; this only decides whether to offer the Submit button.)
+// A foreman changes only their own plans, a safety administrator changes all, a construction administrator only their own.
+export const canWrite = (rec) => {
+  const a = auth();
+  if (!rec || a.mode !== 'supabase' || a.phase !== 'signed_in') return true;
+  return rec.created_by === (a.user && a.user.id) || (a.profile && a.profile.role) === 'safety';
+};
 
 // The plan on screen is a different one, or none that is saved.
 export const markNone = () => { if (state.planId || state.status !== 'idle') { failed = null; set({ status: 'idle', planId: null, revision: null, error: '', canRetry: false }); } };

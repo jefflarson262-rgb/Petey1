@@ -121,7 +121,8 @@
         <div class="logo-row" id="logo-doc"></div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
           <button id="doc-edit-toggle" class="btn-secondary" style="display:none;">✏️ Edit</button>
-          <button id="doc-open-petey" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;">
+          <button id="doc-submit" class="btn-primary" type="button" style="display:none;">✓ Submit plan</button>
+          <button id="doc-open-petey" class="btn-secondary" type="button" style="display:none;align-items:center;gap:8px;">
             <span style="font-size:16px;">🎙️</span> Talk to Petey
           </button>
           <button id="doc-restart" class="btn-secondary">← Plan another task</button>
@@ -132,10 +133,15 @@
         <div style="font-size:13px;font-weight:700;color:#7A3510;margin-bottom:4px;">&#128203; Review before signing</div>
         <div style="font-size:12px;color:#9A5530;line-height:1.6;">Read through this document with your crew before anyone signs. Confirm it reflects what was discussed, the hazards are accurate for today's conditions, and every person understands their controls. If anything has changed or doesn't look right, edit it here before work begins. The foreman's signature confirms this review happened.</div>
       </div>
+      <div id="doc-submit-panel" class="submit-panel" style="display:none;" aria-live="polite"></div>
     </div>
-    <!-- Sticky Petey button -->
+    <!-- Sticky bottom button: Submit until the plan is submitted, then Petey -->
     <div class="doc-petey-bar">
-      <button class="doc-petey-bar-btn" onclick="renderProcedureTracker(); showScreen('petey');">
+      <button id="doc-bar-submit" class="doc-petey-bar-btn" type="button" style="display:none;">
+        <div class="petey-orb-mini">&#10003;</div>
+        <span id="doc-bar-submit-label">Submit plan</span>
+      </button>
+      <button id="doc-bar-petey" class="doc-petey-bar-btn" type="button" onclick="renderProcedureTracker(); showScreen('petey');">
         <div class="petey-orb-mini">&#127897;</div>
         Talk to Petey
       </button>
@@ -151,6 +157,8 @@
           <span class="nav-pill current">Petey · Shift Companion</span>
         </div>
       </div>
+
+      <div id="petey-shift-banner" class="shift-banner" style="display:none;" aria-live="polite"></div>
 
       <div id="petey-unsupported-box" style="display:none;"></div>
 

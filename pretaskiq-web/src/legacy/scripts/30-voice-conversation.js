@@ -397,6 +397,7 @@
 
   PT.voice = {
     get canSpeak() { return !!synth || cloudReady(); },
+    get usedForPlanning() { return voiceUsedForPlan; },
     get naturalVoice() { return cloudReady(); },
     get canListen() { return canListenNow(); }, get listeningViaServer() { return useServerListening(); },
     speak: speak, cancelSpeech: cancelSpeech, listen: listen, stopListening: stopListening, finishListening: finishListening, prime: prime, chunks: chunks, cloudChunks: cloudChunks,
@@ -555,8 +556,10 @@
 
   // The conversation starts in voice mode if the person used the mic on the intake screen.
   var origStartConversation = startConversation;
+  var voiceUsedForPlan = false;      // did the person plan by voice? (then Petey greets them aloud when the plan is submitted)
   startConversation = function () {
     var useVoice = intakeVoice.wanted;
+    voiceUsedForPlan = !!useVoice;
     intakeCancelSend(); intakeVoice.wanted = false; intakeVoice.listening = false; intakeUi(); setStatus(intakeStatusEl, '');
     cvHalt(); cvPhase('off', '');
     if (useVoice) { cv.on = true; cv.quietRetries = 0; cvPhase('thinking', 'Petey is thinking…'); }

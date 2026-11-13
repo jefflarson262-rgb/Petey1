@@ -1,0 +1,74 @@
+/* Submit the plan, then Petey as the shift companion (31-submit-plan.js). */
+
+/* the panel under the document */
+.submit-panel { margin-top: 16px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; text-align: left; }
+.submit-panel.is-done { background: #F1F7EA; border-color: #A9CC8A; }
+.submit-panel.is-changed { background: #FFF4EE; border-color: #F4C09A; }
+.submit-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.submit-done { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.submit-panel.is-done .submit-done { color: #27500A; }
+.submit-text { font-size: 12.5px; line-height: 1.6; color: var(--slate-dark); margin-bottom: 12px; }
+.submit-big { width: 100%; padding: 14px 18px; font-size: 16px; }
+@media (min-width: 601px) { .submit-big { width: auto; } }
+
+/* the small tag in the document header */
+.submitted-chip { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #fff; background: #3B7A1F; border-radius: 5px; padding: 2px 9px; margin-left: 10px; }
+
+/* the sticky button at the bottom: the long label may wrap on a narrow phone */
+#doc-bar-submit { max-width: 100%; text-align: left; }
+@media (max-width: 430px) { #doc-bar-submit { padding: 12px 18px; font-size: 15px; } }
+
+/* the "on shift" card at the top of the companion screen */
+.shift-banner { margin: 14px 0 4px; background: #fff; border: 1px solid var(--line); border-left: 4px solid #3B7A1F; border-radius: 12px; padding: 12px 16px; text-align: left; }
+.shift-banner-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-bottom: 8px; }
+.shift-badge { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; color: #fff; background: #3B7A1F; border-radius: 5px; padding: 2px 8px; }
+.shift-job { font-size: 14px; font-weight: 700; color: var(--navy); }
+.shift-rev { font-size: 12px; color: var(--slate); }
+.shift-warn { font-size: 12.5px; line-height: 1.5; color: #7A3510; background: #FFF4EE; border: 1px solid #F4C09A; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+.shift-uses { display: grid; gap: 4px; font-size: 12.5px; line-height: 1.5; color: var(--slate-dark); }
+.shift-uses strong { color: var(--navy); margin-right: 6px; }
+
+/* ---- crew sign-off (31-crew-signoff.js) ---- */
+.crew-add { margin-bottom: 12px; }
+.crew-label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.crew-label span { font-weight: 500; color: var(--slate); }
+.crew-add-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.crew-input { flex: 1 1 220px; min-width: 0; font-size: 16px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--slate-dark); }   /* 16px: iPhones zoom in on smaller text */
+.crew-add-row .btn-secondary { min-height: 44px; }
+.crew-status { min-height: 18px; margin-top: 6px; font-size: 12.5px; color: var(--slate); }
+#crew-mic.listening { background: var(--orange); color: #fff; border-color: var(--orange); }
+.crew-list { list-style: none; margin: 0; padding: 0; }
+.crew-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 8px 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.crew-name { font-size: 15px; font-weight: 700; color: var(--navy); overflow-wrap: anywhere; }
+.crew-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.crew-sig-img { height: 46px; width: 140px; display: block; }
+.crew-sig-img.is-old { opacity: .35; }
+.crew-when { font-size: 11.5px; color: #27500A; font-weight: 600; }
+.crew-stale { font-size: 12px; color: #7A3510; }
+.crew-sign-btn { padding: 12px 18px; font-size: 15px; min-height: 44px; }
+.crew-remove { background: none; border: none; color: var(--slate); font-size: 16px; cursor: pointer; padding: 10px; min-width: 44px; min-height: 44px; }
+.crew-remove:hover { color: #B5472A; }
+.crew-summary { margin-top: 10px; font-size: 13px; font-weight: 600; color: var(--slate-dark); }
+.crew-summary.is-ok { color: #27500A; }
+.crew-msg { margin-top: 6px; font-size: 13px; font-weight: 600; color: #B5472A; }
+.crew-msg:empty { display: none; }
+@media (max-width: 600px) {
+  .crew-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .crew-right { grid-column: 1 / -1; justify-content: flex-start; }
+  .crew-remove { grid-row: 1; grid-column: 2; }
+  .crew-sign-btn { width: 100%; }
+}
+
+/* the signature pad */
+.sig-overlay { position: fixed; inset: 0; z-index: 1000; overscroll-behavior: contain; background: rgba(15, 30, 46, .6); display: flex; align-items: center; justify-content: center; padding: 14px; overflow: auto; }
+.sig-card { background: #fff; border-radius: 14px; padding: 16px; width: min(560px, 100%); box-shadow: 0 10px 40px rgba(0, 0, 0, .3); }
+.sig-title { font-size: 18px; font-weight: 700; color: var(--navy); outline: none; }
+.sig-sub { font-size: 12.5px; line-height: 1.5; color: var(--slate); margin: 4px 0 12px; }
+.sig-wrap { position: relative; border: 1px solid var(--line); border-radius: 10px; background: #FBFAF7; touch-action: none; overflow: hidden; }
+.sig-wrap canvas { display: block; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: crosshair; margin: 0 auto; }
+.sig-line { position: absolute; left: 14px; right: 14px; bottom: 26%; border-bottom: 1px solid #C9C4B8; pointer-events: none; }
+.sig-line span { position: absolute; left: 0; bottom: 2px; font-size: 12px; color: #B9B3A6; }
+.sig-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+.sig-actions button { min-height: 44px; padding: 10px 18px; font-size: 15px; }
+
+@media print { .crew-add, .crew-remove, .crew-sign-btn, .crew-msg, .submit-panel, .sig-overlay { display: none !important; } .crew-sig-img.is-old { display: none; } }
