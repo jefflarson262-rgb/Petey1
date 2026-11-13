@@ -1,0 +1,226 @@
+<div id="root">
+  <!-- Phase 1: Intake -->
+  <div id="screen-intake" class="screen anim-fade">
+    <div id="intake-wrap">
+      <div class="doc-top" style="margin-bottom:40px;">
+        <div>
+          <div class="logo-row" id="logo-intake"></div>
+          <div class="logo-tagline">EVERY JOB. EVERY LESSON.</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="btn-primary" onclick="showScreen('petey')" style="display:inline-flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">🎙️</span> Demo Petey
+          </button>
+        </div>
+      </div>
+
+      <div id="offline-banner" style="display:none;" class="offline-banner anim-in">
+        <span class="offline-banner-dot"></span>
+        <div>
+          <div class="offline-banner-title">Offline mode — limited functionality</div>
+          <div class="offline-banner-sub">No network connection detected. AI planning conversation is unavailable. You can use a cached JHA from a previous shift or complete a guided offline checklist instead.</div>
+        </div>
+      </div>
+
+      <h1 class="intake-title display" id="intake-title">What tasks are planned for today?</h1>
+      <p class="intake-sub" id="intake-sub">List everything on the shift — one task or several. I'll start with the highest-risk work and walk the full plan with you, the way a safety pro would on site.</p>
+      <div class="intake-box">
+        <textarea id="intake-textarea" rows="4" placeholder="Stage material, set up the scissor lift, install bus duct in Building 2, then close out..."></textarea>
+        <div class="intake-actions" id="intake-actions-row">
+          <button id="intake-submit" class="btn-primary" disabled>Start planning →</button>
+        </div>
+      </div>
+
+      <div id="offline-actions" style="display:none;">
+        <div class="examples-label">Offline options</div>
+        <div id="cached-jha-list"></div>
+        <button id="offline-checklist-btn" class="offline-checklist-launch-btn">
+          📋 Start guided offline checklist
+        </button>
+      </div>
+
+      <div id="online-examples-wrap">
+        <div class="examples-label">Or try an example</div>
+        <div id="examples-list"></div>
+      </div>
+
+      <div id="sync-queue-notice" style="display:none;" class="sync-notice"></div>
+    </div>
+  </div>
+
+  <!-- Offline checklist screen -->
+  <div id="screen-offline" class="screen anim-fade">
+    <div style="max-width:720px;margin:0 auto;padding:28px 24px 40px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <div class="logo-row" id="logo-offline"></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="offline-banner-dot"></span>
+          <span style="font-size:12.5px;font-weight:600;color:#8A4B11;">Offline mode</span>
+          <button id="offline-back-btn" class="btn-secondary">← Back</button>
+        </div>
+      </div>
+
+      <h2 class="display" style="font-size:22px;font-weight:700;color:var(--navy);margin:0 0 6px;">Guided JHA Checklist</h2>
+      <p style="font-size:14px;color:var(--slate);margin:0 0 24px;line-height:1.5;">Complete this checklist and we'll generate a JHA document when you're done. It will sync to the full system when your connection returns.</p>
+
+      <div id="offline-checklist-body"></div>
+
+      <button id="offline-generate-btn" class="btn-primary" style="width:100%;margin-top:20px;padding:14px;" disabled>
+        Generate offline JHA
+      </button>
+    </div>
+  </div>
+
+  <!-- Phase 2: Conversation -->
+  <div id="screen-conversation" class="screen anim-fade">
+    <div id="conv-wrap">
+      <div class="conv-header">
+        <div class="logo-row" id="logo-conv"></div>
+        <div id="conv-status" class="conv-status">Planning conversation</div>
+      </div>
+      <div id="conv-scroll">
+        <div id="conv-scroll-inner"></div>
+      </div>
+      <div class="conv-input-row" id="conv-input-row">
+        <input id="conv-input" type="text" placeholder="Type your answer..." />
+        <button id="conv-send" class="btn-send">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3: Generating -->
+  <div id="screen-generating" class="screen anim-fade">
+    <div id="generating-wrap">
+      <div class="logo-row" id="logo-gen" style="justify-content:center;"></div>
+      <div style="margin-top:40px;">
+        <span class="pulse-dots"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></span>
+      </div>
+      <div class="gen-title display">Structuring the hazard analysis</div>
+      <div class="gen-sub">Cross-referencing task steps, controls, and prior lessons learned.</div>
+    </div>
+  </div>
+
+  <!-- Phase 4: Error -->
+  <div id="screen-error" class="screen">
+    <div id="error-wrap">
+      <div class="logo-row" id="logo-err" style="justify-content:center;"></div>
+      <div class="err-title">Couldn't generate the document</div>
+      <div class="err-sub" id="error-message"></div>
+      <button id="error-retry" class="btn-primary" style="background:var(--navy);">Try again</button>
+    </div>
+  </div>
+
+  <!-- Phase 5: Document -->
+  <div id="screen-document" class="screen anim-fade">
+    <div id="doc-wrap">
+      <div class="doc-top">
+        <div class="logo-row" id="logo-doc"></div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button id="doc-edit-toggle" class="btn-secondary" style="display:none;">✏️ Edit</button>
+          <button id="doc-open-petey" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">🎙️</span> Talk to Petey
+          </button>
+          <button id="doc-restart" class="btn-secondary">← Plan another task</button>
+        </div>
+      </div>
+      <div class="doc-card" id="doc-content"></div>
+      <div class="doc-footer-note" style="background:#FFF4EE;border:1px solid #F4C09A;border-radius:10px;padding:12px 16px;text-align:left;margin-top:16px;">
+        <div style="font-size:13px;font-weight:700;color:#7A3510;margin-bottom:4px;">&#128203; Review before signing</div>
+        <div style="font-size:12px;color:#9A5530;line-height:1.6;">Read through this document with your crew before anyone signs. Confirm it reflects what was discussed, the hazards are accurate for today's conditions, and every person understands their controls. If anything has changed or doesn't look right, edit it here before work begins. The foreman's signature confirms this review happened.</div>
+      </div>
+    </div>
+    <!-- Sticky Petey button -->
+    <div class="doc-petey-bar">
+      <button class="doc-petey-bar-btn" onclick="renderProcedureTracker(); showScreen('petey');">
+        <div class="petey-orb-mini">&#127897;</div>
+        Talk to Petey
+      </button>
+    </div>
+  </div>
+  <!-- Phase 6: Petey shift companion -->
+  <div id="screen-petey" class="screen anim-fade">
+    <div id="petey-wrap">
+      <div class="petey-header">
+        <div class="logo-row" id="logo-petey"></div>
+        <div class="nav-pills">
+          <button class="nav-pill" id="petey-back-doc">← Today's JHA</button>
+          <span class="nav-pill current">Petey · Shift Companion</span>
+        </div>
+      </div>
+
+      <div id="petey-unsupported-box" style="display:none;"></div>
+
+      <div class="petey-orb-zone">
+        <div class="petey-orb" id="petey-orb">
+          <div class="petey-orb-ring"></div>
+          <!-- mic icon (idle/listening) -->
+          <svg class="petey-mic-icon" id="petey-orb-mic" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="2" width="6" height="12" rx="3"/>
+            <path d="M5 11a7 7 0 0 0 14 0" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="12" y1="18" x2="12" y2="22" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="8" y1="22" x2="16" y2="22" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <!-- sound bars (speaking) -->
+          <div class="petey-sound-bars" id="petey-orb-bars" style="display:none;">
+            <div class="petey-bar"></div>
+            <div class="petey-bar"></div>
+            <div class="petey-bar"></div>
+            <div class="petey-bar"></div>
+            <div class="petey-bar"></div>
+          </div>
+          <!-- alert icon -->
+          <span class="petey-alert-icon" id="petey-orb-alert" style="display:none;">&#9888;</span>
+        </div>
+
+        <!-- Plain-language mode label -->
+        <div class="petey-mode-label off" id="petey-mode-label">Not listening</div>
+
+        <div class="petey-hint" id="petey-hint">
+          Tap below to give Petey mic access. Once on, just say <span class="petey-wake-phrase">"Hey Petey"</span> any time during the shift.
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:10px;align-items:center;">
+          <button id="petey-toggle" class="petey-toggle-btn">Enable Petey</button>
+          <span class="petey-state-pill idle" id="petey-state-pill"><span class="petey-dot"></span><span id="petey-state-text">Off</span></span>
+        </div>
+
+        <!-- Privacy notice -->
+        <div class="petey-privacy-notice">
+          <strong>Petey only processes audio when you speak to it directly.</strong><br>
+          It does not record or listen to background conversations. The microphone activates only when you say "Hey Petey" or tap the button — and only for as long as you are speaking to it.
+        </div>
+      </div>
+
+      <div id="procedure-tracker" class="procedure-tracker" style="display:none;"></div>
+
+      <!-- Demo scenario buttons -->
+      <div id="petey-demo-panel" style="padding:12px 0 4px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--slate);text-transform:uppercase;margin-bottom:10px;text-align:center;">Try a demo scenario</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="petey-demo-btn" onclick="runPeteyDemo('loto')">
+            🔒 <strong>Procedure Tracking</strong> — tracks lockout steps, flags out-of-order
+          </button>
+          <button class="petey-demo-btn" onclick="runPeteyDemo('policy')">
+            📋 <strong>Policy recall</strong> — “What’s our tie-off rule above 6 feet?”
+          </button>
+          <button class="petey-demo-btn" onclick="runPeteyDemo('escalate')">
+            ⚠️ <strong>Unmitigated hazard</strong> — Petey flags and escalates
+          </button>
+          <button class="petey-demo-btn" onclick="runPeteyDemo('scope')">
+            📝 <strong>Scope change</strong> — Petey updates the live JHA mid-shift
+          </button>
+          <button class="petey-demo-btn" onclick="runPeteyDemo('drawing')">
+            📐 <strong>Drawing revision</strong> — Petey catches a routing change before cables land wrong
+          </button>
+        </div>
+        <div style="text-align:center;margin-top:10px;">
+          <button onclick="clearPeteyDemo()" style="font-size:12px;color:var(--slate);background:none;border:none;cursor:pointer;text-decoration:underline;">Clear log</button>
+        </div>
+      </div>
+
+      <div id="petey-log">
+        <div id="petey-log-inner"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,172 @@
+<div id="settings-modal-overlay" class="settings-overlay" style="display:none;">
+  <div class="settings-modal">
+    <div class="settings-modal-head">
+      <div class="settings-modal-title">Organization Settings</div>
+      <button id="settings-close-btn" class="settings-close-btn" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="settings-field-label" style="margin-bottom:6px;">Scope of Work Profile</div>
+    <div class="settings-modal-sub" style="margin-bottom:12px;">Tells PreTaskIQ what kind of work your crews typically do, so questions and hazard analysis stay relevant to your scope.</div>
+
+    <div class="settings-field-group">
+      <div class="settings-field-label">Primary trade / specialty</div>
+      <input id="sp-trade" type="text" class="settings-input" placeholder="e.g. Electrical, Civil, General Contractor, Concrete...">
+    </div>
+    <div class="settings-field-group">
+      <div class="settings-field-label">Typical project types</div>
+      <input id="sp-projects" type="text" class="settings-input" placeholder="e.g. Data center fit-out, underground utilities, commercial build-out...">
+    </div>
+    <div class="settings-field-group">
+      <div class="settings-field-label">Equipment used regularly</div>
+      <input id="sp-equipment" type="text" class="settings-input" placeholder="e.g. Scissor lifts, trenchers, concrete pumps, PDCs...">
+    </div>
+    <div class="settings-field-group">
+      <div class="settings-field-label">Typical work environments</div>
+      <input id="sp-environments" type="text" class="settings-input" placeholder="e.g. Indoor commercial, outdoor civil, confined space, elevated work...">
+    </div>
+    <div class="settings-field-group">
+      <div class="settings-field-label">Scopes NOT performed (optional)</div>
+      <input id="sp-exclusions" type="text" class="settings-input" placeholder="e.g. No roofing, no heavy crane lifts, no confined space entry...">
+    </div>
+
+    <div class="settings-divider"></div>
+    <div class="settings-field-label" style="margin-bottom:6px;">Escalation Contacts</div>
+    <div class="settings-modal-sub">When the system flags a hazard the crew can't mitigate, a notification is sent here.</div>
+
+    <div class="settings-field-group">
+      <div class="settings-field-label">Site Safety Professional</div>
+      <input id="settings-safety-name" type="text" class="settings-input" placeholder="Name">
+      <input id="settings-safety-contact" type="text" class="settings-input" placeholder="Email or phone">
+    </div>
+
+    <div class="settings-field-group">
+      <div class="settings-field-label">Crew Supervisor / Site Manager</div>
+      <input id="settings-supervisor-name" type="text" class="settings-input" placeholder="Name">
+      <input id="settings-supervisor-contact" type="text" class="settings-input" placeholder="Email or phone">
+    </div>
+
+    <div class="settings-divider" style="margin:20px 0 16px;"></div>
+
+    <div class="settings-field-group">
+      <div class="settings-field-label" style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">&#127897; Petey Voice</div>
+      <div style="font-size:12px;color:var(--slate);margin-bottom:10px;">Voices available depend on your device and browser. Pick one and preview it.</div>
+      <select id="petey-voice-select" class="settings-input" style="margin-bottom:8px;">
+        <option value="">Loading voices...</option>
+      </select>
+      <button id="petey-voice-preview" class="btn-secondary" style="font-size:13px;padding:8px 16px;">&#9654; Preview voice</button>
+    </div>
+
+    <div class="settings-divider"></div>
+
+    <!-- Knowledge Base Upload — five types -->
+    <div class="settings-field-label" style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">&#128196; Knowledge Base</div>
+
+    <!-- KB type tabs -->
+    <div style="display:flex;gap:0;background:#F0F2F5;border-radius:10px;overflow:hidden;margin-bottom:14px;flex-wrap:wrap;" id="kb-type-tabs">
+      <button class="kb-type-tab active" data-type="drawings" onclick="switchKbTab('drawings')">📐 Drawings</button>
+      <button class="kb-type-tab" data-type="incident" onclick="switchKbTab('incident')">⚠️ Incident</button>
+      <button class="kb-type-tab" data-type="rca" onclick="switchKbTab('rca')">🔍 RCA</button>
+      <button class="kb-type-tab" data-type="policy" onclick="switchKbTab('policy')">📋 Policy</button>
+      <button class="kb-type-tab" data-type="procedure" onclick="switchKbTab('procedure')">📝 Procedure</button>
+    </div>
+
+    <!-- Tab descriptions -->
+    <div id="kb-type-desc" style="font-size:12px;color:var(--slate);margin-bottom:12px;line-height:1.5;min-height:32px;"></div>
+
+    <!-- Upload area -->
+    <div id="kb-upload-zone" style="border:2px dashed var(--line);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:border-color 0.2s;margin-bottom:12px;background:#FAFAF8;">
+      <div style="font-size:24px;margin-bottom:6px;">📄</div>
+      <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:3px;">Drop a file or click to upload</div>
+      <div style="font-size:12px;color:var(--slate);">PDF, PNG, JPG accepted</div>
+      <input type="file" id="kb-file-input" accept=".pdf,.png,.jpg,.jpeg" style="display:none;">
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:var(--slate);text-align:center;margin-bottom:8px;">— or describe in plain text —</div>
+    <textarea id="kb-text-input" class="settings-input" rows="3" style="resize:vertical;" placeholder="Describe the document or change..."></textarea>
+
+    <!-- Dynamic fields injected by switchKbTab -->
+    <div id="kb-dynamic-fields" style="margin-top:8px;"></div>
+
+    <button id="kb-add-btn" class="btn-primary" style="width:100%;margin-top:10px;background:var(--navy);">Add to Knowledge Base</button>
+
+    <!-- Entries list -->
+    <div id="kb-entries-list" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
+
+    <div class="settings-divider"></div>
+
+    <!-- Baseline Policy Preference -->
+    <div style="margin-bottom:16px;">
+      <div class="settings-field-label" style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;">&#128218; OSHA Baseline Policies</div>
+      <div style="font-size:12px;color:var(--slate);margin-bottom:12px;line-height:1.5;">PreTaskIQ ships with pre-loaded baseline policies grounded in OSHA, NFPA, and ANSI standards. Choose how they interact with your uploaded company policies.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#FAFAF8;">
+          <input type="radio" name="baseline-pref" id="baseline-layer" value="layer" style="margin-top:3px;accent-color:var(--orange);">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);">Keep baseline as a safety net</div>
+            <div style="font-size:12px;color:var(--slate);margin-top:2px;line-height:1.4;">Your company policies take priority on topics they cover. PreTaskIQ baseline fills in any gaps. Petey always has something to cite.</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#FAFAF8;">
+          <input type="radio" name="baseline-pref" id="baseline-replace" value="replace" style="margin-top:3px;accent-color:var(--orange);">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--navy);">Replace with company policies only</div>
+            <div style="font-size:12px;color:var(--slate);margin-top:2px;line-height:1.4;">Once you upload your own policies, PreTaskIQ baseline is removed. Petey only cites your organization's standards. OSHA regulatory knowledge remains available separately.</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-divider"></div>
+
+    <!-- Custom JHA Template Fields -->
+    <div style="margin-bottom:16px;">
+      <div class="settings-field-label" style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">&#128196; Custom JHA Template</div>
+      <div style="font-size:12px;color:var(--slate);margin-bottom:12px;line-height:1.5;">Add custom fields from your existing JHA format that you want preserved in every generated document — work order numbers, permit fields, customer asset tags, supervisor signature blocks, or any other fields specific to your organization.</div>
+
+      <!-- Document name -->
+      <div class="settings-field-group">
+        <div class="settings-field-label">What does your organization call this document?</div>
+        <input id="jha-doc-name" type="text" class="settings-input" placeholder="e.g. Job Hazard Analysis, Pre-Task Plan, Activity Hazard Analysis">
+      </div>
+
+      <!-- Custom fields list -->
+      <div class="settings-field-label" style="margin-bottom:6px;">Custom fields</div>
+      <div style="font-size:12px;color:var(--slate);margin-bottom:8px;">Add fields your JHA format requires that PreTaskIQ doesn't generate automatically. These will appear in every JHA output.</div>
+      <div id="custom-jha-fields-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button onclick="addCustomJHAField()" style="width:100%;padding:9px;background:#F5F4F0;border:1px dashed var(--line);border-radius:9px;font-size:13px;font-weight:600;color:var(--slate);cursor:pointer;">+ Add custom field</button>
+
+      <!-- Signature blocks -->
+      <div class="settings-field-group" style="margin-top:12px;">
+        <div class="settings-field-label">Signature blocks required</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--slate-dark);cursor:pointer;">
+            <input type="checkbox" id="sig-foreman" checked style="accent-color:var(--orange);"> Foreman signature
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--slate-dark);cursor:pointer;">
+            <input type="checkbox" id="sig-crew"> Individual crew member signatures
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--slate-dark);cursor:pointer;">
+            <input type="checkbox" id="sig-super"> Superintendent review signature
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--slate-dark);cursor:pointer;">
+            <input type="checkbox" id="sig-safety"> Safety professional signature
+          </label>
+        </div>
+      </div>
+
+      <!-- Entries preview -->
+      <div id="custom-jha-preview" style="display:none;margin-top:10px;background:#F5F4F0;border-radius:10px;padding:10px 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Preview — custom fields in your JHA</div>
+        <div id="custom-jha-preview-inner" style="font-size:12px;color:var(--slate-dark);line-height:1.8;"></div>
+      </div>
+    </div>
+
+    <div class="settings-modal-footer">
+      <button id="settings-save-btn" class="btn-primary">Save settings</button>
+    </div>
+
+    <div class="settings-divider"></div>
+    <div class="settings-field-label" style="margin-bottom:10px;">Notification Log</div>
+    <div id="notification-log-list" class="notification-log-list"></div>
+  </div>
+</div>

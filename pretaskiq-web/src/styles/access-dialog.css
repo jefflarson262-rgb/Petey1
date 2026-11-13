@@ -1,0 +1,10 @@
+.acd-overlay { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(15, 30, 46, 0.6); }
+.acd-card { width: 100%; max-width: 380px; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 20px 60px rgba(15, 30, 46, 0.35); }
+.acd-title { margin: 0 0 8px; font-size: 20px; color: var(--navy); }
+.acd-text { margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: var(--slate); }
+.acd-input { width: 100%; padding: 12px 14px; font-size: 16px; border: 1.5px solid var(--line); border-radius: 10px; color: var(--slate-dark); background: var(--cream); }
+.acd-input:focus { outline: none; border-color: var(--orange); }
+.acd-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.acd-cancel, .acd-submit { padding: 10px 16px; font-size: 14px; font-weight: 600; border-radius: 10px; border: 1.5px solid var(--line); background: #fff; color: var(--slate-dark); }
+.acd-submit { border-color: var(--orange); background: var(--orange); color: #fff; }
+.acd-submit:disabled { opacity: 0.5; cursor: not-allowed; }

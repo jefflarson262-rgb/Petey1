@@ -1,0 +1,49 @@
+<!-- ═══════════════════════════════════════════════════════
+     ADMIN / SAFETY MANAGER DASHBOARD SCREEN
+══════════════════════════════════════════════════════════ -->
+<div id="screen-admin" class="screen anim-fade">
+  <div class="admin-wrap">
+    <div class="doc-top">
+      <div>
+        <span class="admin-time" id="admin-clock">06:45</span>
+        <div class="admin-title">Site Overview</div>
+        <div class="admin-sub">Real-time JHA status — all work groups</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="openAdminPetey()" style="display:inline-flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">&#127897;</span> Ask Petey
+        </button>
+        <button onclick="openRCAAssistant()" style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer;">
+          <span style="font-size:16px;">&#128269;</span> New RCA
+        </button>
+      </div>
+    </div>
+
+    <!-- JHA Completion Counter -->
+    <div class="admin-card">
+      <div class="admin-card-label">JHA Completed Today</div>
+      <div>
+        <span class="admin-completion-num" id="admin-count">4</span>
+        <span class="admin-completion-denom"> / 6 groups</span>
+      </div>
+      <div class="admin-completion-sub">Filter by group, trade, or zone — completion rolls up live.</div>
+    </div>
+
+    <!-- Live Flag -->
+    <div class="admin-flag-card" id="admin-flag-card">
+      <div class="admin-flag-row">
+        <span class="admin-flag-chip">Awaiting Review</span>
+        <span class="admin-flag-time">06:53</span>
+      </div>
+      <div class="admin-flag-title">Fire Protection · JHA Rev 2</div>
+      <div class="admin-flag-sub">Petey revised a hazard control in the field. One tap to approve.</div>
+    </div>
+
+    <!-- Work Groups Section -->
+    <div class="admin-card-label" style="margin-bottom:10px; padding:0 2px;">Customizable Work Groups · JHA Status Today</div>
+
+    <div id="admin-crew-list">
+      <!-- rows injected by JS -->
+    </div>
+  </div>
+</div>

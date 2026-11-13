@@ -1,0 +1,36 @@
+<!-- Top Nav Bar -->
+<div class="top-nav">
+  <div class="top-nav-inner">
+    <div class="top-nav-logo" onclick="showScreen('intake')" style="cursor:pointer;">
+      <div id="logo-nav"></div>
+      <span class="top-nav-logo-text">PreTaskIQ</span>
+      <span class="top-nav-logo-badge">BETA</span>
+    </div>
+    <div class="top-nav-right">
+
+      <!-- Three-way role toggle -->
+      <div class="nav-role-bar">
+        <button class="nav-role-bar-btn active" id="role-btn-foreman" onclick="setRole('foreman')">
+          ⛑ Foreman
+        </button>
+        <button class="nav-role-bar-btn" id="role-btn-safety" onclick="setRole('safety')">
+          🦺 Safety Admin
+        </button>
+        <button class="nav-role-bar-btn" id="role-btn-construction" onclick="setRole('construction')">
+          🏗️ Construction Admin
+        </button>
+      </div>
+
+      <!-- Context menu (shown based on active role) -->
+      <div class="nav-settings-wrap">
+        <button class="nav-settings-btn" id="nav-context-btn" onclick="toggleNavDropdown('context')">
+          ⚙️ <span class="caret">▼</span>
+        </button>
+        <div class="nav-dropdown" id="nav-dropdown-context" style="min-width:300px;">
+          <!-- Populated by setRole() -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

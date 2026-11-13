@@ -1,0 +1,2467 @@
+{
+  "regulatory": [
+    {
+      "id": "REG-OSHA-FALL-001",
+      "source": "OSHA 29 CFR 1926 Subpart M",
+      "title": "Fall Protection",
+      "category": "Fall Prevention",
+      "summary": "OSHA requires fall protection for construction work at elevations of 6 feet or more above a lower level, via guardrails, safety nets, or personal fall arrest systems.",
+      "keyPoints": [
+        "Fall protection (guardrail systems, safety net systems, or personal fall arrest systems) is required for unprotected sides and edges at 6 feet or more (1926.501(b)(1)).",
+        "Personal fall arrest systems must limit maximum arresting force on an employee to 1,800 pounds when used with a body harness, and must be rigged so an employee cannot free fall more than 6 feet or contact a lower level.",
+        "Anchorage points used for fall arrest must be capable of supporting at least 5,000 pounds per employee attached, or be designed and used as part of a complete system maintaining a safety factor of at least two, under the supervision of a qualified person (1926.502(d)(15)).",
+        "Ladders must extend at least 3 feet above the landing surface, and employees must maintain three points of contact.",
+        "Floor holes, openings, and skylights must be guarded or covered regardless of how briefly they are exposed during a shift.",
+        "Aerial lifts and scissor lifts require fall protection appropriate to the equipment per manufacturer instructions and OSHA 1926.453; standing on guardrails or using ladders inside an elevated platform to gain height is prohibited."
+      ],
+      "keywords": [
+        "fall protection",
+        "guardrail",
+        "PFAS",
+        "anchorage",
+        "ladder",
+        "scissor lift",
+        "aerial lift",
+        "elevated work",
+        "6 feet",
+        "fall arrest"
+      ]
+    },
+    {
+      "id": "REG-OSHA-LOTO-002",
+      "source": "OSHA 29 CFR 1926 Subpart K / 1910.147 (construction electrical and general industry LOTO)",
+      "title": "Control of Hazardous Energy (Lockout/Tagout)",
+      "category": "Energy Control",
+      "summary": "OSHA requires de-energization and lockout/tagout of equipment before service or maintenance where unexpected energization, startup, or release of stored energy could cause injury.",
+      "keyPoints": [
+        "Energy-isolating devices must be locked out, with each authorized employee applying a personal lock; a single lock at a panel without individual employee locks does not satisfy the standard for affected employees performing the work.",
+        "After lockout, a zero-energy verification (attempt to operate the equipment) must be performed before work begins.",
+        "Only the employee who applied a lock may remove it, except under a documented procedure when that employee is unavailable, which requires specific employer verification steps.",
+        "Group lockout situations require a procedure (e.g., lock box) affording employees a level of protection equivalent to personal lockout.",
+        "Re-energization requires inspection of the work area, removal of tools, verification all employees are clear, and removal of locks only by the employees who applied them or per the documented exception procedure."
+      ],
+      "keywords": [
+        "LOTO",
+        "lockout",
+        "tagout",
+        "energy isolation",
+        "zero energy verification",
+        "de-energize",
+        "energized equipment"
+      ]
+    },
+    {
+      "id": "REG-OSHA-ELEC-003",
+      "source": "OSHA 29 CFR 1926 Subpart K",
+      "title": "Electrical Safety — Construction",
+      "category": "Electrical Safety",
+      "summary": "OSHA requires electrical equipment and installations to be free from recognized hazards, with specific requirements for grounding, GFCI protection, and work near energized parts.",
+      "keyPoints": [
+        "Ground-fault circuit interrupter (GFCI) protection is required for all 125-volt, single-phase, 15- and 20-ampere receptacle outlets on construction sites that are not part of the permanent wiring (1926.404).",
+        "Employees may not be permitted to work close enough to exposed energized parts to be at risk, unless adequately protected by de-energization, guarding, or insulation.",
+        "Only qualified persons may work on or near exposed energized parts; a qualified person is one who has demonstrated skills and knowledge relating to the construction and operation of the electrical equipment involved.",
+        "Defective electrical equipment or wiring must be removed from service or tagged and not used until repaired."
+      ],
+      "keywords": [
+        "electrical",
+        "GFCI",
+        "qualified person",
+        "energized parts",
+        "grounding",
+        "wiring"
+      ]
+    },
+    {
+      "id": "REG-NFPA-70E-004",
+      "source": "NFPA 70E — Standard for Electrical Safety in the Workplace",
+      "title": "Arc Flash and Electrical Safety Work Practices",
+      "category": "Electrical Safety",
+      "summary": "NFPA 70E governs electrical safety work practices, including arc-flash risk assessment, energized work permits, and PPE categories for work on or near energized electrical equipment.",
+      "keyPoints": [
+        "An arc-flash risk assessment must be performed to determine the likelihood of occurrence of an arc-flash event and the PPE required if exposure cannot be avoided.",
+        "Establishing an electrically safe work condition (de-energizing, verifying absence of voltage with a properly rated tester, and applying LOTO) is required before work, unless energized work is justified through a documented energized electrical work permit.",
+        "Energized work permits require justification for why de-energization is infeasible and must be approved by someone with the authority to authorize the work, separate from the worker performing it.",
+        "Arc-rated PPE must match the incident energy level determined for the specific task and equipment; PPE category tables in NFPA 70E provide standardized minimum requirements by task type.",
+        "Test instruments used to verify absence of voltage must themselves be verified on a known live source immediately before and after testing."
+      ],
+      "keywords": [
+        "arc flash",
+        "NFPA 70E",
+        "energized work permit",
+        "PPE category",
+        "voltage testing",
+        "electrically safe work condition",
+        "incident energy"
+      ]
+    },
+    {
+      "id": "REG-OSHA-PPE-005",
+      "source": "OSHA 29 CFR 1926 Subpart E",
+      "title": "Personal Protective and Lifesaving Equipment",
+      "category": "PPE",
+      "summary": "OSHA requires employers to provide and ensure use of PPE appropriate to the hazards present, including head, eye, foot, and hand protection.",
+      "keyPoints": [
+        "Head protection (hard hats) is required where there is a possible danger of head injury from impact, falling or flying objects, or electrical shock and burns (1926.100).",
+        "Eye and face protection is required where machines or operations present potential eye or face injury from physical, chemical, or radiation hazards.",
+        "Hand protection must be selected based on the specific task hazard (cut resistance, chemical resistance, electrical insulation); general-purpose gloves are not a substitute for task-specific hand protection when a specific hazard is present.",
+        "Foot protection is required in areas where there is danger of foot injuries from falling or rolling objects, or objects piercing the sole.",
+        "Employers must assess the workplace to determine if hazards are present that necessitate PPE use, and select PPE appropriate to those hazards (1926.95)."
+      ],
+      "keywords": [
+        "PPE",
+        "hard hat",
+        "eye protection",
+        "hand protection",
+        "foot protection",
+        "head protection",
+        "hazard assessment"
+      ]
+    },
+    {
+      "id": "REG-OSHA-SCAFF-006",
+      "source": "OSHA 29 CFR 1926 Subpart L",
+      "title": "Scaffolding",
+      "category": "Elevated Work",
+      "summary": "OSHA requires scaffolds to be designed, erected, and used under the supervision of a competent person, with specific load, access, and fall protection requirements.",
+      "keyPoints": [
+        "Scaffolds must be erected, moved, dismantled, or altered only under the supervision and direction of a competent person.",
+        "Scaffolds must support their own weight and at least 4 times the maximum intended load without failure.",
+        "Fall protection (guardrails or personal fall arrest) is required for employees on scaffolds more than 10 feet above a lower level.",
+        "Scaffold platforms must be fully planked or decked, and access must be provided via a ladder, stairway, ramp, or equivalent safe means — climbing cross braces is not permitted as a means of access.",
+        "Scaffolds must be inspected by a competent person before each work shift and after any event that could affect structural integrity."
+      ],
+      "keywords": [
+        "scaffold",
+        "scaffolding",
+        "competent person",
+        "platform",
+        "elevated work",
+        "fall protection"
+      ]
+    },
+    {
+      "id": "REG-OSHA-EXCAV-007",
+      "source": "OSHA 29 CFR 1926 Subpart P",
+      "title": "Excavations",
+      "category": "Excavation & Trenching",
+      "summary": "OSHA requires protective systems for excavations 5 feet or deeper, and daily inspection by a competent person.",
+      "keyPoints": [
+        "Excavations 5 feet or deeper require a protective system (sloping, benching, shoring, or shielding) unless the excavation is made entirely in stable rock.",
+        "A competent person must classify soil type and inspect excavations daily, and after any event that could increase hazards (rainstorm, vibration, etc.), before employees enter.",
+        "Spoil piles and other materials must be kept at least 2 feet from the edge of an excavation.",
+        "A safe means of egress (ladder, ramp, or steps) is required within 25 feet of all employees in excavations 4 feet or deeper.",
+        "Atmospheric testing is required in excavations where a hazardous atmosphere exists or could reasonably be expected to exist."
+      ],
+      "keywords": [
+        "excavation",
+        "trenching",
+        "trench",
+        "shoring",
+        "sloping",
+        "competent person",
+        "spoil pile",
+        "egress"
+      ]
+    },
+    {
+      "id": "REG-OSHA-CRANE-008",
+      "source": "OSHA 29 CFR 1926 Subpart CC",
+      "title": "Cranes and Derricks in Construction",
+      "category": "Crane & Rigging",
+      "summary": "OSHA requires crane operators to be certified/qualified, equipment to be inspected, and a controlled lift zone established for crane operations.",
+      "keyPoints": [
+        "Crane operators must be certified or qualified under a recognized accreditation process for the type and capacity of equipment operated.",
+        "A pre-lift inspection is required before each shift the crane is used, with a more thorough periodic inspection at defined intervals.",
+        "A qualified rigger is required for rigging operations where employees are exposed to the hazards of the rigging.",
+        "Swing radius and lift areas must be barricaded or controlled to keep unauthorized personnel out of the zone of potential hazard.",
+        "Operations near power lines require minimum clearance distances determined by voltage, with specific procedures if work cannot maintain minimum clearance."
+      ],
+      "keywords": [
+        "crane",
+        "rigging",
+        "lift",
+        "hoist",
+        "swing radius",
+        "power lines",
+        "qualified rigger"
+      ]
+    },
+    {
+      "id": "REG-ANSI-A1264-009",
+      "source": "ANSI/ASSP A1264.1",
+      "title": "Walking-Working Surfaces, Slips, Trips, and Falls (Same-Level)",
+      "category": "Fall Prevention",
+      "summary": "ANSI A1264.1 addresses prevention of slip, trip, and fall hazards on walking-working surfaces, complementing OSHA elevated fall protection requirements.",
+      "keyPoints": [
+        "Walking-working surfaces should be kept free of recognized hazards such as debris, spills, and protruding objects that create slip or trip hazards.",
+        "Changes in elevation on walking surfaces (curbs, thresholds, uneven transitions) should be clearly marked or eliminated where practical.",
+        "Adequate lighting should be provided and maintained on all walking-working surfaces used during a work shift.",
+        "Housekeeping standards for cords, hoses, and material storage in walkways should be established and maintained throughout the work period, not only at shift start."
+      ],
+      "keywords": [
+        "slip",
+        "trip",
+        "fall",
+        "walking surface",
+        "housekeeping",
+        "same level fall",
+        "lighting"
+      ]
+    },
+    {
+      "id": "REG-OSHA-HAZCOM-010",
+      "source": "OSHA 29 CFR 1926.59 / 1910.1200",
+      "title": "Hazard Communication",
+      "category": "Chemical Safety",
+      "summary": "OSHA requires labeling of hazardous chemicals, accessible safety data sheets, and employee training on chemical hazards present at the worksite.",
+      "keyPoints": [
+        "Safety data sheets (SDS) must be readily accessible to employees for each hazardous chemical used on site.",
+        "Containers of hazardous chemicals must be labeled with the identity of the chemical and appropriate hazard warnings.",
+        "Employees must be trained on the hazards of chemicals in their work area before initial assignment and when new hazards are introduced.",
+        "A written hazard communication program must be maintained and available at the worksite."
+      ],
+      "keywords": [
+        "hazard communication",
+        "SDS",
+        "safety data sheet",
+        "chemical",
+        "hazcom",
+        "labeling"
+      ]
+    },
+    {
+      "id": "REG-OSHA-CONF-UTIL-011",
+      "standard": "OSHA 29 CFR 1926.1200 / 1910.146",
+      "title": "Confined Space Entry — Utility Manholes and Vaults",
+      "summary": "Utility manholes and underground vaults are permit-required confined spaces. Atmospheric testing, ventilation, an attendant, and a rescue plan are required before anyone enters — regardless of how brief or routine the task.",
+      "keyPoints": [
+        "Utility manholes are permit-required confined spaces — treat every entry as such regardless of task duration.",
+        "Test atmosphere before entry for: oxygen content (19.5-23.5% acceptable), combustible gases (below 10% LEL), and toxic contaminants including hydrogen sulfide and carbon monoxide.",
+        "Ventilate with forced-air blower minimum 5 minutes before entry. Continue ventilation throughout occupancy.",
+        "A trained attendant must remain at the opening in communication with entrants for the entire duration. The attendant cannot enter to perform rescue.",
+        "A rescue plan must be in place before entry — who responds, how they are contacted, how entrant retrieval will be accomplished.",
+        "An entry permit signed by the entry supervisor must be completed before anyone enters."
+      ],
+      "keywords": [
+        "manhole",
+        "vault",
+        "confined space",
+        "underground",
+        "utility entry",
+        "ComEd",
+        "atmospheric testing",
+        "oxygen",
+        "hydrogen sulfide",
+        "attendant",
+        "entry permit",
+        "ventilation",
+        "rescue plan",
+        "sewer",
+        "underground chamber"
+      ]
+    },
+    {
+      "id": "REG-OSHA-UTIL-012",
+      "standard": "OSHA 29 CFR 1926.956 / 1910.269",
+      "title": "Minimum Approach Distances — Aerial Work Near Energized Lines",
+      "summary": "Workers performing aerial work near energized power lines must maintain minimum approach distances based on voltage. Unqualified workers must stay outside the limited approach boundary. Fiber installation near ComEd distribution lines requires utility coordination.",
+      "keyPoints": [
+        "Minimum approach distance for unqualified workers: 10 feet from energized lines up to 50kV.",
+        "Fiber installation workers who are not qualified electrical workers under OSHA 1910.269 may not approach closer than 10 feet to energized conductors.",
+        "When aerial work is performed near energized lines the bucket truck must maintain MAD for all boom positions throughout the work.",
+        "Contact the utility before work: confirm line status, request clearance if work requires closer approach, obtain written authorization before any work within the limited approach boundary.",
+        "A dedicated spotter should monitor clearance distances whenever a bucket or aerial platform operates near energized lines."
+      ],
+      "keywords": [
+        "aerial fiber",
+        "fiber installation",
+        "energized lines",
+        "minimum approach distance",
+        "MAD",
+        "limited approach boundary",
+        "bucket truck",
+        "aerial lift",
+        "ComEd",
+        "distribution lines",
+        "qualified worker",
+        "line clearance",
+        "spotter",
+        "overhead lines",
+        "aerial work"
+      ]
+    },
+    {
+      "id": "REG-OSHA-DD-013",
+      "standard": "OSHA 29 CFR 1926.651 / State 811 Requirements",
+      "title": "Directional Drilling and Underground Utility Work",
+      "summary": "Directional drilling near underground utilities requires 811 notification, potholing to expose utilities within the bore path, and bore path verification before drilling. A utility strike during drilling can cause serious injury, fatality, fire, and service disruption.",
+      "keyPoints": [
+        "Call 811 minimum 3 business days before any ground disturbance. Confirm all utilities have responded before drilling begins.",
+        "811 marks are approximate — within 18-24 inches of center. Hand-expose (pothole) utilities within the bore path before drilling through the marked area.",
+        "Potholing is required when the bore path comes within the tolerance zone of any marked utility. Use vacuum excavation or careful hand digging — never machine excavation — in the tolerance zone.",
+        "If a utility is struck: stop immediately, evacuate the area, call 911 and the utility emergency line. Do not attempt to repair the strike.",
+        "Locate and verify depth of utilities by potholing at each crossing point before the drill head passes under.",
+        "Bore path deviation can occur in variable soil or near obstructions — monitor drill head locator continuously and establish an abort plan if the path deviates toward a utility.",
+        "Inadvertent returns (frac-out) indicate loss of bore path integrity — stop drilling and assess before continuing.",
+        "All personnel must stay clear of the pipe rotation zone during makeup and breakout operations.",
+        "Entry and exit pits are standard excavation hazards — apply depth and soil classification rules to any pit workers will enter."
+      ],
+      "keywords": [
+        "directional drilling",
+        "HDD",
+        "horizontal boring",
+        "underground utilities",
+        "811",
+        "potholing",
+        "utility strike",
+        "bore path",
+        "tolerance zone",
+        "vacuum excavation",
+        "utility locate",
+        "conduit installation",
+        "ground disturbance",
+        "boring"
+      ],
+      "groundDisturbanceHazards": [
+        "Utility strike — HDD rig contacting unmarked or mismarked gas, electric, or telecom line",
+        "Bore path deviation — drill head intersecting a utility clear of the planned path due to soil conditions or obstructions",
+        "Inadvertent returns / frac-out — drilling fluid surfacing unexpectedly through fracture planes in soil",
+        "Ground disturbance near structures — undermining foundations, retaining walls, culverts, or storm sewers",
+        "Spoil management — uncontrolled spoil near roadway or drainage area",
+        "Equipment pinch points and struck-by — pipe string rotation zone, vise and breakout area",
+        "Entry and exit pit excavation hazards — depth, soil stability, egress",
+        "Traffic and site control — crew exposure to vehicles in or near roadways"
+      ]
+    }
+  ],
+  "incidents": [
+    {
+      "id": "INC-243",
+      "stkyCategoryIds": [
+        "STKY-ELEC"
+      ],
+      "title": "LOTO/Energy Incident - Crossed Phase Cables During Load Bank Testing",
+      "date": "2026-02-11",
+      "site": "SBN",
+      "building": "208",
+      "area": "Phase [X] Data Hall",
+      "department": "LOTO / CX",
+      "severity": "Medium",
+      "recordable": false,
+      "classification": "LOTO / Energy Incident",
+      "natureOfAccident": "Electrical Arc Flash Event (no injury)",
+      "equipmentInvolved": "PDC [PDC ID], Load Bank, Breakers Q1/Q2/Q3",
+      "taskPerformed": "Load bank testing of Power Distribution Center (PDC) in a data hall",
+      "whatHappened": "Crew was load bank testing a PDC. During the process of switching the PDC from the load bank to primary power, the A and B phase cables had been crossed when connected. When the breaker was closed to switch to primary, the mismatched phases caused an arc, tripping all three breakers (Q1, Q2, Q3). The PDC was immediately isolated and placed under LOTO. No injuries occurred.",
+      "objectCausingHarm": "Load Bank (mis-phased cabling)",
+      "rootCauses": [
+        {
+          "type": "Equipment/Procedural",
+          "description": "Load bank phases were crossed (A+B) when joined to the PDC. When switching to primary power, mismatched phases caused an arc and breaker trip."
+        },
+        {
+          "type": "Personnel/Human Performance",
+          "description": "Employee was rushing; customer/client was waiting for the crew to switch over to primary power, creating time pressure."
+        }
+      ],
+      "contributingFactors": [
+        "New crew member added to the team the day of the incident",
+        "Time pressure from client waiting on energization",
+        "Single-point verification of cable phasing (no second check)"
+      ],
+      "lessonsLearned": [
+        "Double-check work to ensure phases are connected correctly before energization",
+        "Verify with partner/crew that cables are connected correctly (two-person verification)",
+        "Have foreman perform final verification before re-energization"
+      ],
+      "correctiveActions": [
+        "Implement two-worker verification of load bank cable phasing before any switch-over",
+        "Require foreman sign-off on entire data hall setup before energization",
+        "Add a formal load bank testing checklist to the pre-task process"
+      ],
+      "ppeUsed": [
+        "Gloves",
+        "Safety Glasses",
+        "Hard Hat",
+        "Hi-Vis Vest/Shirt/Coat"
+      ],
+      "relevantTaskKeywords": [
+        "load bank testing",
+        "PDC",
+        "power distribution center",
+        "energization",
+        "primary power switch",
+        "phase verification",
+        "data hall electrical"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "INC-282",
+      "stkyCategoryIds": [
+        "STKY-FALL"
+      ],
+      "title": "Fall From Ladder Following Hand Injury (Loss of Consciousness)",
+      "date": "2026-05-01",
+      "site": "[Site]",
+      "area": "Warehouse",
+      "department": "Warehouse",
+      "severity": "Medium",
+      "recordable": false,
+      "classification": "Injury - Fall from Different Level",
+      "natureOfAccident": "Fall from Different Level",
+      "equipmentInvolved": "4ft platform ladder, 80lb strut material",
+      "taskPerformed": "Securing strut to racking from an elevated surface (working from a platform ladder)",
+      "whatHappened": "Employee was working with a co-worker to secure a piece of 80lb strut to racking from a 4ft platform ladder. As the co-worker began attaching the strut, the end the employee was holding slipped and fell onto the employee's hand. Moments later, the employee lost consciousness and fell from the ladder, striking their head on the concrete floor. The employee was unresponsive when the co-worker checked on them; EMS was called and employee was transported to a hospital for evaluation (x-ray of hand, CT scan of head/neck/spine).",
+      "injuries": "Bruise to hand; bruise/hematoma to head from fall",
+      "objectCausingHarm": "80lb strut (struck hand); concrete floor (head impact from fall)",
+      "rootCauses": [
+        {
+          "type": "PPE/Head Protection",
+          "description": "Employee was wearing a bump cap rather than a hard hat at the time of the fall."
+        },
+        {
+          "type": "Work Positioning",
+          "description": "Material handling of a heavy (80lb) component was conducted from an elevated, unstable working position (platform ladder) without an alternate means of support or material handling aid."
+        }
+      ],
+      "contributingFactors": [
+        "Heavy material (80lb) handled by hand while standing on a ladder",
+        "No fall-arrest or additional stabilization for ladder work",
+        "Loss of consciousness following impact (possible secondary injury mechanism)"
+      ],
+      "lessonsLearned": [
+        "Working from ladders with heavy overhead/elevated materials creates compounding fall risk if a hand or grip injury occurs",
+        "Hard hat (not bump cap) should be required PPE when working at elevation with overhead material handling",
+        "A momentary hand injury can cascade into a fall event — plan for secondary consequences, not just the primary task hazard"
+      ],
+      "correctiveActions": [
+        "Require hard hats (not bump caps) for elevated work involving material handling",
+        "Use mechanical lifting aids or a second elevated work platform for handling materials over 50lb from a ladder",
+        "Reinforce ladder stabilization and three-point-contact procedures during material transfer tasks"
+      ],
+      "ppeUsed": [
+        "Gloves",
+        "Safety Glasses",
+        "Steel Toe Boots",
+        "Hi-Vis Vest/Shirt/Coat",
+        "Hard Hat (bump cap worn instead)"
+      ],
+      "relevantTaskKeywords": [
+        "ladder work",
+        "material handling",
+        "elevated work",
+        "strut installation",
+        "racking",
+        "overhead material",
+        "fall hazard"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "INC-270",
+      "stkyCategoryIds": [
+        "STKY-ELEC"
+      ],
+      "title": "Near Miss — Open/Uncovered Energized Transformer Panel",
+      "date": "2026-03-25",
+      "site": "SBN",
+      "building": "206",
+      "area": "Phase 3",
+      "department": "Field Operations",
+      "severity": "High",
+      "recordable": false,
+      "classification": "Near Miss",
+      "natureOfAccident": "Near Miss - Energized Equipment Exposure",
+      "equipmentInvolved": "Transformer CPP-XFMR-1.2B, MSDB 1.2 breaker",
+      "taskPerformed": "Routine walk-through / area familiarity inspection",
+      "whatHappened": "An individual walking through a work area noticed a missing protective cover on a transformer. Recognizing this as abnormal, they stopped to investigate and discovered the associated breaker was in the closed (energized) position — meaning the equipment was energized with no protective cover in place. The individual immediately notified the LOTO team. The breaker was promptly opened and placed in a safe state. When questioned, it was revealed that leaving covers off energized equipment until QA/QC inspection was a common (undocumented/accepted) practice on site.",
+      "objectCausingHarm": "Energized transformer panel with missing cover (no contact occurred)",
+      "rootCauses": [
+        {
+          "type": "Procedural / Normalized Deviation",
+          "description": "It was treated as common, accepted practice to leave protective covers off energized equipment until QA/QC inspection — a practice that left live, uncovered electrical equipment accessible."
+        },
+        {
+          "type": "Other - Communication Gap",
+          "description": "No process existed to flag or barricade equipment in this 'awaiting QA/QC' state to warn personnel it was energized."
+        }
+      ],
+      "contributingFactors": [
+        "Informal/unofficial practice not captured in any written procedure",
+        "No barricading or signage indicating equipment was energized despite the missing cover",
+        "Identified only by chance due to one individual's site familiarity, not by a system control"
+      ],
+      "lessonsLearned": [
+        "Informal site 'common practices' that bypass standard LOTO/cover procedures are a serious latent hazard — they often go unnoticed until a near miss occurs",
+        "Equipment awaiting QA/QC inspection should never be left both uncovered AND energized simultaneously",
+        "Worker situational awareness and willingness to stop and investigate prevented a potential serious injury"
+      ],
+      "correctiveActions": [
+        "Eliminate the practice of leaving covers off energized equipment under any circumstance",
+        "If covers must be removed for QA/QC, de-energize and LOTO the equipment first",
+        "Implement signage/barricading requirements for any equipment in a temporarily open or inspection-pending state",
+        "Reinforce stop-work authority and recognition training for abnormal equipment conditions"
+      ],
+      "ppeUsed": [
+        "Safety Glasses",
+        "Hard Hat",
+        "Gloves",
+        "Hi-Vis Vest/Shirt/Coat"
+      ],
+      "relevantTaskKeywords": [
+        "transformer",
+        "energized equipment",
+        "LOTO",
+        "panel cover",
+        "QA/QC inspection",
+        "electrical safety",
+        "near miss",
+        "walk-through inspection"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "INC-269",
+      "stkyCategoryIds": [
+        "STKY-DROP"
+      ],
+      "title": "Finger Amputation — Transformer Panel Dropped During Rework",
+      "date": "2026-03-25",
+      "site": "[Site]",
+      "area": "[Site]",
+      "department": "Field Operations",
+      "severity": "High",
+      "recordable": true,
+      "classification": "Injury - Cut by Handled Object",
+      "natureOfAccident": "Cut by Handled Object",
+      "equipmentInvolved": "Transformer panel (EY02-XFMR-09)",
+      "taskPerformed": "Removing/repositioning a transformer access panel to reach a pin connector for rework",
+      "whatHappened": "Employee removed two middle mounting bolts from a transformer panel to gain partial access to a pin connector. The employee then lifted the panel from the bottom in an outward and upward motion, expecting the three upper bolts to hold the panel's weight as they had on several previous, similar panels. However, the upper bolts had not been reinstalled after previous work on this specific panel. The panel fell unexpectedly, catching the employee's fingers between the heavy panel and the concrete floor. The employee suffered an amputation of the index finger at the second knuckle and an avulsion injury to the middle finger.",
+      "injuries": "Amputation, finger (second knuckle); Avulsion injury, adjacent finger",
+      "objectCausingHarm": "Transformer panel (unsupported, fell on hand)",
+      "rootCauses": [
+        {
+          "type": "Equipment - Incomplete Prior Work",
+          "description": "Upper mounting bolts on the panel had not been reinstalled following previous work, but this was not flagged, documented, or visible to the employee performing the next task."
+        },
+        {
+          "type": "Personnel - Assumption Based on Pattern",
+          "description": "Employee assumed normal panel behavior (upper bolts holding weight) based on having performed the same task on multiple other panels, without verifying this specific panel's bolt condition first."
+        }
+      ],
+      "contributingFactors": [
+        "A pattern of recently identified bolt-stripping issues with this panel type was already known to a related trade (reported separately) but had not been cross-communicated",
+        "Subsequent inspection found at least one additional transformer with the same missing-bolt condition",
+        "No requirement to verify fastener integrity before assuming a panel could bear its own weight",
+        "Employee was not wearing gloves due to anticipated dexterity work, removing a layer of incidental hand protection"
+      ],
+      "lessonsLearned": [
+        "Never assume a panel or component is fully secured based on past experience with similar units — verify fastener condition before applying load or leverage",
+        "Incomplete-work conditions (e.g., bolts not reinstalled) must be flagged/tagged immediately, even if the next task on that equipment isn't scheduled right away",
+        "Cross-trade communication about known equipment issues (e.g., bolt stripping) needs a formal channel, not informal conversation",
+        "Repetition of a task across many similar units can create false confidence that skips a verification step"
+      ],
+      "correctiveActions": [
+        "Tag/label any equipment with incomplete fastening or hardware issues immediately upon discovery",
+        "Inspect all bolts/fasteners for presence and tightness before assuming structural support during panel removal",
+        "Conduct a site-wide inspection of similar equipment for the same deficiency before further work begins",
+        "Formalize a cross-trade hazard communication process for known equipment defects"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Steel Toe Boots",
+        "Hi-Vis Vest/Shirt/Coat",
+        "Safety Glasses (gloves NOT worn — contributing factor)"
+      ],
+      "relevantTaskKeywords": [
+        "transformer panel",
+        "rework",
+        "pin connector",
+        "panel removal",
+        "bolted access panel",
+        "pinch point",
+        "struck-by",
+        "fastener verification"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "INC-277",
+      "title": "Pinch Point Injury — Finger Laceration Moving Unistrut Rack",
+      "date": "2026-04-20",
+      "site": "[Site]",
+      "area": "Logistics Laydown",
+      "department": "Warehouse",
+      "severity": "High",
+      "recordable": true,
+      "classification": "Injury, Pinch Point",
+      "natureOfAccident": "Pinch Point",
+      "equipmentInvolved": "Unistrut rack, fabrication table",
+      "taskPerformed": "Two-person move of a Unistrut rack onto a fabrication table for rework",
+      "whatHappened": "Two employees were moving a lightweight Unistrut rack structure, positioning it onto a fabrication table for rework. One employee pulled the rack to reposition it on the table, not realizing the other employee's hand was positioned in a pinch point between the rack and the table structure. The second employee's finger was caught and sustained a small laceration below the first knuckle on the palm side.",
+      "injuries": "Small laceration/tear to finger, palm side below first knuckle",
+      "objectCausingHarm": "Unistrut rack structure (pinch point against fab table)",
+      "rootCauses": [
+        {
+          "type": "Communication / Coordination",
+          "description": "The two employees moving the shared load did not verbally coordinate hand positions before one repositioned the structure, so the mover was unaware the second employee's hand was in a pinch point."
+        },
+        {
+          "type": "Hazard Recognition",
+          "description": "Pinch point hazards in multi-person material handling of rigid framed structures were not explicitly called out in the pre-task planning for this activity."
+        }
+      ],
+      "contributingFactors": [
+        "Routine, frequently repeated task (perceived as low-risk) may have reduced hazard vigilance",
+        "No designated 'lead' calling movements during the two-person lift/reposition"
+      ],
+      "lessonsLearned": [
+        "Two-person material handling of rigid/framed structures needs explicit pinch-point hazard discussion, even for routine tasks",
+        "A simple verbal count or signal before repositioning shared loads prevents hand-placement surprises",
+        "Frequently repeated tasks can lose hazard scrutiny over time — familiarity is itself a risk factor"
+      ],
+      "correctiveActions": [
+        "Require verbal coordination (e.g., 'ready, moving') between team members before repositioning shared rigid loads",
+        "Add pinch-point hazard and hand placement awareness to pre-task plans for multi-person material handling",
+        "Designate a lead/caller for any two-person lift or reposition of framed structures"
+      ],
+      "ppeUsed": [],
+      "relevantTaskKeywords": [
+        "material handling",
+        "two-person lift",
+        "unistrut",
+        "fabrication table",
+        "pinch point",
+        "rack repositioning"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "FIC-INC-101",
+      "stkyCategoryIds": [
+        "STKY-TRENCH"
+      ],
+      "fictional": true,
+      "title": "Trench Wall Collapse During Utility Tie-In",
+      "date": "2026-04-08",
+      "site": "Demo Site A",
+      "area": "Utility trench, east yard",
+      "department": "Underground Utilities",
+      "severity": "High",
+      "recordable": true,
+      "classification": "Excavation / Cave-In",
+      "natureOfAccident": "Trench Wall Collapse",
+      "equipmentInvolved": "Mini excavator, trench box (not yet deployed)",
+      "taskPerformed": "Tying in a water service line inside an open utility trench approximately 6 feet deep",
+      "whatHappened": "Crew had been excavating a utility trench over two days, with depth gradually increasing to roughly 6 feet by the time work shifted to the tie-in itself. A trench box was on site but had not yet been placed because the crew judged the soil 'looked stable.' While a worker was inside the trench making the connection, a section of the trench wall sloughed off, partially burying the worker from the waist down. The crew immediately stopped work, called for help, and worked to clear material away from the worker by hand while waiting for the rescue team. The worker was extracted with leg injuries and transported for treatment; no loss of life occurred.",
+      "objectCausingHarm": "Collapsed trench wall material",
+      "rootCauses": [
+        {
+          "type": "Procedural / Normalized Deviation",
+          "description": "Protective system (trench box) was on site but not deployed because the crew made an informal, untrained visual judgment that the soil was stable, rather than following a documented competent-person soil classification."
+        },
+        {
+          "type": "Supervision Gap",
+          "description": "No competent person had inspected the trench that morning or after depth increased past the 5-foot protective-system threshold."
+        }
+      ],
+      "contributingFactors": [
+        "Trench depth increased incrementally over two days without a corresponding re-inspection trigger",
+        "Protective equipment was present on site but treated as optional rather than required at the depth involved",
+        "No daily trench inspection documentation in place"
+      ],
+      "lessonsLearned": [
+        "Visual soil judgment by an untrained crew member is not a substitute for a documented competent-person classification",
+        "Protective systems must be deployed based on depth thresholds, not subjective comfort with how the soil looks",
+        "Incremental depth changes need the same inspection rigor as a trench excavated to full depth on day one"
+      ],
+      "correctiveActions": [
+        "Require trench box or equivalent protective system deployment at 5 feet of depth without exception",
+        "Require and document daily competent-person trench inspections before each entry",
+        "Reinforce that protective equipment present on site is not optional once a depth threshold is reached"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses",
+        "Hi-Vis Vest",
+        "Steel Toe Boots"
+      ],
+      "relevantTaskKeywords": [
+        "trench",
+        "excavation",
+        "utility tie-in",
+        "trench box",
+        "cave-in",
+        "soil classification",
+        "underground utilities"
+      ]
+    },
+    {
+      "id": "FIC-INC-102",
+      "stkyCategoryIds": [
+        "STKY-STRUCK"
+      ],
+      "fictional": true,
+      "title": "Struck-By Incident — Backing Skid Steer in Active Laydown Yard",
+      "date": "2026-05-14",
+      "site": "Demo Site B",
+      "area": "Material laydown yard",
+      "department": "Site Logistics",
+      "severity": "High",
+      "recordable": true,
+      "classification": "Struck-By / Mobile Equipment",
+      "natureOfAccident": "Struck By Mobile Equipment",
+      "equipmentInvolved": "Skid steer loader",
+      "taskPerformed": "Repositioning palletized material within an active laydown yard shared by foot traffic and equipment",
+      "whatHappened": "An operator was repositioning a skid steer loader in reverse to access a different stack of material. The yard did not have a designated, physically separated pedestrian path, so foot traffic routinely crossed through the same area equipment used. A worker walking between material stacks entered the operator's blind spot from the rear quarter just as the skid steer began reversing. The operator, relying on a backup alarm rather than a spotter, did not see the worker in time. The worker was struck and knocked down, sustaining a leg injury, and was transported for medical evaluation.",
+      "objectCausingHarm": "Skid steer loader (rear quarter, reversing)",
+      "rootCauses": [
+        {
+          "type": "Site Layout / Engineering Control Gap",
+          "description": "No physically separated pedestrian path existed in a yard with regular mixed foot and equipment traffic."
+        },
+        {
+          "type": "Procedural",
+          "description": "Reversing movements in the active yard relied solely on the backup alarm rather than a required spotter for blind-spot conditions."
+        }
+      ],
+      "contributingFactors": [
+        "High material density in the yard created multiple blind corners for both the operator and pedestrians",
+        "No yard traffic plan or marked pedestrian routes had been established for the site",
+        "Backup alarm alone does not address blind-spot exposure for someone already in close proximity when reversing begins"
+      ],
+      "lessonsLearned": [
+        "Backup alarms alert people who can hear and react in time; they don't address someone already in a blind spot at the moment reversing begins",
+        "Mixed pedestrian and equipment traffic in a busy yard needs a physical separation plan, not just operator awareness",
+        "Spotters should be required for reversing in yards with stacked material and known blind corners, not left to operator discretion"
+      ],
+      "correctiveActions": [
+        "Establish and mark a physically separated pedestrian path through the laydown yard",
+        "Require a spotter for any reversing movement in zones with active foot traffic and limited sightlines",
+        "Review and reduce material stacking patterns that create blind corners near travel paths"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses",
+        "Hi-Vis Vest",
+        "Steel Toe Boots"
+      ],
+      "relevantTaskKeywords": [
+        "skid steer",
+        "mobile equipment",
+        "struck-by",
+        "laydown yard",
+        "spotter",
+        "backup alarm",
+        "pedestrian traffic",
+        "blind spot"
+      ]
+    },
+    {
+      "id": "FIC-INC-103",
+      "fictional": true,
+      "title": "Heat Exhaustion During Mid-Summer Roofing Work",
+      "date": "2026-07-22",
+      "site": "Demo Site C",
+      "area": "Roof deck, Building 4",
+      "department": "Roofing Crew",
+      "severity": "Medium",
+      "recordable": false,
+      "classification": "Heat-Related Illness",
+      "natureOfAccident": "Heat Exhaustion",
+      "equipmentInvolved": "N/A",
+      "taskPerformed": "Installing roofing membrane on an exposed flat roof deck during a high-heat afternoon",
+      "whatHappened": "A crew member working on membrane installation began showing signs of heat exhaustion mid-afternoon (heavy sweating, dizziness, nausea) after several hours of direct sun exposure with limited shade access on the roof deck. The crew had a water cooler available but no formal rest-shade-water rotation schedule, and the affected worker had continued working through early symptoms rather than stopping, not wanting to slow the crew down. A coworker noticed the worker stumble and alerted the foreman, who moved the worker to shade, provided water, and called for medical evaluation. The worker recovered with rest and fluids and did not require hospitalization.",
+      "objectCausingHarm": "Environmental heat exposure",
+      "rootCauses": [
+        {
+          "type": "Procedural Gap",
+          "description": "No formal heat illness prevention plan (scheduled rest/shade/water breaks) was in place for high-heat-index conditions on an exposed roof deck."
+        },
+        {
+          "type": "Human Performance / Culture",
+          "description": "Worker continued working through early symptoms due to perceived pressure not to slow down the crew, rather than self-reporting early signs of heat stress."
+        }
+      ],
+      "contributingFactors": [
+        "Limited shade structures available on the roof deck",
+        "No acclimatization protocol for crew members new to high-heat roof work that season",
+        "Early symptoms of heat illness were not recognized or self-reported promptly"
+      ],
+      "lessonsLearned": [
+        "A water cooler alone is not a heat illness prevention plan — scheduled rest and shade breaks matter as much as hydration",
+        "Crews need explicit permission and expectation to stop at early heat-stress symptoms without feeling they're letting the team down",
+        "Acclimatization matters: workers new to high-heat conditions need a gradual ramp-up, not full-intensity work on day one of a heat wave"
+      ],
+      "correctiveActions": [
+        "Implement a documented heat illness prevention plan with scheduled rest/shade/water breaks tied to heat index thresholds",
+        "Train crews and foremen to recognize early heat illness symptoms and to treat stopping as the expected, supported response",
+        "Provide portable shade structures for exposed roof and slab work during high-heat months"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses",
+        "Hi-Vis Vest"
+      ],
+      "relevantTaskKeywords": [
+        "heat illness",
+        "heat exhaustion",
+        "roofing",
+        "hot weather",
+        "hydration",
+        "shade breaks",
+        "acclimatization",
+        "exposed work"
+      ]
+    },
+    {
+      "id": "FIC-INC-104",
+      "fictional": true,
+      "title": "Silica Dust Exposure During Concrete Cutting Without Local Exhaust",
+      "date": "2026-03-11",
+      "site": "Demo Site A",
+      "area": "Interior slab, Building 2",
+      "department": "Concrete Crew",
+      "severity": "Medium",
+      "recordable": false,
+      "classification": "Occupational Exposure",
+      "natureOfAccident": "Respiratory Hazard Exposure",
+      "equipmentInvolved": "Handheld concrete saw (dry-cut, no water suppression or vacuum attachment)",
+      "taskPerformed": "Cutting concrete slab penetrations using a handheld saw in an enclosed interior space",
+      "whatHappened": "A crew member used a handheld concrete saw to cut several slab penetrations in an interior space with limited ventilation. The saw's water suppression line was not connected, and no vacuum dust-collection attachment was used, citing the work being 'just a few quick cuts.' Visible dust accumulated in the work area over the course of the task. A safety walkthrough later in the shift identified the condition; the affected worker had not been using a properly fitted respirator for the dry-cutting method used, only a basic dust mask. No acute symptoms were reported, but the exposure was logged due to known long-term silica exposure risk from uncontrolled dry-cutting of concrete.",
+      "objectCausingHarm": "Airborne respirable crystalline silica dust",
+      "rootCauses": [
+        {
+          "type": "Procedural / Engineering Control Bypass",
+          "description": "Required dust control method (water suppression or vacuum dust collection) for the cutting method used was not engaged, based on an informal judgment that a short task didn't warrant it."
+        },
+        {
+          "type": "PPE Selection Gap",
+          "description": "A basic dust mask was used instead of the respirator type required for uncontrolled dry-cutting of concrete."
+        }
+      ],
+      "contributingFactors": [
+        "Task was perceived as too short to justify full dust control setup",
+        "Enclosed interior space concentrated airborne dust rather than allowing it to disperse",
+        "Respirator selection had not been matched to the specific dry-cutting exposure scenario"
+      ],
+      "lessonsLearned": [
+        "Dust control methods (water suppression, vacuum dust collection) are tied to the cutting method and material, not to how long the task is expected to take",
+        "A basic dust mask is not equivalent to a properly selected respirator for uncontrolled silica-generating tasks",
+        "Enclosed spaces concentrate airborne hazards faster than open-air work, and should raise the bar for control measures, not lower it"
+      ],
+      "correctiveActions": [
+        "Require water suppression or vacuum dust collection for all concrete cutting regardless of task duration",
+        "Match respirator selection to the specific task and exposure method before work begins, not after the fact",
+        "Increase ventilation or restrict dry-cutting methods in enclosed interior spaces"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses",
+        "Hearing Protection",
+        "Dust Mask (inadequate for task — contributing factor)"
+      ],
+      "relevantTaskKeywords": [
+        "silica",
+        "concrete cutting",
+        "dust control",
+        "respirator",
+        "respiratory protection",
+        "water suppression",
+        "vacuum dust collection",
+        "enclosed space"
+      ]
+    },
+    {
+      "id": "FIC-INC-105",
+      "fictional": true,
+      "title": "Vehicle Backing Incident in Active Construction Entrance",
+      "date": "2026-06-02",
+      "site": "Demo Site D",
+      "area": "Site entrance / delivery staging",
+      "department": "Site Logistics",
+      "severity": "Medium",
+      "recordable": false,
+      "classification": "Vehicle Incident",
+      "natureOfAccident": "Vehicle-to-Structure Contact",
+      "equipmentInvolved": "Delivery flatbed truck",
+      "taskPerformed": "Backing a delivery truck into a staging area near the site entrance to unload materials",
+      "whatHappened": "A delivery driver, unfamiliar with the site's layout, began backing a flatbed truck into the staging area without a spotter, relying on mirrors alone. The site entrance had a temporary site office trailer positioned closer to the staging lane than the original site plan indicated, following a recent layout change that had not been communicated to frequent delivery vendors. The truck's rear corner contacted the trailer, causing structural damage to the trailer's corner and minor damage to the truck. No injuries occurred, as no personnel were in the immediate path, but the incident was treated as a near-miss for a struck-by scenario given foot traffic patterns near the entrance at shift change.",
+      "objectCausingHarm": "Delivery truck contact with site office trailer",
+      "rootCauses": [
+        {
+          "type": "Communication Gap",
+          "description": "A recent site layout change affecting the staging lane clearance had not been communicated to delivery vendors who regularly accessed the site."
+        },
+        {
+          "type": "Procedural",
+          "description": "No spotter was used for a backing maneuver in a congested entrance area with recent layout changes and known pedestrian traffic at shift change."
+        }
+      ],
+      "contributingFactors": [
+        "Driver was unfamiliar with the current site layout following the recent change",
+        "No signage or spotter requirement was posted for the staging lane",
+        "Incident occurred near shift change, a period of increased pedestrian activity at the entrance"
+      ],
+      "lessonsLearned": [
+        "Site layout changes need a communication path to recurring vendors and delivery drivers, not just internal crews",
+        "Backing maneuvers in congested or recently changed areas warrant a spotter requirement regardless of how familiar the driver believes they are with the site",
+        "High pedestrian traffic periods like shift change increase the consequence of vehicle incidents even when the immediate event is property damage only"
+      ],
+      "correctiveActions": [
+        "Establish a communication process for site layout changes that includes regular delivery vendors",
+        "Post spotter-required signage at the site entrance and staging lane",
+        "Avoid scheduling large vehicle deliveries during shift-change windows where feasible"
+      ],
+      "ppeUsed": [
+        "Hi-Vis Vest"
+      ],
+      "relevantTaskKeywords": [
+        "vehicle incident",
+        "delivery truck",
+        "backing",
+        "spotter",
+        "site entrance",
+        "staging area",
+        "site layout",
+        "shift change"
+      ]
+    },
+    {
+      "id": "INC-301",
+      "stkyCategoryIds": [
+        "STKY-ELEC"
+      ],
+      "fictional": false,
+      "title": "LOTO Violation — Labeling Work on Potentially Energized Panel Without Individual Locks",
+      "date": "2025-08-21",
+      "site": "[REDACTED]",
+      "area": "Electrical room / switchgear skid area",
+      "department": "Electrical",
+      "severity": "High",
+      "recordable": false,
+      "classification": "LOTO / Energy Incident",
+      "natureOfAccident": "LOTO Procedure Violation — Near Miss",
+      "equipmentInvolved": "Electrical switchgear skid, dead front panel, panel enclosure",
+      "taskPerformed": "Affixing labels to breakers and conductors on an electrical panel scheduled for first-time energization",
+      "whatHappened": "An electrical crew was working on a switchgear skid putting labels on breakers and conductors inside a panel enclosure. The crew foreman had called off sick that day; an experienced journeyman stepped into the lead role. The crew completed a pre-task plan prior to starting, but the plan did not adequately identify the hazards or mitigation strategy for the labeling task. The panel had been locked out upstream, but individual user locks were not in place — only a panel-level lockout existed. The panel door was open and the crew was working in proximity to the dead front with potential for energization present, as the wires were terminated and a first-time energization was pending. A site superintendent approached the crew and asked where they were locked out. The crew was unable to answer. The superintendent stopped work and escalated the issue. The site energy coordinator was offsite conducting LOTO training at the time of the incident and was therefore unavailable to answer questions or provide direction. Retraining was conducted the same morning and the crew was released to resume activities after approximately 3 hours.",
+      "objectCausingHarm": "Potential exposure to energized equipment (no contact occurred — near miss)",
+      "rootCauses": [
+        {
+          "type": "Situational Awareness / Knowledge Gap",
+          "description": "The employee performing the work had not received clear reinforcement on how to make LOTO determinations for this specific activity. It was not clear to the crew whether the labeling task required individual user locks given the existing upstream lockout."
+        },
+        {
+          "type": "Out-of-Sequence Procedure / Procedural Failure",
+          "description": "The standard procedure called for labeling panels and feeder wires during installation. Labeling was deferred and performed after the equipment was closed up, requiring the panel to be reopened — creating an exposure that the original procedure would have avoided. This out-of-sequence execution was a root cause of the hazardous condition."
+        }
+      ],
+      "contributingFactors": [
+        "Crew foreman was absent due to illness; leadership role assumed by journeyman without clear briefing on expectations for the day",
+        "Site LOTO coordinator was offsite conducting training and unavailable to answer LOTO questions from the crew",
+        "Pre-task plan was completed but did not adequately address LOTO requirements for the labeling task — LOTO checkbox was checked but specific steps and individual lock requirements were not documented",
+        "Panel-level lockout was present upstream but individual user locks were not applied by each exposed employee",
+        "Crew members were unsure whether LOTO was required for their specific task and did not stop to verify before proceeding"
+      ],
+      "lessonsLearned": [
+        "A panel-level upstream lockout does not satisfy individual employee LOTO requirements — each employee exposed to a potential hazard must have their own personal lock applied",
+        "Pre-task plans must specifically address LOTO requirements for the task, not merely check a box indicating electrical hazards are present",
+        "Labeling of conductors and panels should be completed during installation, not deferred — deferred labeling requires reopening equipment that may be scheduled for energization, creating unnecessary exposure",
+        "Asking questions before proceeding when LOTO status is unclear is the correct behavior and should be reinforced as an expectation, not treated as a sign of incompetence",
+        "When the foreman is absent, expectations for LOTO and hazard recognition must be re-briefed by whoever assumes the lead role — a prior briefing to the absent foreman does not transfer automatically"
+      ],
+      "correctiveActions": [
+        "Retrain all relevant electrical crew members on LOTO requirements, specifically individual lock application requirements for exposed employees",
+        "Revise pre-task plan requirements to include explicit LOTO steps as a required line item, not a checkbox",
+        "Incorporate pre-task plan quality review into safety orientation and foreman onboarding",
+        "Reinforce stop-work authority for all crew members, specifically in the context of LOTO uncertainty",
+        "Review procedure sequencing to ensure conductor and panel labeling occurs during installation, before equipment closeout",
+        "Reevaluate LOTO coordinator role and availability requirements to ensure crew can access LOTO guidance during active work periods"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses",
+        "Voltage-Rated Gloves (not confirmed in use at time of incident)"
+      ],
+      "relevantTaskKeywords": [
+        "LOTO",
+        "lockout",
+        "tagout",
+        "labeling",
+        "panel",
+        "energized equipment",
+        "dead front",
+        "individual locks",
+        "pre-task plan",
+        "first-time energization",
+        "electrical"
+      ]
+    },
+    {
+      "id": "INC-302",
+      "fictional": false,
+      "title": "Finger Fracture — Overloaded Job Box Rolled Over Employee's Hand During Unstrapping",
+      "date": "2025-12-02",
+      "site": "[REDACTED]",
+      "area": "Laydown staging area / delivery receiving",
+      "department": "Warehouse / Site Logistics",
+      "severity": "High",
+      "recordable": true,
+      "classification": "Pinch Point / Crush Injury — Material Handling",
+      "natureOfAccident": "Crush/Pinch Point — Stored Energy Release",
+      "equipmentInvolved": "Wheeled job box (Knaack-style), ratchet straps, delivery truck",
+      "taskPerformed": "Unstrapping and unloading a wheeled job box from a delivery truck at a site staging area",
+      "whatHappened": "A delivery driver arrived at the site staging area to deliver a wheeled job box loaded with electrical lugs. The box was significantly overloaded — total weight approximately 3,119 lbs against a rated capacity of 2,950 lbs. During transport, the load had shifted, placing additional tension on the ratchet straps securing the box. The employee was alone in the truck while unstrapping the box. While releasing a ratchet strap from around the wheel area, the weight of the overloaded box shifted and the box rolled over the employee's left pinky and ring fingers, causing a fracture and laceration to the pinky. The employee immediately reported to the safety trailer. Medical evaluation confirmed a fracture requiring emergency room treatment.",
+      "objectCausingHarm": "Overloaded wheeled job box rolling over employee's hand when ratchet strap tension was released",
+      "rootCauses": [
+        {
+          "type": "Overloaded Equipment / Weight Limit Exceeded",
+          "description": "The job box was loaded to 3,119 lbs, exceeding the rated capacity of 2,950 lbs. An overloaded container has greater inertia and is more likely to shift or roll when restraint is released."
+        },
+        {
+          "type": "Absence of Secondary Restraint / Wheel Chocking",
+          "description": "No wheel chocks or secondary means of securing the box against rolling were used during the unstrapping process. Releasing ratchet strap tension while the box was on an unrestrained wheeled platform allowed the box to roll when tension was released."
+        },
+        {
+          "type": "Line-of-Fire / Hand Placement Awareness",
+          "description": "The employee was not aware of the position of their hand relative to the path the box could travel when the strap tension was released. Hand placement in the line of potential movement was a contributing factor."
+        },
+        {
+          "type": "Pre-Task Plan Deficiency",
+          "description": "The pre-task plan for the delivery and unloading task was not specific enough to address the hazards of unstrapping wheeled material under tension, weight limits for transport containers, or hand placement requirements during unloading."
+        }
+      ],
+      "contributingFactors": [
+        "Load request from site did not specify delivery quantity limits — request for 'all available' material resulted in a single, severely overloaded container",
+        "Box was positioned over the axles due to weight, too far forward for available material-handling equipment to safely reach",
+        "Employee was working alone during the unstrapping process with no second person to stabilize the box or monitor hand placement",
+        "Ratchet straps were used incorrectly — wrapped around the wheels in a manner that, when released, contributed to load shift",
+        "Material was packaged in bulk without evaluation of transport weight limits"
+      ],
+      "lessonsLearned": [
+        "Wheeled items on delivery trucks must be chocked before any ratchet straps are released — wheel chocks prevent roll when tension is removed",
+        "Hand placement must be consciously evaluated before releasing any stored energy (ratchet straps, tie-downs, compressed springs) — the hand must be clear of the path any load could travel if it shifts",
+        "Transport container weight limits are hard limits, not guidelines — an overloaded container should not leave a warehouse regardless of how the overload occurred",
+        "Material orders should specify delivery in manageable quantities; 'all available' without a weight or quantity limit is not a safe delivery instruction",
+        "Pre-task plans for shipping, receiving, and delivery tasks must specifically address load weight, equipment capacity, wheel chocking, and hand placement — generic lifting hazards are not a substitute for task-specific unloading hazards"
+      ],
+      "correctiveActions": [
+        "Add wheel chocks to all delivery vehicles for use with wheeled material during unstrapping",
+        "Implement a requirement to chock wheeled items before releasing any securing straps during delivery and unloading",
+        "Revise pre-task plans for shipping and receiving activities to include load weight verification, container capacity check, wheel chocking requirement, and hand placement awareness",
+        "Designate a competent person at the warehouse to inspect and approve all outbound loads before departure",
+        "Require material orders to specify quantity limits; prohibit bulk 'send all available' requests without weight verification",
+        "Procure and mandate impact-rated, cut-resistant hand protection for all employees engaged in loading and unloading activities",
+        "Establish communication between site and warehouse on load specifications before dispatch, not after arrival"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses",
+        "Hi-Vis Vest",
+        "Standard Gloves (impact-rated gloves not in use at time of incident — contributing factor)"
+      ],
+      "relevantTaskKeywords": [
+        "material delivery",
+        "job box",
+        "Knaack",
+        "ratchet strap",
+        "unloading",
+        "pinch point",
+        "crush injury",
+        "wheel chock",
+        "stored energy",
+        "hand placement",
+        "line of fire",
+        "overloaded",
+        "shipping and receiving"
+      ]
+    },
+    {
+      "id": "INC-303",
+      "fictional": false,
+      "title": "Back Strain — Employee Lifting Tap Box onto Scissor Lift Without Assistance",
+      "date": "2024-11-02",
+      "site": "[REDACTED]",
+      "area": "Active work area",
+      "department": "Electrical",
+      "severity": "Medium",
+      "recordable": false,
+      "classification": "Ergonomic Injury / Overexertion",
+      "natureOfAccident": "Strain — Back Injury During Manual Lift",
+      "equipmentInvolved": "Tap box, scissor lift, material cart",
+      "taskPerformed": "Lifting a tap box from a material cart onto a scissor lift for installation",
+      "whatHappened": "An employee was lifting a tap box from a material cart onto a scissor lift platform for installation. While performing the lift, the employee felt a strain in his back and was immediately in significant pain. Medical attention was obtained offsite. The incident was reviewed in a toolbox talk format with affected crews, with the emphasis on proper body mechanics and the need to plan lifts in advance rather than proceeding alone with awkward or heavy loads.",
+      "objectCausingHarm": "Tap box (weight not specified — described as requiring awkward body position for the lift)",
+      "rootCauses": [
+        {
+          "type": "Improper Lift Planning",
+          "description": "The employee did not adequately plan the lift before attempting it — specifically did not evaluate whether the lift required a second person, adjust body position to minimize back load, or use mechanical assistance."
+        },
+        {
+          "type": "Single-Person Lift Attempted for Load Requiring Assistance",
+          "description": "The lift involved an awkward load from cart height to scissor lift platform height, a body position that placed excessive load on the back. A two-person lift or mechanical assist should have been used."
+        }
+      ],
+      "contributingFactors": [
+        "Load was awkwardly shaped or positioned in a way that required an awkward body position to execute the lift",
+        "No second person was recruited to assist with the lift",
+        "Pre-task plan did not specifically address the lift from cart to platform as a distinct hazard requiring planning"
+      ],
+      "lessonsLearned": [
+        "Plan the lift before you lift — verify the path is clear, identify where the load is going, and evaluate whether the load requires a two-person lift or mechanical assist before starting",
+        "Any lift that is awkwardly shaped, over 50 lbs, or requires an awkward body position requires a second person or mechanical assistance — attempting it alone is not a productivity shortcut, it is a back injury risk",
+        "Test the weight before committing to a lift by gently pushing with hands or feet — do not assume a load is liftable until you have assessed it",
+        "Keep loads close to the body and lift with the legs, not the back; never twist the torso when moving a load to the side — reposition your feet instead",
+        "Stretching before manual lifting tasks reduces injury risk, particularly at the start of a shift"
+      ],
+      "correctiveActions": [
+        "Review pre-task plans for tasks involving material handling to ensure lift hazards (awkward loads, platform height changes, single-person limits) are specifically addressed",
+        "Reinforce two-person lift requirements for loads over 50 lbs or loads requiring awkward body position",
+        "Conduct stretching before manual lifting tasks as a standard practice"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses",
+        "Hi-Vis Vest",
+        "Gloves"
+      ],
+      "relevantTaskKeywords": [
+        "manual lift",
+        "back strain",
+        "tap box",
+        "scissor lift",
+        "material handling",
+        "two-person lift",
+        "ergonomics",
+        "overexertion",
+        "body mechanics",
+        "lifting technique"
+      ]
+    },
+    {
+      "id": "INC-304",
+      "stkyCategoryIds": [
+        "STKY-ELEC"
+      ],
+      "fictional": false,
+      "title": "LOTO Near Miss — Locks Applied to Incorrect Isolation Point and Incorrect Breaker Position",
+      "date": "2026-06-22",
+      "site": "[REDACTED]",
+      "area": "Electrical — zone-based lockout area",
+      "department": "Electrical / Commissioning",
+      "severity": "High",
+      "recordable": false,
+      "classification": "LOTO / Energy Incident — Near Miss, High Learning Potential",
+      "natureOfAccident": "LOTO Implementation Error — Incorrect Isolation Point, No Injury",
+      "equipmentInvolved": "Electrical breakers, lockout devices, Energy Isolation Permit system",
+      "taskPerformed": "Lockout/tagout implementation to isolate potential energy at a network cabinet in a designated zone",
+      "whatHappened": "A lockout/tagout implementation was completed to isolate potential energy associated with a network cabinet in a specific zone. However, locks were inadvertently applied to an incorrect zone and left in an incorrect breaker position during implementation. The implementation team did not identify the discrepancy before work authorization was provided. The error was discovered approximately two weeks later by a commissioning verification team during standard verification activities — prior to any hazardous energy exposure. Upon discovery, work was stopped immediately, the organization was notified, and an investigation was launched. Multiple additional layers of protection (lockout devices and barriers) remained in place throughout, preventing any employee exposure to energized equipment. No injuries, equipment damage, or hazardous energy exposures occurred. The event was classified as a near miss with high learning potential.",
+      "objectCausingHarm": "None — near miss; incorrect lock placement and breaker position discovered prior to exposure",
+      "rootCauses": [
+        {
+          "type": "Inadequate Verification of Isolation Point",
+          "description": "The lockout was installed on an incorrect isolation point. The implementation team did not verify that the lockout location matched the requirements of the energy isolation permit before authorizing work. Verification processes were insufficient to catch the location error."
+        },
+        {
+          "type": "Insufficient Independent Validation",
+          "description": "Implementation practices relied on implementer judgment and informal peer review. No formal requirement existed for witness signatures, photographic verification of lock placement and breaker position, or independent auditing of completed implementations before work began."
+        },
+        {
+          "type": "Limited Oversight for Newer Personnel",
+          "description": "Personnel assignments to the LOTO implementation team were based on operational need and availability. New or recently assigned team members were paired with experienced personnel, but no additional oversight or elevated audit requirements were formally established for newer implementers."
+        }
+      ],
+      "contributingFactors": [
+        "Reliance on human performance and visual verification without documented confirmation steps",
+        "No mandatory field photo documentation of breaker position, lock placement, or equipment labeling at time of implementation",
+        "No documented witness accountability — witness participation was informal, not recorded",
+        "No formal lockout walkdown with the requester prior to Live-Dead-Live testing",
+        "Limited auditing of completed implementations, particularly for newer team members",
+        "Informal verification expectations between team members rather than documented process requirements"
+      ],
+      "lessonsLearned": [
+        "Lockout implementation verification must include documented, independent confirmation — implementer self-verification and informal peer observation are not sufficient controls for a task where an error could result in energization exposure",
+        "Photographs of breaker position, lock placement, and equipment labeling at the time of implementation create a verifiable record that catches errors before work authorization — this is a simple, low-cost control with high value",
+        "Witness participation must be documented with a signature, not just physically present — an undocumented witness provides no accountability and cannot verify what was actually confirmed",
+        "A lockout walkdown with the requester, verifying the implementation matches the permit, should be a required step before any Live-Dead-Live testing — the requester has specific knowledge of which equipment needs to be isolated that the implementer may not have",
+        "Newer or recently assigned LOTO implementers should be subject to elevated audit frequency until their implementation accuracy is verified — operational need and availability are not sufficient criteria for team assignment without additional oversight structure",
+        "An extended gap between implementation and verification (in this case, approximately two weeks) increases the risk that an implementation error is not caught before work begins — more frequent verification touchpoints reduce this window"
+      ],
+      "correctiveActions": [
+        "Modify implementation forms to require both implementer and witness signatures for every lockout implementation",
+        "Require field photographs of breaker position, lock placement, and equipment labeling as part of every lockout implementation record",
+        "Create a LOTO auditor role responsible for independent spot-checks of completed implementations, with priority given to new team members and complex or multi-lock implementations",
+        "Require a lockout walkdown with the requester prior to any Live-Dead-Live testing",
+        "Conduct lessons-learned review with all LOTO implementation personnel",
+        "Audit all outstanding lockouts completed by personnel involved in the implementation error",
+        "Establish formal oversight and elevated review requirements for newer LOTO team members beyond informal pairing with experienced personnel"
+      ],
+      "ppeUsed": [
+        "Standard electrical PPE — specific PPE not identified as a factor in this incident"
+      ],
+      "relevantTaskKeywords": [
+        "LOTO",
+        "lockout",
+        "tagout",
+        "energy isolation",
+        "isolation point",
+        "breaker position",
+        "verification",
+        "witness",
+        "independent verification",
+        "photo documentation",
+        "Live-Dead-Live",
+        "LDL",
+        "energy isolation permit",
+        "new personnel",
+        "audit",
+        "implementation error",
+        "zone isolation"
+      ]
+    },
+    {
+      "id": "INC-310",
+      "stkyCategoryIds": [
+        "STKY-DROP"
+      ],
+      "fictional": false,
+      "title": "Eye Injury — Metal Fragment Strike to Worker Below Overhead Bolt-Cutting Operation",
+      "date": "2026-01-14",
+      "site": "[REDACTED]",
+      "area": "Structural steel work area",
+      "department": "Field Operations",
+      "severity": "High",
+      "recordable": true,
+      "classification": "Injury - Struck by Flying Object (Eye)",
+      "natureOfAccident": "Eye Injury — Foreign Body",
+      "equipmentInvolved": "Impact drill (bolt removal), ladder",
+      "taskPerformed": "Removing metal bolts by cutting, performed from a ladder above ground-level work",
+      "whatHappened": "An employee positioned on a ladder was cutting metal bolts off an overhead structure. The employee performing the cutting was wearing all appropriate PPE for the task, including a face shield, and sustained no injury. A second employee was working on the ground below, in proximity to the cutting operation, wearing only standard safety glasses — not a face shield. The ground-level employee was looking upward toward the elevated work at the moment a metal fragment was ejected during cutting. The fragment struck the employee in the eye, evading the limited peripheral protection of standard safety glasses. The employee was transported for medical evaluation.",
+      "injuries": "Eye injury — metal fragment, foreign body",
+      "objectCausingHarm": "Ejected metal fragment from bolt-cutting operation",
+      "rootCauses": [
+        {
+          "type": "Positioning / Exclusion Zone",
+          "description": "No exclusion zone or drop-zone boundary was established beneath the elevated cutting operation. The ground-level employee's normal work position placed them directly in the path of ejected fragments."
+        },
+        {
+          "type": "PPE Mismatch to Exposure",
+          "description": "The injured employee's PPE (standard safety glasses) was appropriate for general site conditions but not for standing in the debris path of an active overhead cutting operation. Only the employee performing the cutting was equipped with a face shield; PPE was not matched to actual exposure for personnel in the surrounding area."
+        }
+      ],
+      "contributingFactors": [
+        "The hazard was treated as contained to the person performing the cutting task, not to the work area as a whole",
+        "The ground-level employee was looking upward at the moment of the event, which increases exposure angle for eye injury even with basic eye protection",
+        "No communication or coordination occurred between the elevated worker and the ground-level worker about timing or positioning before cutting began"
+      ],
+      "lessonsLearned": [
+        "Overhead cutting, grinding, or drilling work creates a falling/ejected debris hazard for anyone positioned below it — not just for the person performing the task. The elevated worker being fully protected does not protect people in the area below.",
+        "Anyone working within the potential debris path of overhead cutting or grinding must either be excluded from that zone or equipped with the same level of face and eye protection as the person performing the work — standard safety glasses are not equivalent to a face shield for this exposure.",
+        "Looking upward toward overhead work increases the eye's exposure angle to falling debris — personnel below overhead work should be positioned outside the direct line of the work whenever possible.",
+        "Pre-task planning for elevated cutting or grinding work must identify and control exposure for personnel below, not only specify PPE for the person doing the elevated task."
+      ],
+      "correctiveActions": [
+        "Magnet over the drill to catch debris before it is released",
+        "Establish and mark an exclusion zone or barricade beneath any overhead cutting, grinding, or drilling operation",
+        "Require face shield (not just safety glasses) for any personnel who must remain within the debris path of overhead cutting or grinding work",
+        "Brief all personnel in the work area — not only the person performing overhead work — before overhead cutting or grinding begins",
+        "Incorporate overhead-work exclusion zones into pre-task planning as a standard question, separate from PPE for the elevated worker"
+      ],
+      "ppeUsed": [
+        "Hard Hat",
+        "Safety Glasses (ground worker — insufficient for exposure)",
+        "Face Shield (elevated worker only)",
+        "Hi-Vis Vest",
+        "Gloves"
+      ],
+      "relevantTaskKeywords": [
+        "overhead cutting",
+        "impact drill",
+        "overhead drilling",
+        "bolt cutting",
+        "grinding overhead",
+        "cutting bolts",
+        "elevated cutting",
+        "working below",
+        "drop zone",
+        "exclusion zone",
+        "struck by debris",
+        "flying debris",
+        "eye injury",
+        "face shield",
+        "bystander exposure",
+        "ladder work",
+        "metal fragment",
+        "ejected debris"
+      ]
+    }
+  ],
+  "rootCauseAnalyses": [
+    {
+      "id": "RCA-LOTO-0825",
+      "title": "LOTO Procedure Failure — Labeling Task on Potentially Energized Gear",
+      "date": "2025-08-25",
+      "project": "[Site]",
+      "tradePartner": "[Trade Partner]",
+      "generalContractor": "[GC]",
+      "classification": "LOTO Procedural Violation",
+      "taskPerformed": "Affixing identification labels to breakers and conductors inside terminated electrical gear (Skid #1, FSA) in preparation for first-time energization",
+      "whatHappened": "Crew was labeling dead front panels and conductors ahead of first-time energization. LOTO had been installed upstream, but because wires were already terminated, a potential for energization existed at the work location. The panel was locked out, but individual employee locks were not applied (no personal lockout verification). The crew had completed a Pre-Task Plan (PTP) beforehand, but it did not adequately address the electrical hazards or mitigation strategy for this specific task. A general contractor superintendent observed the crew and asked where they were locked out; the crew was unsure of the answer, prompting an immediate stop-work and escalation.",
+      "rootCauses": [
+        {
+          "type": "Situational Awareness Gap",
+          "description": "Employees had not received clear reinforcement on how to make LOTO necessity determinations for this specific type of activity (labeling on terminated-but-potentially-energized gear)."
+        },
+        {
+          "type": "Failure to Follow Procedure",
+          "description": "The work sequence itself was flawed: labeling of panels and feeder wires was scheduled to occur after installation, requiring equipment to be reopened for labeling — creating unnecessary re-exposure to a previously closed-out hazard."
+        }
+      ],
+      "contributingFactors": [
+        "Crew foreman called off sick; an experienced journeyman stepped into the lead role without formalized hand-off of safety oversight responsibilities",
+        "LOTO coordinator was offsite conducting LOTO training at the time of the incident, so was unavailable to answer field questions or provide direction",
+        "Pre-Task Plan checked the 'LOTO' box but did not detail the actual hazard or specific mitigation steps for this task",
+        "Individual lock verification was not performed/checked before work began under the panel lockout"
+      ],
+      "lessonsLearned": [
+        "A PTP checkbox for 'LOTO required' is not sufficient — the specific hazard and mitigation strategy must be written out",
+        "Task sequencing matters: scheduling labeling work AFTER installation/termination creates avoidable re-exposure to energized-equipment hazards",
+        "Personal/individual lockout verification (not just panel-level lockout) must be confirmed before work begins, every time",
+        "Asking questions before proceeding should be reinforced as expected, positive behavior — not a sign of inadequacy",
+        "Temporary leadership changes (e.g., foreman calling off) need a clear, deliberate hand-off of safety expectations, not an informal substitution"
+      ],
+      "correctiveActions": [
+        "Add explicit LOTO step-by-step detail requirements to the Pre-Task Plan template, beyond a simple checkbox",
+        "Conduct retraining for all affected crews on 'what good LOTO looks like'",
+        "Reinforce and formally recognize use of Stop Work Authority as a positive behavior",
+        "Incorporate PTP training into safety orientation and foreman onboarding",
+        "Review labeling/quality-checklist procedures to identify and eliminate tasks that require reopening de-energized/locked-out equipment after installation",
+        "Re-evaluate LOTO coordinator duties and availability to ensure coverage during active field work"
+      ],
+      "relevantTaskKeywords": [
+        "LOTO",
+        "lockout tagout",
+        "labeling",
+        "energized equipment",
+        "individual lock verification",
+        "pre-task plan",
+        "dead front",
+        "panel work",
+        "first-time energization"
+      ]
+    },
+    {
+      "id": "RCA-PDC-0211",
+      "title": "Load Bank Phase Cross / Arc Flash Event During PDC Testing",
+      "date": "2026-02-11",
+      "project": "SBN, Building [X]",
+      "location": "Phase [X] Data Hall, PDC [PDC ID]",
+      "classification": "LOTO / Energy Incident",
+      "taskPerformed": "Load bank testing of a Power Distribution Center (PDC), including switch-over from load bank to primary power",
+      "whatHappened": "Crew was load bank testing PDCs across multiple project phases over several weeks, progressing into the Phase [X] Data Hall. During testing of one PDC, the A and B phase load bank cables were crossed when connected. When the breaker was closed to switch the PDC over to primary power, the mismatched phases caused an arc, tripping all three breakers in the PDC. The unit was immediately isolated and placed under LOTO; no injuries occurred.",
+      "rootCauses": [
+        {
+          "type": "Equipment / Wiring Error",
+          "description": "Load bank phases (A and B) were crossed when cables were connected to the PDC, so switching to primary power introduced mismatched phasing that caused an arc."
+        },
+        {
+          "type": "Human Performance — Time Pressure",
+          "description": "Employee was rushing the connection/switch-over process because the client was waiting for the crew to bring the system to primary power."
+        }
+      ],
+      "contributingFactors": [
+        "A new crew member had been added to the team on the day of the incident",
+        "No independent second-person verification of cable phasing before switch-over",
+        "Multi-week task progression across phases may have led to procedural complacency by the time work reached this data hall"
+      ],
+      "lessonsLearned": [
+        "Phase verification before energization switch-over must be independently double-checked, not performed by a single individual under time pressure",
+        "Client/schedule pressure to energize quickly is a real and recurring contributing factor that needs to be explicitly managed, not just noted after the fact",
+        "Final verification by the foreman before re-energization is a meaningful, low-cost control that should be standard"
+      ],
+      "correctiveActions": [
+        "Implement mandatory two-worker verification of load bank cable phasing before any switch to primary power",
+        "Require foreman sign-off on the entire data hall setup before energization",
+        "Add a dedicated load bank testing checklist to the standard task documentation"
+      ],
+      "relevantTaskKeywords": [
+        "load bank testing",
+        "PDC",
+        "power distribution center",
+        "phase verification",
+        "energization",
+        "arc flash",
+        "primary power switch",
+        "data hall"
+      ]
+    },
+    {
+      "id": "RCA-PDC-001",
+      "fictional": false,
+      "relatedIncidentType": "Crossed Phase Cables During Load Bank Testing / Primary Power Switchover",
+      "date": "2026-02-11",
+      "site": "[REDACTED]",
+      "area": "Data hall PDC, electrical room",
+      "taskPerformed": "Load bank testing of a PDC with transition to primary power",
+      "summary": "During load bank testing of a PDC unit in a data hall, A and B phase cables on the load bank were crossed when moved to the primary side of the PDC. When the breaker was closed to switch from load bank to primary power, the mismatched phases caused an arc. All three breakers in the PDC tripped. The PDC was immediately isolated under LOTO. No injuries were reported.",
+      "stepsPreEvent": [
+        "Load bank testing had been in progress in an adjacent area the prior week",
+        "Load bank testing transitioned to the current area earlier in the week",
+        "Day of incident: stretch and flex with crew and safety huddle at 7:00 AM",
+        "A new crew member had been added to the team that morning",
+        "Foreman walked down the team on procedures for load bank testing at 7:15 AM",
+        "Load bank testing continued from 7:15 to 7:45 AM",
+        "At approximately 7:45 AM, A and B phase cables were crossed when moved to the primary side of the PDC",
+        "At approximately 8:00 AM, breaker was closed to switch PDC to primary power — arc occurred, three breakers tripped",
+        "At 8:10 AM, PDC isolated under LOTO, supervision and safety notified"
+      ],
+      "rootCauses": [
+        {
+          "type": "Phase Connection Error",
+          "description": "Load bank cable A and B phases were crossed when connected to the primary side of the PDC. This was not detected before the breaker was closed to switch to primary power."
+        },
+        {
+          "type": "Time Pressure / Rushing",
+          "description": "The employee was rushing — the customer was waiting for the switchover to primary power. Time pressure from an external party was identified as a contributing root cause."
+        }
+      ],
+      "contributingFactors": [
+        "No independent verification of phase connection by a second person before switching to primary power",
+        "New crew member had been added to the team on the day of the incident",
+        "External time pressure from customer waiting for switchover"
+      ],
+      "lessonsLearned": [
+        "Phase connections must be independently verified by a second qualified person before any switchover to primary power — a single person verifying their own work is not adequate for this step",
+        "Time pressure from customers, general contractors, or other trades is never a justification for skipping verification steps before energization",
+        "Adding a new crew member on the day of a complex, sequenced task warrants an additional briefing and does not reduce verification requirements",
+        "Double-checking work and verifying with a partner that cables are connected correctly must be a formal, documented step in the load bank testing procedure — not an informal expectation",
+        "The foreman must perform a final verification of the entire data hall setup before any energization step, not only rely on the executing crew member's confirmation"
+      ],
+      "correctiveActions": [
+        "Implement mandatory two-worker verification of load bank cable phasing before any primary power switchover",
+        "Require foreman sign-off on complete data hall setup before energization",
+        "Develop and implement a load bank testing checklist that includes explicit phase verification as a documented, signed step",
+        "Reinforce with all crew that customer or GC time pressure does not override verification requirements — stop work authority applies"
+      ],
+      "keywords": [
+        "load bank",
+        "phase",
+        "PDC",
+        "energization",
+        "arc",
+        "breaker trip",
+        "phase verification",
+        "primary power",
+        "two-person verification",
+        "time pressure",
+        "rushing"
+      ]
+    },
+    {
+      "id": "RCA-LOTO-002",
+      "fictional": false,
+      "relatedIncidentType": "LOTO Violation — Individual Lock Omission on Panel Labeling Task",
+      "date": "2025-08-21",
+      "site": "[REDACTED]",
+      "area": "Electrical room / switchgear skid area",
+      "taskPerformed": "Affixing labels to breakers and conductors on an electrical panel scheduled for first-time energization",
+      "summary": "Electrical crew performed labeling work on a panel scheduled for first-time energization with upstream panel-level lockout in place but without individual user locks applied by each exposed employee. The LOTO coordinator was offsite at the time. The foreman was absent due to illness. A journeyman assumed the lead role. A site superintendent discovered the crew was unable to identify their lockout point and stopped work. Retraining was conducted the same morning before the crew was released.",
+      "stepsPreEvent": [
+        "Crew foreman called in sick; experienced journeyman assumed lead role",
+        "Pre-task plan (PTP) was completed at 6:00 AM but did not adequately address LOTO requirements for the labeling task",
+        "LOTO coordinator was offsite conducting training and was unavailable to the crew",
+        "Panel was locked out upstream at panel level — individual user locks were not applied",
+        "Crew opened panel door and began affixing labels to conductors and dead front",
+        "Site superintendent approached crew and asked where they were locked out — crew was unable to answer",
+        "Superintendent stopped work and escalated",
+        "LOTO retraining conducted 10:00 AM, field execution walkthrough 10:30 AM, crew released 11:30 AM"
+      ],
+      "rootCauses": [
+        {
+          "type": "Situational Awareness / Knowledge Gap",
+          "description": "The employee had not received clear reinforcement on when individual user locks are required and how to make that determination for the specific activity being performed."
+        },
+        {
+          "type": "Out-of-Sequence Procedure Execution",
+          "description": "Standard procedure called for labeling to occur during installation, before equipment closeout. Labeling was deferred and performed after the panel was closed, requiring reopening near potentially energized equipment — an avoidable exposure created by executing the procedure out of sequence."
+        },
+        {
+          "type": "Inadequate Pre-Task Plan",
+          "description": "The pre-task plan indicated electrical hazards and checked the LOTO box but did not specify LOTO steps, individual lock requirements, or the specific energy isolation verification process for this task."
+        }
+      ],
+      "contributingFactors": [
+        "Foreman absent due to illness; lead role assumed without full briefing on LOTO expectations for the day",
+        "LOTO coordinator unavailable during active work period — conducting offsite training",
+        "Panel-level upstream lockout was in place but individual user locks were omitted",
+        "Crew members did not stop to verify LOTO adequacy before opening panel and beginning work",
+        "First-time energization was pending — panel reopening for labeling created hazard that would not have existed if labeling had been done during installation"
+      ],
+      "lessonsLearned": [
+        "A panel-level lockout does not satisfy individual LOTO requirements — every employee exposed to a potential energy hazard must apply their own personal lock",
+        "Pre-task plans must contain explicit LOTO steps for electrical work, not just a hazard checkbox — the plan must answer 'what specifically is locked out, where, and by whom'",
+        "Labeling work should be done during installation, before equipment is closed up — deferring labeling to after equipment closeout creates unnecessary re-opening near potentially energized systems",
+        "When a foreman is absent, the person assuming the lead role must re-brief the crew on expectations for LOTO and hazard recognition — a prior brief to the absent foreman does not transfer",
+        "Asking questions when LOTO status is unclear is the right action — crew members must feel empowered to stop and verify before working near potentially energized equipment"
+      ],
+      "correctiveActions": [
+        "Retrain all crew members on individual LOTO lock requirements and how to make LOTO determinations for their specific tasks",
+        "Revise pre-task plan requirements to include explicit, task-specific LOTO steps rather than a checkbox",
+        "Revise labeling procedures to ensure labels are applied during installation, not deferred",
+        "Reevaluate LOTO coordinator availability requirements to ensure crew can access LOTO guidance during active work hours",
+        "Incorporate pre-task plan quality review into foreman onboarding and safety orientation",
+        "Reinforce stop-work authority for all crew members in the context of LOTO uncertainty"
+      ],
+      "keywords": [
+        "LOTO",
+        "lockout",
+        "tagout",
+        "individual locks",
+        "labeling",
+        "energized panel",
+        "foreman absent",
+        "pre-task plan",
+        "PTP",
+        "LOTO coordinator",
+        "first-time energization",
+        "out of sequence"
+      ]
+    },
+    {
+      "id": "RCA-LOTO-003",
+      "fictional": false,
+      "relatedIncidentId": "INC-304",
+      "relatedIncidentType": "LOTO Implementation Error — Incorrect Zone, Incorrect Breaker Position",
+      "date": "2026-06-22",
+      "site": "[REDACTED]",
+      "taskPerformed": "Lockout/tagout implementation to isolate potential energy at a network cabinet in a designated zone",
+      "summary": "A lockout implementation was installed on an incorrect isolation point, with breakers left in an incorrect position. The error was discovered during verification activities approximately two weeks after implementation, prior to any energy exposure. Investigation identified three causal factors: inadequate isolation point verification, absence of formal independent validation requirements, and insufficient oversight for newer implementation personnel.",
+      "causalFactors": [
+        {
+          "factor": "Inadequate Verification of Isolation Point",
+          "basis": "The implementation team did not verify that the lockout location matched the energy isolation permit before authorizing work. No formal verification step required confirmation that the correct isolation point had been identified and locked."
+        },
+        {
+          "factor": "Insufficient Independent Validation",
+          "basis": "No formal requirement for witness signatures, photographic documentation, or independent audit existed. Implementation depended on implementer judgment and informal peer observation — neither of which provides documented, auditable confirmation of correct execution."
+        },
+        {
+          "factor": "Limited Oversight for New or Recently Assigned Personnel",
+          "basis": "Team assignments were based on operational need and availability. Pairing newer members with experienced personnel was the only oversight mechanism. No elevated audit requirements or formal review thresholds existed for less tenured implementers."
+        }
+      ],
+      "rootCauseNarrative": "The fundamental failure was the absence of any formal, documented verification layer between implementation completion and work authorization. The implementation process relied entirely on human performance and informal peer review — neither of which provides an independent, auditable check. The combination of an incorrect isolation point and incorrect breaker position represents two independent errors that a documented verification process (witness signature + photograph) would likely have caught before work was authorized. The gap of approximately two weeks between implementation and verification discovery further illustrates the risk of an unaudited implementation window.",
+      "lessonsLearned": [
+        "Implementation and verification must be treated as separate, documented steps with separate accountable parties — implementer self-verification is not a verification step",
+        "Photographs of the completed implementation state (breaker position, lock location, equipment label) are the simplest available control for catching implementation errors before work authorization",
+        "Requester walkdown of the completed lockout against the permit requirements before Live-Dead-Live testing closes the verification gap between the person who knows what needs to be isolated and the person who implemented the isolation",
+        "Formal audit of newer implementers' work, independent of pairing arrangements, is a distinct and necessary control — informal oversight does not produce auditable evidence of verification"
+      ],
+      "keywords": [
+        "LOTO",
+        "lockout",
+        "energy isolation",
+        "incorrect isolation point",
+        "breaker position",
+        "independent verification",
+        "witness signature",
+        "photo documentation",
+        "audit",
+        "new personnel",
+        "Live-Dead-Live",
+        "LDL",
+        "energy isolation permit",
+        "near miss"
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "id": "BL-POL-FALL-001",
+      "source": "PreTaskIQ Baseline | OSHA 29 CFR 1926 Subpart M",
+      "title": "Fall Protection — Baseline Policy",
+      "category": "Fall Prevention",
+      "baseline": true,
+      "summary": "Fall protection is required for any work at 6 feet or more above a lower level. This baseline policy reflects OSHA 1926 Subpart M requirements and applies until replaced by your organization's own fall protection policy.",
+      "keyPoints": [
+        "Fall protection required at 6 feet or higher above a lower level — guardrail system, personal fall arrest system (PFAS), or fall restraint.",
+        "PFAS anchor points must support at least 5,000 lbs per employee attached. The anchor must be independent of any anchorage used to support or suspend platforms.",
+        "Extension and straight ladders must extend at least 3 feet above the landing surface, be secured against displacement, and require three points of contact at all times.",
+        "Standing on the top two rungs of a stepladder is prohibited. Climbing on guardrails or using a ladder inside an elevated platform to gain height is prohibited.",
+        "Hard hats — not bump caps — are required when working at elevation with any overhead material handling or fall risk.",
+        "Floor openings and holes must be covered, guarded, or barricaded immediately — even briefly leaving an opening unprotected is a violation.",
+        "Scissor lifts require fall protection per manufacturer specification; personal fall arrest is generally required in boom lifts."
+      ],
+      "keywords": [
+        "fall protection",
+        "guardrail",
+        "PFAS",
+        "anchorage",
+        "ladder",
+        "scissor lift",
+        "aerial lift",
+        "elevated work",
+        "6 feet",
+        "fall arrest",
+        "harness",
+        "tie-off",
+        "leading edge",
+        "floor opening",
+        "hard hat",
+        "bump cap"
+      ]
+    },
+    {
+      "id": "BL-POL-LOTO-002",
+      "source": "PreTaskIQ Baseline | OSHA 29 CFR 1910.147 / 1926 Subpart K",
+      "title": "Lockout / Tagout (LOTO) — Baseline Policy",
+      "category": "Energy Control",
+      "baseline": true,
+      "summary": "All work on equipment where unexpected energization or release of stored energy could cause injury requires lockout/tagout before work begins. This baseline reflects OSHA 1910.147 and 1926 Subpart K requirements.",
+      "keyPoints": [
+        "Every employee exposed to the hazard must apply their own personal lock — a single panel-level lockout does not satisfy the standard for affected employees performing work.",
+        "After lockout, perform zero-energy verification: attempt to operate the equipment to confirm it will not start. This step cannot be skipped.",
+        "Only the employee who applied a lock may remove it, except through a documented lock-removal-in-absence procedure with supervisor and safety sign-off.",
+        "Group lockout situations require a lock box so each worker's individual lock is on the box, giving each worker independent control.",
+        "Identify ALL energy sources — electrical, stored mechanical, hydraulic, pneumatic, gravity — not just the primary disconnect.",
+        "Relieve all stored energy (capacitors, springs, elevated parts, pressurized systems) before work begins.",
+        "Before re-energizing, inspect the work area, confirm all tools are removed, guards reinstalled, and all employees who applied locks are accounted for and clear.",
+        "Labeling work on terminated conductors near equipment scheduled for energization requires LOTO — proximity to potential energization is sufficient to trigger the requirement."
+      ],
+      "keywords": [
+        "LOTO",
+        "lockout",
+        "tagout",
+        "energy isolation",
+        "zero energy verification",
+        "de-energize",
+        "breaker",
+        "disconnect",
+        "panel work",
+        "individual locks",
+        "lock box",
+        "stored energy",
+        "group lockout",
+        "re-energization"
+      ]
+    },
+    {
+      "id": "BL-POL-ELEC-003",
+      "source": "PreTaskIQ Baseline | NFPA 70E / OSHA 29 CFR 1926 Subpart K",
+      "title": "Energized Electrical Work — Baseline Policy",
+      "category": "Electrical Safety",
+      "baseline": true,
+      "summary": "Work on electrical equipment defaults to de-energized state with LOTO. Energized work requires a written permit, arc-flash risk assessment, and approval before starting. Phase verification before any primary power switchover must be performed by two people independently.",
+      "keyPoints": [
+        "De-energization and LOTO is the default for all electrical work. Energized work is the exception and requires written justification.",
+        "An Energized Electrical Work Permit is required before any energized work — signed by the responsible electrical safety supervisor before work starts, not after.",
+        "An arc-flash risk assessment must determine the incident energy level and required PPE category for the specific task and equipment.",
+        "Arc-rated PPE must match the incident energy level — a generic 8-cal minimum applies for most switchgear proximity work but must be confirmed by the actual risk assessment.",
+        "Phase verification before any switch-over from temporary or test power to primary power must be performed independently by a second qualified person. Single-person phase verification is not permitted for primary power switching.",
+        "Test for absence of voltage with a properly rated meter, verified on a known live source immediately before and after the test.",
+        "Schedule pressure from clients, GCs, or other trades does not justify skipping permit, verification, or LOTO steps. Any crew member may stop work to complete required steps.",
+        "Only qualified persons may work on or near exposed energized parts. A qualified person has demonstrated skills and knowledge of the equipment involved."
+      ],
+      "keywords": [
+        "energized work",
+        "energized electrical",
+        "arc flash",
+        "NFPA 70E",
+        "energized work permit",
+        "phase verification",
+        "primary power",
+        "voltage test",
+        "arc-rated PPE",
+        "qualified person",
+        "load bank",
+        "switch-over",
+        "incident energy",
+        "PPE category"
+      ]
+    },
+    {
+      "id": "BL-POL-CONFINED-004",
+      "source": "PreTaskIQ Baseline | OSHA 29 CFR 1926.1200 / 1910.146",
+      "title": "Confined Space Entry — Baseline Policy",
+      "category": "Confined Space",
+      "baseline": true,
+      "summary": "Confined spaces must be classified as permit-required or non-permit before entry. Permit-required spaces require atmospheric testing, an attendant, a rescue plan, and an entry permit before anyone enters.",
+      "keyPoints": [
+        "A confined space has limited means of entry/exit and is not designed for continuous occupancy. A permit-required confined space also has a hazardous atmosphere or other serious safety hazard.",
+        "Atmospheric testing for oxygen content, flammable gases/vapors, and toxic contaminants must be performed before entry and continuously monitored during occupancy.",
+        "Oxygen levels below 19.5% or above 23.5% are immediately dangerous — do not enter.",
+        "A trained attendant must remain outside the confined space and in communication with entrants for the duration of work. The attendant cannot enter to perform rescue.",
+        "A written rescue plan must be in place before entry — rescue services must be identified and available before anyone goes in.",
+        "An entry permit signed by the entry supervisor must be completed before entry, specifying the space, date, authorized entrants, hazards, and controls.",
+        "Forced-air ventilation must be established and maintained where atmospheric hazards exist or could reasonably develop.",
+        "Anyone who has entered a permit-required confined space without completing the permit and testing process must exit immediately."
+      ],
+      "keywords": [
+        "confined space",
+        "permit-required",
+        "atmospheric testing",
+        "oxygen deficiency",
+        "attendant",
+        "entry permit",
+        "rescue plan",
+        "ventilation",
+        "confined space entry",
+        "entrant",
+        "continuous monitoring"
+      ]
+    },
+    {
+      "id": "BL-POL-HOTWORK-005",
+      "source": "PreTaskIQ Baseline | NFPA 51B / OSHA 1926.352",
+      "title": "Hot Work — Baseline Policy",
+      "category": "Fire Prevention",
+      "baseline": true,
+      "summary": "Hot work (welding, cutting, grinding, brazing, or any spark-producing operation) requires a hot work permit, a fire watch, and a combustible clearance check before starting. The fire watch continues for at least 30 minutes after work is complete.",
+      "keyPoints": [
+        "A hot work permit is required before any welding, cutting, grinding, brazing, or open-flame operation in a construction area. The permit must be obtained from the authority having jurisdiction (GC, fire marshal, or site safety).",
+        "All combustible materials must be cleared or protected within 35 feet of the hot work area before work begins — move materials, cover with fire-resistant blankets, or wet them down.",
+        "A fire extinguisher must be immediately available at the hot work location throughout the operation.",
+        "A fire watch must be maintained during hot work and for a minimum of 30 minutes after work stops — longer if the work area has materials that can smolder.",
+        "Hot work must not be performed in areas where flammable vapors, gases, or dust may be present without atmospheric testing confirming the area is safe.",
+        "Cutting or grinding near electrical equipment, insulation, or conduit filled with combustible material requires extra protection and often a separate permit.",
+        "All openings, cracks, and penetrations in the work area through which sparks or slag could pass must be sealed or protected before hot work begins."
+      ],
+      "keywords": [
+        "hot work",
+        "welding",
+        "cutting",
+        "grinding",
+        "brazing",
+        "open flame",
+        "fire watch",
+        "hot work permit",
+        "combustible clearance",
+        "fire extinguisher",
+        "sparks",
+        "slag",
+        "fire prevention"
+      ]
+    },
+    {
+      "id": "BL-POL-EXCAV-006",
+      "source": "PreTaskIQ Baseline | OSHA 29 CFR 1926 Subpart P",
+      "title": "Excavation & Trenching — Baseline Policy",
+      "category": "Excavation & Trenching",
+      "baseline": true,
+      "summary": "Excavations require a competent person inspection before entry, a protective system at 5 feet of depth, and egress within 25 feet of all workers at 4 feet of depth. Visual judgment by untrained crew is not a substitute for competent person soil classification.",
+      "keyPoints": [
+        "A competent person must classify soil type and inspect the excavation before each shift's work begins, and after any condition that could increase hazards — rain, vibration, nearby equipment operation, visible cracking.",
+        "Excavations 5 feet or deeper require a protective system (sloping, benching, shoring, or trench box/shield) before entry — no exceptions unless made entirely in stable rock.",
+        "Protective equipment present on site must actually be deployed once the depth threshold is reached — its presence on site does not satisfy the requirement.",
+        "Spoil piles, equipment, and materials must be kept at least 2 feet back from the edge of the excavation.",
+        "A safe means of egress (ladder, ramp, or steps) must be within 25 feet of all employees in excavations 4 feet or deeper.",
+        "Atmospheric testing is required before entry where a hazardous atmosphere exists or could reasonably exist.",
+        "For shallow, clearly no-entry excavations (under 3 feet, skid steer or equipment only), competent person, egress ladder, and trench protection questions do not apply — ask about utility strike and equipment clearance only.",
+        "Incremental depth increases over multiple days require the same inspection rigor as a trench excavated to full depth on day one."
+      ],
+      "keywords": [
+        "excavation",
+        "trench",
+        "trenching",
+        "shoring",
+        "sloping",
+        "trench box",
+        "competent person",
+        "cave-in",
+        "soil classification",
+        "spoil pile",
+        "egress",
+        "ladder",
+        "utility strike",
+        "depth threshold"
+      ]
+    },
+    {
+      "id": "BL-POL-AWP-007",
+      "source": "PreTaskIQ Baseline | ANSI/SAIA A92 / OSHA 1926.453",
+      "title": "Aerial and Elevated Work Platforms — Baseline Policy",
+      "category": "Elevated Work",
+      "baseline": true,
+      "summary": "Aerial and elevated work platforms require pre-use inspections, appropriate fall protection, and prohibited use restrictions. Ground conditions must be evaluated before positioning any aerial lift.",
+      "keyPoints": [
+        "A pre-use inspection must be performed before operating any aerial work platform each shift — including boom lifts, scissor lifts, and personnel lifts.",
+        "Boom lifts require a personal fall arrest system (harness and lanyard) anchored to the manufacturer-designated anchor point inside the platform. Guardrails alone are not sufficient in boom lifts.",
+        "Scissor lifts may use guardrails as fall protection per manufacturer guidance, but workers must stay within the platform boundaries — never lean over or reach past the guardrails.",
+        "Standing on the platform guardrails, using a ladder inside the platform to gain height, or otherwise exceeding the platform's working height is prohibited.",
+        "Ground conditions must be evaluated before positioning the lift — outriggers must be on solid, level ground with appropriate pads; operation on slopes exceeding manufacturer limits is prohibited.",
+        "Aerial lifts must not be moved with workers in the elevated position unless the manufacturer specifically authorizes it for that model.",
+        "Platform capacity — including workers, tools, and materials — must not exceed the manufacturer's rated load.",
+        "Operators must be trained and authorized on the specific type and model of aerial lift they are operating."
+      ],
+      "keywords": [
+        "aerial lift",
+        "boom lift",
+        "scissor lift",
+        "AWP",
+        "elevated platform",
+        "PFAS",
+        "fall protection",
+        "pre-use inspection",
+        "ground conditions",
+        "outriggers",
+        "platform capacity",
+        "operator training",
+        "harness",
+        "guardrail"
+      ]
+    },
+    {
+      "id": "BL-POL-HEAT-008",
+      "source": "PreTaskIQ Baseline | OSHA Heat Illness Prevention Guidance / Cal/OSHA T8 CCR 3395",
+      "title": "Heat Illness Prevention — Baseline Policy",
+      "category": "Environmental / Heat Stress",
+      "baseline": true,
+      "summary": "Work in high-heat conditions requires scheduled rest, shade, and water breaks based on heat index thresholds, not individual discretion. Workers must feel empowered and expected to stop at first signs of heat-related symptoms.",
+      "keyPoints": [
+        "Cool drinking water must be available at or near the work location — at least 1 quart per worker per hour during high-heat conditions. Workers should drink before they feel thirsty.",
+        "Rest and shade breaks must be scheduled based on heat index thresholds, not left to individual discretion: at heat index above 91°F, rest breaks every hour; above 103°F, mandatory cool-down rest periods apply.",
+        "Shade structures must be provided at outdoor work locations where shade is not otherwise available during high-heat periods.",
+        "New or returning workers require an acclimatization period — beginning with no more than 20% of normal work intensity on day one in high-heat conditions, increasing gradually over 7-14 days.",
+        "All crew members must be trained to recognize early heat illness symptoms — heavy sweating, weakness, dizziness, headache, nausea, cramping — in themselves and coworkers.",
+        "Stopping work at the first signs of heat stress is the expected and supported response. No worker should feel pressured to continue through symptoms to maintain productivity.",
+        "Heat stroke is a medical emergency — call 911 immediately. Symptoms include confusion, lack of sweating despite heat, hot and dry skin, rapid heartbeat, loss of consciousness.",
+        "Water, rest, and shade are the three primary controls. All three must be in place during high-heat conditions, not just one or two of them."
+      ],
+      "keywords": [
+        "heat illness",
+        "heat exhaustion",
+        "heat stroke",
+        "hydration",
+        "shade breaks",
+        "acclimatization",
+        "hot weather",
+        "rest breaks",
+        "high heat",
+        "heat index",
+        "outdoor work",
+        "symptoms"
+      ]
+    },
+    {
+      "id": "BL-POL-CRANE-009",
+      "source": "PreTaskIQ Baseline | OSHA 29 CFR 1926 Subpart CC / ASME B30",
+      "title": "Crane, Hoist & Rigging — Baseline Policy",
+      "category": "Crane & Rigging",
+      "baseline": true,
+      "summary": "Crane and hoist operations require a certified or qualified operator, a pre-shift inspection, a qualified rigger for rigging operations, and an established exclusion zone. Power line clearance is mandatory before any lift near overhead lines.",
+      "keyPoints": [
+        "Crane operators must be certified or qualified under a recognized accreditation process appropriate to the type and capacity of the equipment they operate.",
+        "A pre-shift inspection is required before each shift of crane use, with a more thorough periodic inspection at manufacturer-specified intervals.",
+        "A qualified rigger must supervise or perform rigging for any operation where employees are exposed to the hazards of the rigging.",
+        "An exclusion zone must be established around the swing radius and load path before any lift begins — unauthorized personnel must be barricaded out of the zone, not just warned.",
+        "Power line proximity: minimum clearance of 10 feet for lines up to 50kV, and greater clearance for higher voltages. Contact the utility before working within 20 feet of any overhead line.",
+        "A pre-lift plan is required for critical lifts — defined as lifts over 75% of rated capacity, tandem lifts, lifts over occupied areas, or lifts where the load is not visible to the operator throughout.",
+        "A signal person is required whenever the operator cannot see the load, the path of the load, or the landing zone.",
+        "Never exceed the rated load chart for the crane's current configuration, boom angle, and radius."
+      ],
+      "keywords": [
+        "crane",
+        "hoist",
+        "rigging",
+        "lift",
+        "qualified rigger",
+        "signal person",
+        "exclusion zone",
+        "power lines",
+        "load chart",
+        "pre-lift plan",
+        "critical lift",
+        "certified operator",
+        "boom angle",
+        "swing radius"
+      ]
+    },
+    {
+      "id": "BL-POL-PPE-010",
+      "source": "PreTaskIQ Baseline | OSHA 29 CFR 1926 Subpart E / 1910.132",
+      "title": "Personal Protective Equipment (PPE) — Baseline Policy",
+      "category": "PPE",
+      "baseline": true,
+      "summary": "Minimum baseline PPE is required in all active work areas, with task-specific PPE added based on the hazard analysis. PPE must be selected to match the specific hazard, not just a general category.",
+      "keyPoints": [
+        "Baseline PPE for all active work areas: hard hat, ANSI Z87.1 safety glasses, high-visibility vest or shirt, and ASTM F2413 steel- or composite-toe boots. Hard hat class is only specified when required by a specific exposure or company policy — do not state a class unless the task involves electrical work near energized conductors, arc flash proximity, or a policy that mandates a specific class.",
+        "Gloves must be selected for the specific task hazard — cut-resistant for sharp edges, dielectric for electrical work, impact-resistant for hand-tool work, chemical-resistant for chemical exposure. General work gloves are not a substitute when a specific hazard is present.",
+        "Arc-rated / FR clothing is required for any work on or near energized electrical equipment where arc flash risk has not been eliminated. The FR rating must match the incident energy level from the arc-flash risk assessment.",
+        "Hard hats (not bump caps) are required when working at elevation with any overhead material handling or fall risk. A bump cap does not provide impact protection from above.",
+        "PPE must be inspected before each use. Damaged or defective PPE must be removed from service — it should not be used even for a short task.",
+        "Task-specific PPE identified in the hazard analysis always supersedes the baseline — baseline is a floor, not a ceiling.",
+        "Removing gloves for a task requiring dexterity must be evaluated against the specific hazard; 'better grip without gloves' is not by itself sufficient justification when pinch points, sharp edges, or heavy components are involved.",
+        "Hearing protection is required in areas where noise levels exceed 85 dBA — power tools, generators, and compressors frequently exceed this threshold."
+      ],
+      "keywords": [
+        "PPE",
+        "hard hat",
+        "safety glasses",
+        "gloves",
+        "hi-vis",
+        "steel toe",
+        "FR clothing",
+        "arc-rated",
+        "hearing protection",
+        "bump cap",
+        "dielectric gloves",
+        "cut-resistant",
+        "impact gloves",
+        "baseline PPE",
+        "hazard assessment"
+      ]
+    },
+    {
+      "id": "POL-LOTO-001",
+      "title": "Lockout/Tagout (LOTO) Procedure",
+      "category": "Energy Control",
+      "summary": "All work on equipment with potential for unexpected energization, start-up, or release of stored energy requires lockout/tagout before work begins.",
+      "keyPoints": [
+        "Every employee exposed to the hazard must apply their own personal lock and tag — locking out at the panel/disconnect level alone is not sufficient; individual lock verification is mandatory before work begins under any group or panel lockout.",
+        "A zero-energy verification (try-before-you-rely) must be performed after lockout and before starting work: attempt to operate the equipment to confirm it will not start.",
+        "Only the employee who applied a lock may remove it. Locks may never be removed by another person except through the documented lock-removal-in-absence procedure with supervisor and safety sign-off.",
+        "Multi-employee lockout requires a group lockout device (lock box) so each worker's individual lock is on the box, not just the equipment.",
+        "Equipment must remain locked out for the entire duration of work, including breaks. Equipment is never to be temporarily re-energized to 'test' something without going through a full re-energization and re-lockout cycle.",
+        "Before re-energizing, the area must be inspected to confirm tools are removed, guards reinstalled, and all employees are clear, and all employees who applied locks must be accounted for and notified before locks are removed."
+      ],
+      "relatedPermits": [
+        "LOTO Permit",
+        "Energized Work Permit (if LOTO cannot be achieved)"
+      ],
+      "keywords": [
+        "LOTO",
+        "lockout",
+        "tagout",
+        "energy isolation",
+        "zero energy",
+        "de-energize",
+        "breaker",
+        "disconnect",
+        "panel work"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "POL-FALL-002",
+      "title": "Fall Protection Policy",
+      "category": "Fall Prevention",
+      "summary": "Fall protection is required for any work performed at 6 feet or more above a lower level, and is recommended as best practice below that threshold when other risk factors are present.",
+      "keyPoints": [
+        "Any work at or above 6 feet requires fall protection: guardrails, personal fall arrest systems (PFAS), or fall restraint, selected based on the specific task and anchor point availability.",
+        "Ladders: extension and straight ladders must extend at least 3 feet above the landing surface and be secured against displacement. Three points of contact must be maintained at all times. Heavy materials should not be hand-carried up a ladder; use a hoist, rope, or material lift where available.",
+        "Platform/step ladders are limited to the duty rating listed by the manufacturer; standing on the top two rungs/steps of a step ladder is prohibited.",
+        "Scissor lifts and aerial lifts require fall protection per manufacturer specification and site-specific JHA; guardrails alone may be sufficient in a scissor lift per manufacturer guidance, but operators must never climb on guardrails or use ladders inside the platform to gain extra height.",
+        "Hard hats (not bump caps) are required whenever work involves elevation combined with overhead material handling or any risk of head impact from a fall.",
+        "Floor and wall openings, including temporary openings created during the work shift, must be covered, guarded, or barricaded immediately — leaving an opening unprotected even briefly is a violation."
+      ],
+      "relatedPermits": [
+        "Working at Heights Permit (site-specific, if required)"
+      ],
+      "keywords": [
+        "fall protection",
+        "ladder",
+        "scissor lift",
+        "aerial lift",
+        "guardrail",
+        "harness",
+        "PFAS",
+        "elevated work",
+        "floor opening",
+        "hard hat"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "POL-PPE-003",
+      "title": "Personal Protective Equipment (PPE) Policy",
+      "category": "PPE",
+      "summary": "Minimum baseline PPE is required on all active work sites, with task-specific PPE added based on the hazard analysis for the work being performed.",
+      "keyPoints": [
+        "Baseline PPE for all site personnel in active work areas: hard hat, safety glasses, high-visibility vest/shirt/coat, and steel-toe boots. Hard hat class is specified only when required by a specific task exposure or company policy.",
+        "Gloves are required for material handling, sharp-edge work, and any task involving pinch points; glove type (cut-resistant, dielectric, chemical-resistant) must match the specific hazard.",
+        "Arc-rated/FR clothing and appropriate arc-flash PPE category gear is required for any work on or near energized electrical equipment where arc flash risk has not been eliminated through de-energization.",
+        "Hand protection should not be removed for dexterity tasks without a documented task-specific risk assessment; 'better grip without gloves' is not, by itself, sufficient justification to forgo hand protection on tasks involving pinch points, sharp edges, or heavy components.",
+        "PPE must be inspected before each use and removed from service if damaged.",
+        "Site-specific or task-specific PPE requirements identified in a hazard analysis always supersede baseline PPE — baseline is a floor, not a ceiling."
+      ],
+      "relatedPermits": [],
+      "keywords": [
+        "PPE",
+        "gloves",
+        "hard hat",
+        "safety glasses",
+        "FR clothing",
+        "arc flash",
+        "hi-vis",
+        "steel toe",
+        "dielectric"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "POL-ELEC-004",
+      "title": "Energized Electrical Work Policy",
+      "category": "Electrical Safety",
+      "summary": "Work on electrical equipment must default to a de-energized state; energized work is permitted only when de-energization is infeasible and is governed by a separate energized work permit.",
+      "keyPoints": [
+        "De-energization and LOTO is the default requirement for all electrical work. Energized work is the exception, not a default convenience.",
+        "Energized work requires a documented Energized Electrical Work Permit, justification for why de-energization is infeasible, arc-flash risk assessment, and approval from the responsible electrical safety supervisor before work begins.",
+        "Phase verification (confirming correct phase rotation/connection) must be independently performed by a second qualified person before any switch-over from temporary or test power to primary power, or vice versa — single-person phase verification is not permitted for primary power switching operations.",
+        "Testing for absence of voltage must be performed with a properly rated meter immediately before contact, and the meter must be verified on a known live source before and after the test.",
+        "Crews must not allow schedule pressure from clients, GCs, or other trades to shortcut energy-isolation, verification, or permit steps. Any team member may stop work to complete these steps regardless of external timeline pressure."
+      ],
+      "relatedPermits": [
+        "Energized Electrical Work Permit",
+        "LOTO Permit"
+      ],
+      "keywords": [
+        "energized work",
+        "electrical",
+        "arc flash",
+        "phase verification",
+        "voltage test",
+        "primary power",
+        "switch-over",
+        "qualified person"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "POL-MATL-005",
+      "title": "Material Handling & Rigging Policy",
+      "category": "Material Handling",
+      "summary": "Manual and mechanical material handling tasks must account for load weight, pinch points, and communication between team members moving shared loads.",
+      "keyPoints": [
+        "Loads over 50 lbs being moved manually at elevation should use a mechanical aid (hoist, lift, rope-and-pulley) rather than hand-carrying, where one is available.",
+        "Two-person or team lifts require a designated lead who calls movement ('ready, lifting, moving') so all team members know when a shared load will move and where their hands should be positioned.",
+        "Before disassembling or repositioning any structure, panel, or framed component, verify that all fasteners are present and secure — do not assume a component will hold its own weight based on prior experience with similar components without first checking this specific item.",
+        "Any equipment, panel, or component found with missing, loose, or incomplete fasteners or hardware must be tagged immediately and reported, even if it is not part of today's task.",
+        "Pinch point hazards must be explicitly discussed before any multi-person handling of rigid or framed structures, including routine or frequently repeated tasks."
+      ],
+      "relatedPermits": [
+        "Rigging Plan (for mechanical lifts above a threshold weight, per site requirements)"
+      ],
+      "keywords": [
+        "material handling",
+        "rigging",
+        "lifting",
+        "pinch point",
+        "panel",
+        "fasteners",
+        "bolts",
+        "two-person lift",
+        "hoist"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "POL-STOP-006",
+      "title": "Stop Work Authority Policy",
+      "category": "General Safety",
+      "summary": "Every employee, regardless of role or tenure, has the authority and obligation to stop work when an unsafe condition or uncertainty about safe execution is identified.",
+      "keyPoints": [
+        "Any employee may stop work without fear of retaliation if they identify a hazard, an incomplete safety step, or are uncertain whether work can proceed safely.",
+        "If work conditions change from what was planned in the day's hazard analysis (new hazard, different task scope, new personnel, equipment change), work must stop and the hazard analysis must be reviewed and updated before continuing.",
+        "Asking a clarifying question before proceeding, including questions about lockout status, permit status, or PPE requirements, is expected and positive behavior, not a sign of inadequate training.",
+        "Stop-work events should be reported to a supervisor and, where relevant, logged so the organization can learn from the underlying condition that triggered the stoppage."
+      ],
+      "relatedPermits": [],
+      "keywords": [
+        "stop work",
+        "stop work authority",
+        "unsafe condition",
+        "changed conditions",
+        "task changes",
+        "report"
+      ],
+      "fictional": false
+    },
+    {
+      "id": "POL-EXCAV-007",
+      "title": "Excavation & Trenching Policy",
+      "category": "Excavation & Trenching",
+      "summary": "Excavations and trenches require a documented competent-person inspection and an appropriate protective system based on depth and soil conditions before any employee enters.",
+      "keyPoints": [
+        "Any excavation 5 feet or deeper requires a protective system (sloping, benching, shoring, or a trench box/shield) before entry, unless the excavation is made entirely in stable rock.",
+        "A competent person must classify soil type and inspect the excavation before each shift's work begins, and again after any condition that could increase hazards (rain, vibration, nearby equipment operation, visible cracking).",
+        "Protective systems present on site must be deployed once the depth threshold is reached — equipment being available does not satisfy the requirement; it must actually be in use.",
+        "Spoil piles and other materials must be kept at least 2 feet back from the edge of any excavation.",
+        "A safe means of egress (ladder, ramp, or steps) must be within 25 feet of all employees working in excavations 4 feet or deeper.",
+        "Atmospheric testing is required before entry into excavations where a hazardous atmosphere exists or could reasonably be expected."
+      ],
+      "relatedPermits": [
+        "Excavation Permit",
+        "Confined Space Entry Permit (if atmospheric hazard applicable)"
+      ],
+      "keywords": [
+        "excavation",
+        "trench",
+        "trenching",
+        "shoring",
+        "sloping",
+        "trench box",
+        "competent person",
+        "cave-in",
+        "soil classification",
+        "spoil pile"
+      ],
+      "fictional": true
+    },
+    {
+      "id": "POL-MOBEQUIP-008",
+      "title": "Mobile Equipment & Yard Traffic Policy",
+      "category": "Mobile Equipment",
+      "summary": "Mobile equipment operations in active work areas require spotters for limited-visibility maneuvers and physical separation from pedestrian traffic where practical.",
+      "keyPoints": [
+        "A spotter is required for any reversing or blind-spot maneuver in an area with active foot traffic, stacked material, or limited sightlines — a functioning backup alarm alone does not satisfy this requirement.",
+        "Designated pedestrian paths, physically separated from active equipment travel lanes, must be established and marked in yards or laydown areas with regular mixed traffic.",
+        "Only trained and authorized operators may operate mobile equipment (skid steers, forklifts, excavators, loaders); authorization must be verifiable on request.",
+        "Equipment must come to a complete stop and sound a horn before beginning any reversing movement in an active work area.",
+        "Material stacking and storage should avoid creating blind corners along known travel paths; if unavoidable, the area must be treated as a spotter-required zone."
+      ],
+      "relatedPermits": [],
+      "keywords": [
+        "mobile equipment",
+        "skid steer",
+        "forklift",
+        "spotter",
+        "backup alarm",
+        "yard traffic",
+        "laydown yard",
+        "blind spot",
+        "struck-by",
+        "pedestrian path"
+      ],
+      "fictional": true
+    },
+    {
+      "id": "POL-HEAT-009",
+      "title": "Heat Illness Prevention Policy",
+      "category": "Environmental / Heat Stress",
+      "summary": "Work in high-heat conditions requires scheduled rest, shade, and water breaks, with workers expected and supported to stop at the first signs of heat-related symptoms.",
+      "keyPoints": [
+        "A scheduled rest-shade-water rotation must be established and followed when heat index or temperature thresholds are met, not left to individual discretion.",
+        "Cool drinking water must be readily accessible at the work location, with workers encouraged to hydrate before thirst is felt, not only when it is.",
+        "Workers new to high-heat conditions, or returning after time away, require a gradual acclimatization period rather than full-intensity work on day one of elevated temperatures.",
+        "All crew members must be trained to recognize early signs of heat-related illness (heavy sweating, dizziness, nausea, confusion, cramping) in themselves and coworkers.",
+        "Stopping work at early heat-stress symptoms is the expected and supported response — no employee should feel pressured to continue working through symptoms to avoid slowing down the crew.",
+        "Shade structures or shaded rest areas must be provided for exposed work locations (roofs, slabs, open yards) during high-heat periods."
+      ],
+      "relatedPermits": [],
+      "keywords": [
+        "heat illness",
+        "heat exhaustion",
+        "heat stroke",
+        "hydration",
+        "shade breaks",
+        "acclimatization",
+        "hot weather",
+        "rest breaks"
+      ],
+      "fictional": true
+    },
+    {
+      "id": "POL-RESP-010",
+      "title": "Respiratory Protection & Dust Control Policy",
+      "category": "Respiratory Protection",
+      "summary": "Tasks generating airborne dust, including concrete cutting and grinding, require engineering dust controls and respirator selection matched to the specific exposure, regardless of task duration.",
+      "keyPoints": [
+        "Concrete cutting, grinding, and similar dust-generating tasks require an engineering dust control method (water suppression or vacuum dust collection) appropriate to the tool and material — task duration does not exempt a task from this requirement.",
+        "Respirator selection must match the specific exposure scenario and cutting method; a basic dust mask is not an acceptable substitute for a properly selected respirator on tasks with known silica or other hazardous dust generation.",
+        "Enclosed or poorly ventilated spaces require additional ventilation or restricted use of dry-cutting methods, since airborne dust concentrates faster than in open-air work.",
+        "Employees performing tasks that may require respirator use must be included in a respiratory protection program, including fit testing where applicable.",
+        "Visible dust accumulation in a work area during or after a task is a sign that current controls are insufficient and should prompt an immediate review, not just cleanup."
+      ],
+      "relatedPermits": [],
+      "keywords": [
+        "silica",
+        "respirable dust",
+        "concrete cutting",
+        "grinding",
+        "respirator",
+        "dust mask",
+        "water suppression",
+        "vacuum dust collection",
+        "ventilation"
+      ],
+      "fictional": true
+    },
+    {
+      "id": "POL-VEHICLE-011",
+      "title": "Vehicle & Site Traffic Policy",
+      "category": "Vehicle & Traffic Safety",
+      "summary": "Vehicle movements in active construction areas, including deliveries, require spotters for backing maneuvers and clear communication of site layout to recurring vendors.",
+      "keyPoints": [
+        "Backing maneuvers by any vehicle (delivery trucks, concrete trucks, personal vehicles) in active construction areas require a spotter, regardless of how familiar the driver believes they are with the site.",
+        "Site layout changes affecting vehicle staging, parking, or travel lanes must be communicated to recurring delivery vendors and subcontractors before the change takes effect, not discovered on arrival.",
+        "Spotter-required zones must be marked with visible signage at site entrances and staging areas.",
+        "Large vehicle deliveries should be scheduled outside of shift-change windows where feasible, given increased pedestrian activity during those periods.",
+        "Any vehicle-to-structure or vehicle-to-equipment contact, even without injury, must be reported and reviewed as a near-miss for potential struck-by exposure."
+      ],
+      "relatedPermits": [
+        "Delivery/Staging Coordination (site-specific, if required)"
+      ],
+      "keywords": [
+        "vehicle",
+        "traffic",
+        "delivery truck",
+        "backing",
+        "spotter",
+        "site entrance",
+        "staging area",
+        "shift change",
+        "site layout"
+      ],
+      "fictional": true
+    },
+    {
+      "id": "BL-POL-UTIL-011",
+      "source": "PreTaskIQ Baseline | OSHA 1910.269 / 1926.956",
+      "title": "Aerial Work Near Energized Lines — Baseline Policy",
+      "category": "Electrical Safety / Aerial Work",
+      "baseline": true,
+      "summary": "Workers performing aerial tasks near energized power lines must maintain minimum approach distances at all times. Unqualified workers may not enter the limited approach boundary. Utility coordination is required before work within the limited approach boundary.",
+      "keyPoints": [
+        "Minimum approach distance for unqualified workers: 10 feet from lines up to 50kV. Fiber installation crews are typically unqualified workers under OSHA 1910.269 and must maintain this distance.",
+        "The bucket truck boom, platform, workers, tools, and materials must all stay outside the minimum approach distance for all positions during the work.",
+        "A dedicated spotter must monitor clearance distance whenever an aerial platform operates near energized lines.",
+        "Contact the utility before work begins. Confirm line status, obtain clearance if work requires closer approach, and get written authorization before entering the limited approach boundary.",
+        "If work cannot be completed while maintaining MAD the work must stop and the utility must be contacted to arrange de-energization or protective measures."
+      ],
+      "keywords": [
+        "aerial fiber",
+        "bucket truck",
+        "energized lines",
+        "minimum approach distance",
+        "limited approach boundary",
+        "ComEd",
+        "overhead lines",
+        "aerial work",
+        "line clearance",
+        "spotter",
+        "fiber installation",
+        "MAD"
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "PROC-LOTO",
+      "name": "Lockout/Tagout (LOTO)",
+      "triggerKeywords": [
+        "loto",
+        "lockout",
+        "tagout",
+        "lock out",
+        "tag out",
+        "de-energize",
+        "isolate energy",
+        "energy isolation",
+        "energy isolation permit",
+        "method of procedure",
+        "mop",
+        "eip",
+        "ldl",
+        "live-dead-live"
+      ],
+      "basedOnPolicy": "POL-LOTO-001",
+      "steps": [
+        {
+          "id": 1,
+          "title": "Verify the signed Method of Procedure (MOP) and review it with the crew",
+          "description": "Confirm the Method of Procedure (MOP) for this work has been signed off, then walk through it with every crew member who will help carry it out before any isolation begins, so everyone knows the sequence, the isolation points, and who does what."
+        },
+        {
+          "id": 2,
+          "title": "Confirm the Energy Isolation Permit (EIP)",
+          "description": "Confirm the Energy Isolation Permit (EIP) for this equipment was submitted and signed off ahead of the task, and note the devices and lock numbers it lists. Work does not start without it."
+        },
+        {
+          "id": 3,
+          "title": "Notify affected personnel",
+          "description": "Notify all employees who will be affected that equipment is being shut down and locked out for the work."
+        },
+        {
+          "id": 4,
+          "title": "Identify all energy sources",
+          "description": "Identify every energy source for the equipment (electrical, stored mechanical, hydraulic, pneumatic, gravity) — not just the primary disconnect."
+        },
+        {
+          "id": 5,
+          "title": "Shut down equipment",
+          "description": "Shut down the equipment using its normal stopping procedure."
+        },
+        {
+          "id": 6,
+          "title": "Isolate energy sources",
+          "description": "Operate the energy-isolating device(s) (breaker, disconnect, valve) so the equipment is disconnected from all energy sources. Confirm each device matches the Energy Isolation Permit before locks are applied."
+        },
+        {
+          "id": 7,
+          "title": "Apply individual locks and tags",
+          "description": "Every employee exposed to the hazard applies their own personal lock and tag. Locking out at the panel/disconnect level alone is not sufficient — for group lockout, each worker's lock goes on the lock box, not just the equipment. Record each lock number on the Energy Isolation Permit."
+        },
+        {
+          "id": 8,
+          "title": "Relieve stored energy",
+          "description": "Relieve, restrain, or otherwise render safe any stored or residual energy (capacitors, springs, elevated parts, pressurized systems)."
+        },
+        {
+          "id": 9,
+          "title": "Verify zero energy",
+          "description": "Verify zero energy before work starts. For electrical equipment, use a Live-Dead-Live test: check the voltage tester on a known live source, test the equipment for zero voltage, then re-check the tester on the same known source. For other energy types, attempt to operate the equipment using normal controls to confirm it will not start. This step cannot be skipped even if isolation seemed successful."
+        },
+        {
+          "id": 10,
+          "title": "Perform the work",
+          "description": "Work may now proceed. Equipment must remain locked out for the entire duration of work, including breaks. Do not temporarily re-energize to 'test' something without a full re-energization and re-lockout cycle."
+        },
+        {
+          "id": 11,
+          "title": "Inspect before re-energizing and release the Energy Isolation Permit",
+          "description": "Before removing locks, confirm the work scope is complete: tools removed, guards and covers reinstalled, and all employees clear. Then release the Energy Isolation Permit."
+        },
+        {
+          "id": 12,
+          "title": "Account for all lock holders and remove locks",
+          "description": "Notify all employees who applied locks before removal. Only the employee who applied a lock may remove it, except through the documented lock-removal-in-absence procedure with supervisor and safety sign-off."
+        },
+        {
+          "id": 13,
+          "title": "Re-energize",
+          "description": "Restore energy to the equipment and notify affected personnel that the equipment is back in service."
+        }
+      ],
+      "criticalSteps": [
+        7,
+        9,
+        12
+      ],
+      "criticalStepNote": "Steps 7 (individual lock application), 9 (zero-energy verification), and 12 (accounting for all lock holders) are the steps most often skipped or rushed in real incidents — flag these especially hard if reported out of order or skipped. Hold points from the permit: stop work if unexpected energy is found, if the equipment has been modified since the permit was issued, or if circuits or equipment not listed on the permit are affected. Work is not authorized past a hold point until the issue is resolved."
+    },
+    {
+      "id": "PROC-ENERGIZED-WORK",
+      "name": "Energized Electrical Work Permit",
+      "triggerKeywords": [
+        "energized work",
+        "energized electrical",
+        "primary power",
+        "switch to primary",
+        "phase verification",
+        "load bank test",
+        "arc flash work"
+      ],
+      "basedOnPolicy": "POL-ELEC-004",
+      "steps": [
+        {
+          "id": 1,
+          "title": "Confirm de-energization is infeasible",
+          "description": "Document the specific justification for why this work cannot be performed de-energized. De-energization and LOTO remain the default; energized work is the exception."
+        },
+        {
+          "id": 2,
+          "title": "Complete arc-flash risk assessment",
+          "description": "Determine incident energy level and required arc-rated PPE category for the specific task and equipment."
+        },
+        {
+          "id": 3,
+          "title": "Obtain Energized Electrical Work Permit approval",
+          "description": "Get sign-off from the responsible electrical safety supervisor before work begins. The permit requires this approval before any energized work starts, not after."
+        },
+        {
+          "id": 4,
+          "title": "Don arc-rated PPE",
+          "description": "PPE must match the incident energy level determined in Step 2, not a generic baseline."
+        },
+        {
+          "id": 5,
+          "title": "Test for absence of voltage (if applicable to the task)",
+          "description": "Use a properly rated meter, verified on a known live source immediately before and after the test."
+        },
+        {
+          "id": 6,
+          "title": "Independent phase verification (for any primary power switch-over)",
+          "description": "A second qualified person must independently verify phase connection/rotation before any switch-over from temporary or test power to primary power, or vice versa. Single-person phase verification is not permitted for this step."
+        },
+        {
+          "id": 7,
+          "title": "Perform the energized work",
+          "description": "Proceed with the work under the approved permit conditions. Any team member may stop work if conditions change, regardless of schedule pressure from clients, GCs, or other trades."
+        },
+        {
+          "id": 8,
+          "title": "Close out the permit",
+          "description": "Confirm work is complete, equipment is in its intended final state, and close out the energized work permit."
+        }
+      ],
+      "criticalSteps": [
+        3,
+        6
+      ],
+      "criticalStepNote": "Step 3 (permit approval before starting) and Step 6 (independent phase verification before any switch-over) map directly to real incidents — work proceeding without permit approval, or a single person verifying phase under time pressure. Flag these hardest if skipped or rushed."
+    },
+    {
+      "id": "PROC-MANHOLE-003",
+      "name": "Utility Manhole / Vault Entry Procedure",
+      "applicableScope": [
+        "manhole entry",
+        "vault entry",
+        "underground entry",
+        "confined space",
+        "utility manhole"
+      ],
+      "criticalSteps": [
+        3,
+        5,
+        7
+      ],
+      "steps": [
+        {
+          "id": 1,
+          "title": "Obtain entry permit signed by entry supervisor before approaching the opening"
+        },
+        {
+          "id": 2,
+          "title": "Set up traffic control and barricades around the manhole opening"
+        },
+        {
+          "id": 3,
+          "title": "Test atmosphere for oxygen, combustible gases (LEL), H2S and CO before opening cover"
+        },
+        {
+          "id": 4,
+          "title": "Open cover — stand upwind, do not lean over the opening"
+        },
+        {
+          "id": 5,
+          "title": "Ventilate with forced-air blower minimum 5 minutes before entry"
+        },
+        {
+          "id": 6,
+          "title": "Re-test atmosphere after ventilation — confirm all readings acceptable"
+        },
+        {
+          "id": 7,
+          "title": "Designate attendant — stationed at opening, in communication, does not enter"
+        },
+        {
+          "id": 8,
+          "title": "Confirm rescue plan in place before entry — rescue services identified and reachable"
+        },
+        {
+          "id": 9,
+          "title": "Entrant descends using approved access — maintain 3-point contact on ladder"
+        },
+        {
+          "id": 10,
+          "title": "Continuous atmospheric monitoring throughout occupancy"
+        },
+        {
+          "id": 11,
+          "title": "Entrant exits — attendant confirms all personnel clear before closing cover"
+        }
+      ]
+    }
+  ]
+}

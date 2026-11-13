@@ -1,0 +1,49 @@
+<!-- ═══════════════════════════════════════════════════════
+     RCA DEVELOPMENT ASSISTANT SCREEN
+══════════════════════════════════════════════════════════ -->
+<div id="screen-rca" class="screen anim-fade" style="display:none;">
+  <div class="rca-wrap">
+
+    <!-- Header -->
+    <div class="doc-top" style="margin-bottom:20px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;">Safety Admin</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">RCA Development Assistant</div>
+        <div style="font-size:13px;color:#777;margin-top:2px;">Structured investigation interview — produces a complete root cause analysis</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="setRole('safety')" style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;color:var(--slate);cursor:pointer;">&#8592; Dashboard</button>
+        <button onclick="exportRCA()" id="rca-export-btn" style="display:none;background:var(--navy);border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">Export RCA</button>
+      </div>
+    </div>
+
+    <!-- Progress phases -->
+    <div style="display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;" id="rca-phases">
+      <div class="rca-phase-chip active" id="rca-phase-1">1. Problem definition</div>
+      <div class="rca-phase-chip" id="rca-phase-2">2. Data gathering</div>
+      <div class="rca-phase-chip" id="rca-phase-3">3. Contributing factors</div>
+      <div class="rca-phase-chip" id="rca-phase-4">4. Root cause analysis</div>
+      <div class="rca-phase-chip" id="rca-phase-5">5. Corrective actions</div>
+      <div class="rca-phase-chip" id="rca-phase-6">6. Implementation</div>
+      <div class="rca-phase-chip" id="rca-phase-7">7. Monitoring</div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div style="background:#FFF4EE;border:1px solid #F4C09A;border-left:4px solid var(--orange);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#7A3510;line-height:1.5;">
+      <strong>This tool assists with RCA development — it does not replace your investigation process.</strong> All findings must be verified by qualified personnel. The output is a working document, not a final record.
+    </div>
+
+    <!-- Chat area -->
+    <div id="rca-chat" style="display:flex;flex-direction:column;gap:4px;min-height:200px;margin-bottom:16px;"></div>
+
+    <!-- Input -->
+    <div style="display:flex;gap:10px;" id="rca-input-row">
+      <textarea id="rca-input" rows="2" style="flex:1;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;font-family:inherit;resize:none;color:var(--navy);outline:none;" placeholder="Describe what happened..."></textarea>
+      <button id="rca-send" onclick="sendRCAMessage()" style="background:var(--navy);border:none;border-radius:10px;padding:0 20px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;align-self:stretch;">Send</button>
+    </div>
+
+    <!-- Generated RCA output -->
+    <div id="rca-output" style="display:none;margin-top:20px;"></div>
+
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<!-- ═══════════════════════════════════════════════════════
+     CONSTRUCTION ADMIN SCREEN
+══════════════════════════════════════════════════════════ -->
+<div id="screen-construction" class="screen anim-fade" style="display:none;">
+  <div class="cadmin-wrap">
+
+    <!-- Header -->
+    <div class="doc-top" style="margin-bottom:20px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;" id="cadmin-clock-label">Construction Admin</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">Project Overview</div>
+        <div style="font-size:13px;color:#777;margin-top:2px;">Documents, revisions and field coordination</div>
+      </div>
+      <button class="btn-primary" onclick="openAdminPetey()" style="display:inline-flex;align-items:center;gap:8px;">
+        <span style="font-size:16px;">&#127897;</span> Ask Petey
+      </button>
+    </div>
+
+    <!-- Active Alert -->
+    <div class="cadmin-alert">
+      <div class="cadmin-alert-icon">&#9888;&#65039;</div>
+      <div>
+        <div class="cadmin-alert-title">Crew working off superseded drawing</div>
+        <div class="cadmin-alert-sub">Bldg 2 electrical crew has not confirmed receipt of E-201 Rev 4. Feeders F-9 and F-11 routing changed. Petey has flagged — awaiting foreman confirmation.</div>
+      </div>
+    </div>
+
+    <!-- Drawing Revision Management -->
+    <div class="cadmin-section-title">&#128208; Drawing Revision Management</div>
+    <div class="cadmin-card">
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#FDE8E8;">&#128208;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">E-201 — Bldg 2 Electrical</div>
+          <div class="cadmin-row-sub">Rev 4 issued Jun 25 — F-9, F-11 rerouted tray 14-B → 14-C</div>
+        </div>
+        <span class="cadmin-badge revised">Unconfirmed</span>
+      </div>
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#D1FAE5;">&#128208;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">M-104 — Roof Mechanical</div>
+          <div class="cadmin-row-sub">Rev 2 issued Jun 22 — equipment pad relocated 4ft north</div>
+        </div>
+        <span class="cadmin-badge closed">Confirmed</span>
+      </div>
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#DBEAFE;">&#128208;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">S-312 — L3 Structural</div>
+          <div class="cadmin-row-sub">Rev 1 issued Jun 26 — beam pocket dimensions updated</div>
+        </div>
+        <span class="cadmin-badge updated">Issued today</span>
+      </div>
+    </div>
+
+    <!-- RFI Awareness -->
+    <div class="cadmin-section-title">&#128236; RFI Awareness</div>
+    <div class="cadmin-card">
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#FEF3C7;">&#128236;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">RFI-041 — Fire Protection routing conflict</div>
+          <div class="cadmin-row-sub">Sprinkler main conflicts with cable tray run 14-C. Submitted Jun 24 — awaiting EOR response. Hold on tray installation in affected zone.</div>
+        </div>
+        <span class="cadmin-badge open">Open</span>
+      </div>
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#EDE9FE;">&#128236;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">RFI-038 — PDC clearance confirmation</div>
+          <div class="cadmin-row-sub">Minimum working clearance in front of PDC-2B. Submitted Jun 20.</div>
+        </div>
+        <span class="cadmin-badge pending">Pending 6 days</span>
+      </div>
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#D1FAE5;">&#128236;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">RFI-035 — Phase verification requirement</div>
+          <div class="cadmin-row-sub">Two-person phase verification required for primary switchover. Answered Jun 18 — incorporated into POL-ELEC-004.</div>
+        </div>
+        <span class="cadmin-badge closed">Closed</span>
+      </div>
+    </div>
+
+    <!-- Scope Change Tracking -->
+    <div class="cadmin-section-title">&#128260; Scope Change Tracking</div>
+    <div class="cadmin-card">
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#FDE8E8;">&#128260;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">CO-12 — Energized switchgear terminations added</div>
+          <div class="cadmin-row-sub">Customer added Bus B termination scope in Switchgear Room 2A. JHA updated to Rev 2 by Petey — hold points in place pending permit.</div>
+        </div>
+        <span class="cadmin-badge revised">JHA Rev 2</span>
+      </div>
+      <div class="cadmin-row">
+        <div class="cadmin-row-icon" style="background:#D1FAE5;">&#128260;</div>
+        <div class="cadmin-row-body">
+          <div class="cadmin-row-title">CO-10 — Additional conduit runs, L3 east</div>
+          <div class="cadmin-row-sub">12 additional 4" conduit runs added to L3 east zone. Crew briefed Jun 23. No JHA revision required.</div>
+        </div>
+        <span class="cadmin-badge closed">Briefed</span>
+      </div>
+    </div>
+
+    <!-- Integration -->
+    <div class="cadmin-section-title">&#128279; Integrations</div>
+    <button class="cadmin-connect-btn">
+      <span style="font-size:20px;">&#128279;</span>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--navy);">Connect project management platform</div>
+        <div style="font-size:11px;color:#999;margin-top:1px;">Sync drawings, RFIs and submittals automatically — coming soon</div>
+      </div>
+    </button>
+    <button class="cadmin-connect-btn">
+      <span style="font-size:20px;">&#128279;</span>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--navy);">Connect other project platforms</div>
+        <div style="font-size:11px;color:#999;margin-top:1px;">Live drawing revision sync — coming soon</div>
+      </div>
+    </button>
+
+  </div>
+</div>
