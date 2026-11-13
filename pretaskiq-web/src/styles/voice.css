@@ -1,0 +1,14 @@
+/* Talking with Petey: mic buttons and the one-line voice status */
+.btn-mic { flex: 0 0 48px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--navy); cursor: pointer; }
+.btn-mic:hover { border-color: var(--orange); }
+.btn-mic.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.btn-mic.listening, .intake-mic-btn.listening { background: var(--orange); border-color: var(--orange); color: #fff; animation: micpulse 1.2s ease-in-out infinite; }
+.intake-mic-btn { display: inline-flex; align-items: center; gap: 7px; margin-right: 10px; padding: 10px 16px; font-size: 14px; font-weight: 600; color: var(--navy); background: #fff; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+.intake-mic-btn:hover { border-color: var(--orange); }
+.intake-mic-btn.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.voice-status { display: none; margin-top: 10px; min-height: 20px; font-size: 13.5px; line-height: 1.45; color: var(--slate); }
+.voice-status.show { display: block; }
+.voice-status.listening { color: var(--orange-deep); font-weight: 600; }
+.voice-status.problem { color: var(--orange-deep); }
+@keyframes micpulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(244, 121, 32, 0.45); } 50% { box-shadow: 0 0 0 8px rgba(244, 121, 32, 0); } }
+@media (prefers-reduced-motion: reduce) { .btn-mic.listening, .intake-mic-btn.listening { animation: none; } }

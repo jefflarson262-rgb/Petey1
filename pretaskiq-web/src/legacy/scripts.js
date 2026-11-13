@@ -30,6 +30,8 @@ import s25 from './scripts/25-rca-assistant.js?raw';
 import s26 from './scripts/26-incident-reenactment-player.js?raw';
 import s27 from './scripts/27-near-miss-reenactment-inc-270.js?raw';
 import s28 from './scripts/28-stky-categories.js?raw';
+import s29 from './scripts/29-persistence-bridge.js?raw';
+import s30 from './scripts/30-voice-conversation.js?raw';
 
 export const LEGACY_SCRIPTS = [
   ['01-knowledge-base-helpers.js', s01],
@@ -60,4 +62,6 @@ export const LEGACY_SCRIPTS = [
   ['26-incident-reenactment-player.js', s26],
   ['27-near-miss-reenactment-inc-270.js', s27],
   ['28-stky-categories.js', s28],
+  ['29-persistence-bridge.js', s29],
+  ['30-voice-conversation.js', s30],
 ];

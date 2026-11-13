@@ -6,13 +6,17 @@
 //
 // Settings (environment variables on the host, never in the code):
 //   ANTHROPIC_API_KEY  required  your Anthropic API key
-//   ACCESS_CODE        required  a shared code visitors enter before the AI will answer
 //   ANTHROPIC_MODEL    optional  model to use for every request (default below)
+//   Who may use it depends on the sign-in mode (see server/config.js):
+//     Supabase connected -> people must be signed in and approved; each person is limited to AI_CALLS_PER_HOUR (default 150)
+//     Supabase not set   -> ACCESS_CODE is required: a shared code visitors enter before the AI will answer
 //
-// THIS IS THE STAND-ALONE VERSION: it replaces api/claude.js in a project that does not have the server/ folder (the
-// version before sign-in was added). It fixes cut-off and empty replies from Claude Sonnet 5.5 (see thinkingFor below).
 // Written against plain Node request/response objects so it runs on Vercel, in `npm run dev`, and in the tests.
 import { createHash, timingSafeEqual } from 'node:crypto';
+import { readConfig } from '../server/config.js';
+import { requireUser } from '../server/auth.js';
+import { checkAndRecordAiUse } from '../server/usage.js';
+import { HttpError } from '../server/http.js';
 
 const DEFAULT_MODEL = 'claude-sonnet-5-5';
 const UPSTREAM_URL = process.env.ANTHROPIC_API_URL || 'https://api.anthropic.com/v1/messages'; // override is for tests
@@ -55,15 +59,30 @@ const validContent = (c) => typeof c === 'string' || (Array.isArray(c) && c.leng
 export default async function handler(req, res) {
   if (req.method === 'HEAD') { res.statusCode = 204; res.setHeader('Cache-Control', 'no-store'); res.end(); return; }   // the app's "am I online" check
   if (req.method === 'GET') {                                                                                         // status for the page; reveals no secrets
-    return send(res, 200, { ok: true, mode: 'code', codeRequired: Boolean(process.env.ACCESS_CODE), configured: Boolean(process.env.ANTHROPIC_API_KEY && process.env.ACCESS_CODE) });
+    const cfg = readConfig();
+    if (cfg.mode === 'supabase') return send(res, 200, { ok: true, mode: 'supabase', signInRequired: true, configured: Boolean(process.env.ANTHROPIC_API_KEY) });
+    return send(res, 200, { ok: true, mode: cfg.mode, codeRequired: Boolean(process.env.ACCESS_CODE), configured: cfg.mode === 'code' && Boolean(process.env.ANTHROPIC_API_KEY && process.env.ACCESS_CODE) });
   }
   if (req.method !== 'POST') { res.setHeader('Allow', 'GET, HEAD, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
+  const cfg = readConfig();
   if (!apiKey) return send(res, 503, { error: 'server_not_configured', message: 'Set ANTHROPIC_API_KEY on the server.' });   // fail closed
-  const accessCode = process.env.ACCESS_CODE;
-  if (!accessCode) return send(res, 503, { error: 'server_not_configured', message: 'Set ACCESS_CODE on the server.' });   // fail closed
-  if (!codeMatches(req.headers['x-access-code'], accessCode)) return send(res, 401, { error: 'invalid_access_code' });
+  if (cfg.mode === 'misconfigured') return send(res, 503, { error: 'supabase_misconfigured', missing: cfg.missing, problem: cfg.urlProblem });
+
+  if (cfg.mode === 'supabase') {
+    try {
+      const me = await requireUser(req);                              // signed in and approved?
+      await checkAndRecordAiUse(me.admin, me.user.id);                // within this person's hourly limit?
+    } catch (e) {
+      if (e instanceof HttpError) return send(res, e.status, { error: e.error, ...e.extra });
+      return send(res, 500, { error: 'server_error' });
+    }
+  } else {
+    const accessCode = process.env.ACCESS_CODE;
+    if (!accessCode) return send(res, 503, { error: 'server_not_configured', message: 'Set ACCESS_CODE on the server.' });   // fail closed
+    if (!codeMatches(req.headers['x-access-code'], accessCode)) return send(res, 401, { error: 'invalid_access_code' });
+  }
 
   let body;
   try { body = await readJson(req); } catch (e) {

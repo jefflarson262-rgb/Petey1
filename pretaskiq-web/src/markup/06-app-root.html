@@ -27,9 +27,11 @@
       <div class="intake-box">
         <textarea id="intake-textarea" rows="4" placeholder="Stage material, set up the scissor lift, install bus duct in Building 2, then close out..."></textarea>
         <div class="intake-actions" id="intake-actions-row">
+          <button id="intake-mic" class="intake-mic-btn" type="button" aria-pressed="false" title="Say the day's tasks out loud. Petey will then talk you through the plan."><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg> <span id="intake-mic-label">Talk to Petey</span></button>
           <button id="intake-submit" class="btn-primary" disabled>Start planning →</button>
         </div>
       </div>
+      <div id="intake-voice-status" class="voice-status" role="status" aria-live="polite"></div>
 
       <div id="offline-actions" style="display:none;">
         <div class="examples-label">Offline options</div>
@@ -82,9 +84,11 @@
         <div id="conv-scroll-inner"></div>
       </div>
       <div class="conv-input-row" id="conv-input-row">
-        <input id="conv-input" type="text" placeholder="Type your answer..." />
+        <button id="conv-mic" class="btn-mic" type="button" aria-pressed="false" aria-label="Talk with Petey" title="Talk with Petey (Petey reads each question aloud and listens for your answer)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg></button>
+        <input id="conv-input" type="text" placeholder="Type your answer, or tap the mic to talk..." />
         <button id="conv-send" class="btn-send">Send</button>
       </div>
+      <div id="conv-voice-status" class="voice-status" role="status" aria-live="polite"></div>
     </div>
   </div>
 
@@ -181,13 +185,14 @@
 
         <div style="margin-top:18px;display:flex;gap:10px;align-items:center;">
           <button id="petey-toggle" class="petey-toggle-btn">Enable Petey</button>
+          <button id="petey-ptt" class="petey-toggle-btn" type="button" title="Tap, say your question or update, and Petey answers aloud. No wake word needed.">&#127897; Tap and talk</button>
           <span class="petey-state-pill idle" id="petey-state-pill"><span class="petey-dot"></span><span id="petey-state-text">Off</span></span>
         </div>
 
         <!-- Privacy notice -->
         <div class="petey-privacy-notice">
-          <strong>Petey only processes audio when you speak to it directly.</strong><br>
-          It does not record or listen to background conversations. The microphone activates only when you say "Hey Petey" or tap the button — and only for as long as you are speaking to it.
+          <strong>How Petey's microphone works.</strong><br>
+          Petey only acts on what you say to it. But to hear "Hey Petey", your browser keeps the microphone open and sends the audio to its speech service (to Google in Chrome, Microsoft in Edge, Apple in Safari, as far as we know) so it can turn speech into text. With "Tap and talk" the microphone is open only while you are speaking to Petey. Check your company's policy on talking near sensitive information.
         </div>
       </div>
 

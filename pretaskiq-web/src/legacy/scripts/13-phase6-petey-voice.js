@@ -55,7 +55,7 @@ function setPeteyState(state) {
   const modeLabel = document.getElementById("petey-mode-label");
   const modeLabels = {
     idle:      { text: "Not listening — tap Enable Petey to activate", cls: "off" },
-    listening: { text: "Waiting for “Hey Petey” — not recording background audio", cls: "waiting" },
+    listening: { text: "Waiting for “Hey Petey” — the microphone is open", cls: "waiting" },
     active:    { text: "Listening to you now", cls: "active" },
     thinking:  { text: "Processing your question", cls: "active" },
     speaking:  { text: "Petey is responding", cls: "speaking" },
@@ -276,7 +276,7 @@ async function updateActiveJHAFromReport(report) {
     const result = await callClaude({
       system: PETEY_UPDATE_SYSTEM_PROMPT,
       messages: [{ role: "user", content: `ACTIVE HAZARD ANALYSIS DOCUMENT:\n${JSON.stringify(activeJHA)}\n\nFOREMAN'S REPORT:\n${report}\n\nReturn the complete updated document JSON now.` }],
-      maxTokens: 4000
+      maxTokens: 6000
     });
     const updated = extractJson(result);
     activeJHA = updated;

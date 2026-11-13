@@ -21,6 +21,13 @@ async function callClaude({ system, messages, maxTokens = 700 }) {
     .map(block => (block.type === "text" ? block.text : ""))
     .filter(Boolean)
     .join("\n");
+  // (Vite port) Never show half a reply. If the model hit its limit, or sent nothing, say so; the person can simply send it again.
+  if (data.stop_reason === "max_tokens") {
+    throw new Error("Petey's reply was cut off before it finished (the response limit was reached). Please send that again.");
+  }
+  if (!text.trim()) {
+    throw new Error("Petey sent back an empty reply. Please send that again.");
+  }
   return text;
 }
 

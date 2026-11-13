@@ -1,0 +1,81 @@
+-- PreTaskIQ pilot: database setup. Run this ONCE in Supabase (SQL Editor > New query > paste > Run).
+-- It is safe to run again: nothing is deleted.
+
+-- 1. People. One row per sign-in account. 'approved' must be true before the app lets someone in.
+create table if not exists public.profiles (
+  id           uuid primary key references auth.users (id) on delete cascade,
+  email        text,
+  display_name text,
+  role         text not null default 'foreman' check (role in ('foreman', 'safety', 'construction')),
+  approved     boolean not null default false,
+  created_at   timestamptz not null default now()
+);
+
+-- 2. Saved plans (job hazard analyses). 'data' holds the full plan exactly as the app shows it.
+create table if not exists public.plans (
+  id               uuid primary key default gen_random_uuid(),
+  created_by       uuid not null references public.profiles (id),
+  owner_name       text,
+  title            text not null default 'Untitled plan',
+  current_revision integer not null default 1,
+  data             jsonb not null,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+create index if not exists plans_created_by_idx on public.plans (created_by, updated_at desc);
+create index if not exists plans_updated_idx on public.plans (updated_at desc);
+
+-- 3. Revision history: every saved revision of every plan, kept.
+create table if not exists public.plan_revisions (
+  id         uuid primary key default gen_random_uuid(),
+  plan_id    uuid not null references public.plans (id) on delete cascade,
+  revision   integer not null,
+  data       jsonb not null,
+  source     text not null default 'planning' check (source in ('planning', 'petey_update', 'edit')),
+  note       text,
+  changed_by uuid references public.profiles (id),
+  created_at timestamptz not null default now(),
+  unique (plan_id, revision)
+);
+
+-- 4. A log of AI requests, used for the per-person hourly limit.
+create table if not exists public.ai_usage (
+  id      bigint generated always as identity primary key,
+  user_id uuid not null,
+  used_at timestamptz not null default now()
+);
+create index if not exists ai_usage_user_idx on public.ai_usage (user_id, used_at desc);
+
+-- 5. Lock the tables. Row-level security with no policies means the public (browser) key can read and write nothing.
+--    Only the PreTaskIQ server functions, which use the secret key and check who is asking, can reach this data.
+alter table public.profiles       enable row level security;
+alter table public.plans          enable row level security;
+alter table public.plan_revisions enable row level security;
+alter table public.ai_usage       enable row level security;
+revoke all on public.profiles, public.plans, public.plan_revisions, public.ai_usage from anon, authenticated;
+grant all on public.profiles, public.plans, public.plan_revisions, public.ai_usage to service_role;
+grant usage, select on all sequences in schema public to service_role;
+
+-- 6. When someone is added under Authentication > Users, create their profile.
+--    The FIRST person ever added becomes the safety administrator and is approved automatically.
+--    Everyone after that starts as an unapproved foreman until you approve them (see the setup guide).
+create or replace function public.handle_new_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare first_user boolean;
+begin
+  select not exists (select 1 from public.profiles) into first_user;
+  insert into public.profiles (id, email, display_name, role, approved)
+  values (
+    new.id,
+    new.email,
+    coalesce(nullif(new.raw_user_meta_data ->> 'display_name', ''), split_part(new.email, '@', 1)),
+    case when first_user then 'safety' else 'foreman' end,
+    first_user
+  )
+  on conflict (id) do nothing;
+  return new;
+end $$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created after insert on auth.users
+  for each row execute function public.handle_new_user();

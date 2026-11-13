@@ -233,7 +233,5 @@ function populateScopeProfileInSettings() {
 const _origOpenSettings = openSettingsModal;
 // Will be re-assigned after openSettingsModal is defined below
 
-// Trigger onboarding on first use — placed here so all const declarations above are in scope
-if (shouldShowOnboarding()) {
-  setTimeout(startOnboarding, 50);
-}
+// (Vite port) The first-run questions no longer start by themselves at page load, because that raced with sign-in.
+// PreTaskIQ.startApp (29-persistence-bridge.js) starts them once the person is signed in, if this device has not done them yet.

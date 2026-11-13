@@ -3,7 +3,11 @@ import { flushSync } from 'react-dom';
 import './styles/index.css';
 import App from './App.jsx';
 import { installApiClient } from './api/client.js';
+import * as plansStore from './plans/store.js';
 import { bootLegacyApp } from './legacy/boot.js';
+
+// The prototype's scripts (29-persistence-bridge.js) save plans through this.
+window.PreTaskIQStore = plansStore;
 
 // 1. Point the prototype's AI calls at our own proxy (and add the access code to them).
 installApiClient();

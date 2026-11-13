@@ -14,7 +14,7 @@ async function generateJHA(messages) {
     const result = await callClaude({
       system: buildJHASystemPrompt(),
       messages: [{ role: "user", content: `Here is the full planning conversation:\n\n${transcript}\n\nGenerate the JHA JSON now.` }],
-      maxTokens: 4000
+      maxTokens: 6000
     });
     const parsed = extractJson(result);
     renderDocument(parsed);

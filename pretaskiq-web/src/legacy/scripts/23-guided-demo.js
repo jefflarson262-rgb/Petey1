@@ -332,9 +332,5 @@ function exitDemo() {
   showScreen('intake');
 }
 
-// Init demo on load
-document.addEventListener('DOMContentLoaded', function() {
-  if (document.getElementById('screen-intro')) {
-    setTimeout(function() { renderDemoStep(0); }, 400);
-  }
-});
+// (Vite port) The demo no longer starts by itself on load. The app opens on the planning screen;
+// the demo starts from the account menu or with ?demo in the address. See 29-persistence-bridge.js.
