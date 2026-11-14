@@ -134,7 +134,8 @@ async function sendTurn(newApiMessages) {
   convSend.disabled = true;
   showTyping();
   try {
-    const rawReply = await callClaude({ system: buildInterviewSystemPrompt(), messages: newApiMessages });
+    // The pace line (which question this is, and when to close) is added to the system prompt only, never to the conversation itself.
+    const rawReply = await callClaude({ system: buildInterviewSystemPrompt(newApiMessages), messages: newApiMessages });
     hideTyping();
     const incParsed = parseIncidentTag(rawReply);
     const { text: reply, hazardSummary } = parseEscalationTag(incParsed.text);
