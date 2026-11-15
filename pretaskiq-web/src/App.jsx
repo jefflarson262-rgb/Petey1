@@ -4,6 +4,9 @@ import AccessCodeDialog from './components/AccessCodeDialog.jsx';
 import AuthGate from './components/AuthGate.jsx';
 import AccountMenu from './components/AccountMenu.jsx';
 import SaveStatus from './components/SaveStatus.jsx';
+import AlertsDialog from './components/AlertsDialog.jsx';
+import AlertBanner from './components/AlertBanner.jsx';
+import * as alerts from './alerts/store.js';
 import { allowedViews, getSnapshot, initAuth, subscribe } from './auth/session.js';
 
 // The prototype's screens are plain HTML that its own scripts manage (they rewrite parts of it constantly).
@@ -25,6 +28,18 @@ export default function App() {
 
   useEffect(() => { initAuth(); }, []);
 
+  // The safety inbox: safety administrators check for new alerts while the app is open; signing out forgets the list.
+  const alertState = useSyncExternalStore(alerts.subscribe, alerts.getSnapshot);
+  const role = auth.phase === 'signed_in' ? auth.profile.role : null;
+  useEffect(() => {
+    if (role === 'safety') alerts.startWatching(); else alerts.stopWatching();
+    if (!role) alerts.reset();
+    return undefined;
+  }, [role, auth.user && auth.user.id]);
+  const baseTitle = useRef(document.title);
+  const waiting = role === 'safety' ? alerts.openCount(alertState) : 0;
+  useEffect(() => { document.title = waiting ? `(${waiting}) ${baseTitle.current}` : baseTitle.current; }, [waiting]);
+
   // Open the app on the planning screen once per person. (Signing back in after a timeout is not a new start,
   // so a plan in progress is not thrown away.)
   useEffect(() => {
@@ -44,6 +59,8 @@ export default function App() {
       <AccessCodeDialog />
       <AccountMenu />
       <SaveStatus />
+      <AlertBanner />
+      <AlertsDialog />
       <AuthGate />
     </>
   );

@@ -43,6 +43,12 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   await assert.rejects(db.query(`insert into public.plan_revisions (plan_id, revision, data) values ($1, 1, '{}')`, [p.rows[0].id]), /duplicate key/);   // one row per revision
   await assert.rejects(db.query(`insert into public.plan_revisions (plan_id, revision, data, source) values ($1, 2, '{}', 'bogus')`, [p.rows[0].id]), /check constraint/);
   await assert.rejects(db.query(`update public.profiles set role = 'owner'`), /check constraint/);
+  // Safety alerts: new ones start open, only the two known states are allowed, and the server (service_role) can raise and acknowledge them
+  await db.query(`insert into public.alerts (raised_by, hazard) values ($1, 'Anchor not verified')`, [uid]);
+  assert.deepEqual((await db.query(`select status, acknowledged_at from public.alerts`)).rows, [{ status: 'open', acknowledged_at: null }]);
+  await assert.rejects(db.query(`insert into public.alerts (raised_by, hazard, status) values ($1, 'x', 'bogus')`, [uid]), /check constraint/);
+  await assert.rejects(db.query(`insert into public.alerts (raised_by) values ($1)`, [uid]), /null value/);        // a hazard is required
+  await db.query(`update public.alerts set status = 'acknowledged', acknowledged_by = $1, acknowledged_at = now()`, [uid]);
   await db.exec('reset role');
 
   // Someone with saved plans cannot be deleted by accident (the database refuses); switching 'approved' off is how to cut them off
@@ -53,7 +59,7 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   // The browser keys (anon, and signed-in users going straight to the database) can read and write nothing
   for (const role of ['anon', 'authenticated']) {
     await db.exec(`set role ${role}`);
-    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage']) {
+    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts']) {
       await assert.rejects(db.query(`select * from public.${t}`), /permission denied/, `${role} must not read ${t}`);
     }
     await assert.rejects(db.query(`insert into public.ai_usage (user_id) values (gen_random_uuid())`), /permission denied/);

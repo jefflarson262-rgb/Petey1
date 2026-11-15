@@ -83,3 +83,25 @@ create trigger on_auth_user_created after insert on auth.users
 -- 7. The function above is only meant to run as a trigger. Supabase's security check flags it because the public API could try to call it
 --    directly; closing that costs nothing (the trigger itself keeps working).
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
+
+-- 8. Hazard alerts (the safety inbox). When the crew flags a hazard they cannot control, the app saves an alert here; every safety
+--    administrator sees it in their alerts inbox and can mark it acknowledged. Same lock as the tables above: only the server reaches it.
+create table if not exists public.alerts (
+  id                   uuid primary key default gen_random_uuid(),
+  raised_by            uuid not null references public.profiles (id),
+  raised_by_name       text,
+  hazard               text not null,
+  context              text,
+  job                  text,
+  plan_id              uuid,
+  status               text not null default 'open' check (status in ('open', 'acknowledged')),
+  acknowledged_by      uuid references public.profiles (id),
+  acknowledged_by_name text,
+  acknowledged_at      timestamptz,
+  created_at           timestamptz not null default now()
+);
+create index if not exists alerts_status_idx on public.alerts (status, created_at desc);
+create index if not exists alerts_raised_by_idx on public.alerts (raised_by, created_at desc);
+alter table public.alerts enable row level security;
+revoke all on public.alerts from anon, authenticated;
+grant all on public.alerts to service_role;

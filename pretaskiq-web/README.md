@@ -32,7 +32,7 @@ The screen and button names below come from Supabase's and Vercel's documentatio
 
 1. In Supabase, create a new project. You choose the region and a database password when you create it; keep that password somewhere safe (a password manager). This app does not need it.
 2. **Upgrade the organization to Pro** if this will be used on real jobs. Supabase's pricing page lists Pro from $25 per month (check the current price). On the Free plan, projects pause after a week of inactivity and there are no automatic backups, which is a poor fit for a safety tool.
-3. Open **SQL Editor**, start a new query, paste the whole contents of `supabase/setup.sql`, and run it. It is safe to run twice. It creates four tables (profiles, plans, plan_revisions, ai_usage) and locks them so that the browser's key can read nothing; only your server functions can.
+3. Open **SQL Editor**, start a new query, paste the whole contents of `supabase/setup.sql`, and run it. It is safe to run twice. It creates five tables (profiles, plans, plan_revisions, ai_usage, alerts) and locks them so that the browser's key can read nothing; only your server functions can.
 
 ### C. Turn off public sign-ups
 
@@ -239,14 +239,16 @@ api/plans.js             save a plan, list plans, open a plan, revision history
 api/health.js            the setup checklist
 api/speak.js             optional: text to natural speech (ElevenLabs); checks who you are, keeps the key on the server
 api/transcribe.js        optional: a recording of the foreman's answer to text (ElevenLabs), used on iPhones
+api/alerts.js            the safety inbox: raise a hazard alert, list alerts, mark one as seen
 server/                  shared server code: sign-in checks, roles, limits, error handling
 supabase/setup.sql       creates the tables and locks them (run once in the SQL Editor)
 index.html, vercel.json  page shell; function timeout and two security headers
 src/main.jsx, App.jsx    start-up; React draws the screens once, then the original scripts take over
 src/auth/                sign-in state: who is signed in, token refresh, sign out
 src/plans/               the saved-plans store: remembers which plan is on screen and saves changes in order
+src/alerts/              the safety inbox store: raises alerts, and checks for new ones every 30 seconds for safety admins
 src/api/                 adds the person's token to AI calls and turns server errors into plain sentences; speech.js talks to the two voice functions and rests them after repeated trouble
-src/components/          sign-in form, account menu, "My plans" list, save indicator, access-code dialog (React)
+src/components/          sign-in form, account menu, "My plans" list, safety alerts inbox and banner, save indicator, access-code dialog (React)
 src/markup/              the prototype's screens as separate HTML pieces
 src/styles/              the prototype's CSS plus auth.css and voice.css
 src/data/kb.json         the built-in knowledge base
@@ -255,7 +257,7 @@ src/legacy/scripts/      the prototype's JavaScript in its original run order (0
                          30-voice-conversation.js, which lets Petey speak and listen (natural or built-in voice;
                          built-in or recorded listening), 31-crew-signoff.js (crew list and finger signatures)
                          and 32-submit-plan.js (Submit and the hand-off to the shift companion)
-tests/                   65 tests: the proxy, the voice functions, sign-in and plans (against a stand-in Supabase and a stand-in ElevenLabs), and setup.sql run in a real Postgres
+tests/                   77 tests: the proxy, the voice functions, sign-in and plans (against a stand-in Supabase and a stand-in ElevenLabs), and setup.sql run in a real Postgres
 public/                  favicon and home-screen icon
 ```
 
@@ -273,7 +275,9 @@ public/                  favicon and home-screen icon
 
 **Checked here (against stand-ins, not the real services)**
 
-- 65 automated tests pass: the proxy, sign-in and roles, saved plans, the hourly limit, the setup check, and `setup.sql` run in a real (in-memory) Postgres, including that the browser keys are locked out and that the approve statement above works. 25 of them cover the two voice functions against a stand-in ElevenLabs: the key never leaves the server, people who are not signed in are refused before anything is sent, the browser cannot choose the voice, model or language, bad or oversized recordings are refused, ElevenLabs' own error messages are never passed on, and speaking does not use up the hourly AI limit.
+- **A browser test of 40 checks for the safety inbox** (not included in this folder): a foreman's flag reaches the database and a second browser signed in as a Safety Admin sees the badge, the tab count and the inbox; Mark as seen records who saw it and the foreman then sees that; another foreman sees nothing; a new alert shows as a banner on an open session; a failed delivery says NOT delivered and the warning stays; with no sign-in the app says nothing was sent to anyone; Petey is told what he may truthfully say; phone width. Eight deliberate breakages of the code were each caught.
+
+- 77 automated tests pass (12 of them are for the safety inbox): the proxy, sign-in and roles, saved plans, the hourly limit, the setup check, and `setup.sql` run in a real (in-memory) Postgres, including that the browser keys are locked out and that the approve statement above works. 25 of them cover the two voice functions against a stand-in ElevenLabs: the key never leaves the server, people who are not signed in are refused before anything is sent, the browser cannot choose the voice, model or language, bad or oversized recordings are refused, ElevenLabs' own error messages are never passed on, and speaking does not use up the hourly AI limit.
 - A browser test of 62 checks against the built site, the real `api/` functions, a stand-in Supabase and a stand-in Anthropic: sign-in and wrong password; an unapproved person gets no access; the setup questions then planning on a new device; a plan is saved at revision 1; a hand edit saves revision 2 and Petey's mid-shift update revision 3, all on the same plan; reload keeps you signed in; "My plans" lists, shows history, and reopens; a second foreman cannot see the first foreman's plan; the safety admin sees and can change everything; the construction admin can read but not change others' plans; the safety view stays closed to people without the role; a session timeout keeps the plan on screen and signing back in resumes it; the hourly limit gives a plain sentence; sign out clears this device; and neither secret key is in the page or built files. Deliberately breaking the role guard and the plan-overwrite guard makes the right checks fail. This browser test is not included in this folder.
 - **22 checks that Petey's speech is not cut off** (not included in this folder), using a pretend speaker and audio player that take a realistic time to say each piece (about 70 to 75 ms a character) and a fake page clock so minutes run in a moment: a 10.5-second first sentence is spoken to the end (the browser voice used to be cut at 5 seconds, the natural voice's 9.75-second sentence at 8); three long pieces are all spoken in order; a voice that stalls part-way gets a fair wait and then moves on once; a skipped piece that reports "end" late does not skip the next piece; a voice that never starts is given up on after about 5 seconds (browser) or 8 seconds (natural, handing over to the browser voice). Before the fix 8 of these checks failed. To check they can fail I broke the code six ways (timer not restarted for each voice, a late "end" moving on twice, the allowance for each voice far too short, the natural voice never giving up) and each was caught.
 - **36 checks that Petey has a male voice** (not included in this folder), with pretend voice lists: which names count as male and which do not ("Google UK English Female" and "Alexandra" do not); which voice is chosen from nine different lists; a voice the person picked is kept but one that was only saved automatically is ignored; Settings lists Automatic first and male voices first, Preview speaks the right voice, nothing is saved until Save, a choice is never wiped by saving other settings, and when the natural voice is on Preview asks it. To check they can fail I broke the code thirteen ways, and each was caught (the first round missed four; I added checks, and removed one redundant rule). **These prove the code follows the name list. They do not prove those names are what real iPhones, iPads, Windows or Android devices call their voices.**
@@ -302,7 +306,7 @@ public/                  favicon and home-screen icon
 **Known limits of this stage**
 
 - The **Safety Admin and Construction Admin dashboards still show the prototype's sample crew data**. Only plans are saved and role-protected so far.
-- **Escalation alerts are not sent anywhere yet** (stage 3). They show on screen only. Email or text needs an extra service.
+- **Safety alerts are in-app only.** When a hazard is flagged and someone is signed in, it is saved to the safety inbox (the `alerts` table). Every signed-in **Safety Admin** sees it in the account menu (red count), in the tab title and in a banner, but **only while the app is open** and the check runs every 30 seconds. It is not emailed, texted or pushed, and the crew supervisor is not told by the app. For anything urgent the foreman must still tell people directly. Texting would need a provider and carrier registration (TCR for 10-digit numbers), which is not set up. With **sign-in off** (shared access code) there are no accounts to deliver to, so a flag shows on screen only and the app says so. If the inbox cannot be reached the app says "NOT delivered" and keeps the warning on screen. Petey is told to say the same. The scripted guided demo still shows its original "Escalation sent" scene. Run `supabase/setup.sql` again once to add the `alerts` table to an existing project.
 - **The knowledge base is not saved per company yet** (stage 2), and it is sent to the AI inside the prompt, so very large libraries will need real search later.
 - A plan opened from the offline cache or built on the offline form is treated as a new plan the first time it is changed. It never overwrites a saved one.
 - On a new device the first sign-in shows the prototype's five short setup questions (they can be skipped).

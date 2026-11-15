@@ -28,7 +28,7 @@ var ROLE_MENUS = {
       {
         label: 'Safety Knowledge Base',
         items: [
-          { icon: '👥', label: 'Escalation Contacts', sub: 'Who Petey notifies when a hazard is flagged', action: "openSettingsModal(); closeNavDropdown();", id: 'settings-open-btn' },
+          { icon: '👥', label: 'Escalation Contacts', sub: 'Names for hazard flags (alerts go to the safety inbox)', action: "openSettingsModal(); closeNavDropdown();", id: 'settings-open-btn' },
           { icon: '⚠️', label: 'Upload Incident', sub: 'Petey surfaces lessons learned in context', action: "openSettingsToKb('incident'); closeNavDropdown();" },
           { icon: '🔍', label: 'Upload Root Cause Analysis', sub: 'Corrective actions Petey can probe for', action: "openSettingsToKb('rca'); closeNavDropdown();" },
           { icon: '📋', label: 'Upload Policy', sub: 'Safety and operational policies', action: "openSettingsToKb('policy'); closeNavDropdown();" },

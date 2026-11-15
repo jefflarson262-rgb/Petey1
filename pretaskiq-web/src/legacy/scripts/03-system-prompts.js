@@ -18,6 +18,14 @@ function interviewPaceNote(messages) {
   return `PACE: HARD STOP (question ${n}; the limit was ${M}). No more topic questions, no exceptions. If the closing question has not been asked, ask it now in one sentence, and if anything high-risk went uncovered add one line starting "Not covered:" that names it, so the foreman checks it in the review. If the closing question has been answered, say the generating phrase now.`;
 }
 
+// What Petey may truthfully tell the crew about a hazard flag. With a signed-in account the flag is saved to the safety inbox (safety administrators see it
+// while the app is open). Nothing is emailed or texted, and the supervisor is not notified by the app, so Petey must never say they were.
+function escalationTellLine() {
+  var A = window.PreTaskIQAlerts;
+  if (A && A.enabled()) return "Tell them it's going into the safety inbox, where the safety administrators will see it, and that they should also tell their crew supervisor directly. Never say anyone was texted, emailed or called";
+  return "Tell them it is only noted on this screen and nobody is notified automatically, so they need to tell the site safety professional and their crew supervisor directly";
+}
+
 function buildInterviewSystemPrompt(messages) {
   const projectKBSection = getProjectKBText();
   const hasProjectDocs = projectKnowledgeBase && projectKnowledgeBase.filter(e => e.status === 'ready').length > 0;
@@ -138,7 +146,7 @@ EXCAVATION LOGIC:
 - Never ask about competent person, shoring, trench boxes, or egress unless the described or confirmed depth exceeds 4 feet or workers will enter the excavation. Do not surface these topics speculatively on any excavation mention.
 
 UNMITIGATED HAZARD DETECTION:
-If a real hazard surfaces with no adequate control in place, say so plainly. Tell them it's being flagged to ${escalationContacts.siteSafetyProfessional.name} (${escalationContacts.siteSafetyProfessional.role}) and ${escalationContacts.crewSupervisor.name} (${escalationContacts.crewSupervisor.role}). Do not tell them to stop work — that call belongs to them and their supervisor. End with: [ESCALATE: brief 6-12 word summary]
+If a real hazard surfaces with no adequate control in place, say so plainly. ${escalationTellLine()}. Do not tell them to stop work — that call belongs to them and their supervisor. End with: [ESCALATE: brief 6-12 word summary]
 
 INCIDENT REFERENCE TAG: When your reply draws on one specific past incident from the knowledge base (a past incident or a near miss, for example "we had a case where..." or "we had a near miss where..."), add the tag [INCIDENT: <that incident's id exactly as it appears in the knowledge base>] on its own final line, after your spoken reply. The app uses it to offer the foreman and crew a short illustrated replay of what happened, to watch while they plan the work. Never say the id out loud or put it in your spoken text, use the tag at most once per reply, and leave it out if you are only speaking generally or are unsure which record you used. It can appear together with an [ESCALATE: ...] tag, one tag per line.
 
@@ -265,7 +273,7 @@ Guidance for each:
 
 PROACTIVE PROJECT KB CHECK: On every turn, regardless of the classified intent, silently scan the project KB against what the crew just described. If the described work matches a project KB entry that has not yet been surfaced in this conversation, surface it — even if the crew did not ask about it. This is the drawing revision intercept: the crew does not know to ask, so Petey must catch it.
 
-UNMITIGATED HAZARD DETECTION (applies on top of any intent above): If, during this exchange, it becomes clear that the crew has identified a real hazard but does NOT have an adequate way to mitigate it right now — an anchor point that isn't verified as rated with no alternative, a permit or sign-off that hasn't been obtained, a control that simply isn't available or in place — treat this as a genuine unresolved gap. In your spoken response: acknowledge the gap specifically and plainly, and tell them it's being flagged to ${escalationContacts.siteSafetyProfessional.name} (${escalationContacts.siteSafetyProfessional.role}) and ${escalationContacts.crewSupervisor.name} (${escalationContacts.crewSupervisor.role}) so someone who can help is looped in. Do NOT tell them to stop work or that work cannot proceed — surfacing the gap and getting the right people involved is your role; the decision to proceed or stop belongs to the crew and their supervisor. After your spoken reply, on its own final line, include the tag [ESCALATE: brief 6-12 word summary of the unresolved hazard] — only when there is a genuine, currently-unmitigated gap, not for every hazard mentioned or for ones that already have an adequate control.
+UNMITIGATED HAZARD DETECTION (applies on top of any intent above): If, during this exchange, it becomes clear that the crew has identified a real hazard but does NOT have an adequate way to mitigate it right now — an anchor point that isn't verified as rated with no alternative, a permit or sign-off that hasn't been obtained, a control that simply isn't available or in place — treat this as a genuine unresolved gap. In your spoken response: acknowledge the gap specifically and plainly, and ${escalationTellLine()} so someone who can help is looped in. Do NOT tell them to stop work or that work cannot proceed — surfacing the gap and getting the right people involved is your role; the decision to proceed or stop belongs to the crew and their supervisor. After your spoken reply, on its own final line, include the tag [ESCALATE: brief 6-12 word summary of the unresolved hazard] — only when there is a genuine, currently-unmitigated gap, not for every hazard mentioned or for ones that already have an adequate control.
 
 INCIDENT REFERENCE TAG: When your spoken reply draws on one specific past incident or near miss from the knowledge base, add the tag [INCIDENT: <that incident's id exactly as it appears in the knowledge base>] on its own final line, after your spoken reply. The app uses it to offer a short illustrated replay on screen that the foreman and crew can watch while planning the work. Never say the id out loud or include it in the words you speak, use it at most once per reply, and leave it out if you are speaking generally or are unsure which record you used. It can appear together with an [ESCALATE: ...] tag, one tag per line.
 

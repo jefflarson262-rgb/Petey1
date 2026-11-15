@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { getSnapshot, signOut, subscribe } from '../auth/session.js';
 import PlansDialog from './PlansDialog.jsx';
+import { getSnapshot as alertsSnapshot, openCount, openDialog as openAlerts, subscribe as subscribeAlerts } from '../alerts/store.js';
 
 const ROLE_LABEL = { foreman: 'Foreman', safety: 'Safety Admin', construction: 'Construction Admin' };
 
@@ -9,6 +10,7 @@ const ROLE_LABEL = { foreman: 'Foreman', safety: 'Safety Admin', construction: '
 // With the old shared-code mode there is no account, so it offers just the guided demo.
 export default function AccountMenu() {
   const auth = useSyncExternalStore(subscribe, getSnapshot);
+  const alerts = useSyncExternalStore(subscribeAlerts, alertsSnapshot);
   const [slot, setSlot] = useState(null);
   const [open, setOpen] = useState(false);
   const [plansOpen, setPlansOpen] = useState(false);
@@ -26,6 +28,8 @@ export default function AccountMenu() {
   if (!slot || !(signedIn || auth.phase === 'code')) return null;
 
   const demo = () => { setOpen(false); window.PreTaskIQ?.openDemo(); };
+  const isSafety = signedIn && auth.profile.role === 'safety';
+  const waiting = isSafety ? openCount(alerts) : 0;
   const name = signedIn ? (auth.profile.displayName || auth.user.email || 'Account') : 'Menu';
 
   return (
@@ -34,11 +38,13 @@ export default function AccountMenu() {
         <div className="acct" ref={wrap}>
           <button type="button" className="acct-btn" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
             <span className="acct-name">{name}</span>
+            {waiting > 0 && <span className="acct-badge" aria-label={`${waiting} safety alerts waiting`}>{waiting}</span>}
             <span className="acct-caret">▾</span>
           </button>
           {open && (
             <div className="acct-menu" role="menu">
               {signedIn && <div className="acct-who"><div>{auth.user.email}</div><div className="acct-role">{ROLE_LABEL[auth.profile.role] || auth.profile.role}</div></div>}
+              {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openAlerts(); }}>{isSafety ? `Safety alerts${waiting ? ` (${waiting})` : ''}` : 'Hazards I flagged'}</button>}
               {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); setPlansOpen(true); }}>My plans</button>}
               <button type="button" role="menuitem" className="acct-item" onClick={demo}>Guided demo</button>
               {signedIn && <button type="button" role="menuitem" className="acct-item acct-signout" onClick={signOut}>Sign out</button>}

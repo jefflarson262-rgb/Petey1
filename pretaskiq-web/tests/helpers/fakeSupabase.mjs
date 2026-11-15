@@ -9,12 +9,13 @@ const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
 export const makeJwt = (sub, email, ttl = 3600) => `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub, email, aud: 'authenticated', role: 'authenticated', exp: Math.floor(Date.now() / 1000) + ttl })}.fakesig`;
 
 export async function startFakeSupabase({ publishableKey = 'sb_publishable_test', secretKey = 'sb_secret_test' } = {}) {
-  const state = { users: [], tables: { profiles: [], plans: [], plan_revisions: [], ai_usage: [] }, requests: [], failTable: null };
+  const state = { users: [], tables: { profiles: [], plans: [], plan_revisions: [], ai_usage: [], alerts: [] }, requests: [], failTable: null };
   let identity = 1;
   const defaults = {
     plans: () => ({ id: randomUUID(), current_revision: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), title: 'Untitled plan' }),
     plan_revisions: () => ({ id: randomUUID(), created_at: new Date().toISOString() }),
     ai_usage: () => ({ id: identity++, used_at: new Date().toISOString() }),
+    alerts: () => ({ id: randomUUID(), status: 'open', created_at: new Date().toISOString(), acknowledged_at: null }),
     profiles: () => ({ created_at: new Date().toISOString() }),
   };
 

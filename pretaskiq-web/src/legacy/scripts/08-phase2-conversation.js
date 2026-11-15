@@ -67,29 +67,64 @@ function recipientNamesText(entry) {
   return entry.recipients.map(r => `${r.name} (${r.role})`).join(" and ");
 }
 
+// What a hazard flag really did. The words on screen follow entry.delivery, so they never claim more than happened:
+//   'sending'   being saved to the safety inbox         'delivered'  it is in the safety inbox (shown to safety administrators while the app is open)
+//   'failed'    the inbox could not be reached           'screen'     nobody is signed in, so it is shown on this screen only and sent to no one
+function escalationWords(entry) {
+  const hazard = escapeHtml(entry.hazard);
+  switch (entry.delivery) {
+    case 'sending': return { title: 'Hazard flagged \u2014 sending to the safety inbox\u2026', text: `"${hazard}"`, head: '\ud83d\udea9 Flagged \u2014 sending to the safety inbox\u2026', tail: '' };
+    case 'delivered': return { title: 'Hazard flagged \u2014 in the safety inbox', text: `"${hazard}" is in the safety inbox. A safety administrator sees it while they have the app open. For anything urgent, tell them directly.`, head: '\ud83d\udea9 Flagged \u2014 in the safety inbox', tail: ' Work decisions remain with the crew and supervisor.' };
+    case 'failed': return { title: 'Hazard flagged \u2014 NOT delivered', text: `"${hazard}" did not reach the safety inbox (${escapeHtml(entry.deliveryError || 'no connection')}). Tell the site safety professional directly.`, head: '\ud83d\udea9 Flagged \u2014 NOT delivered. Tell the site safety professional directly.', tail: '' };
+    default: return { title: 'Hazard flagged on this screen only', text: `"${hazard}" is logged here but was not sent to anyone. Tell the site safety professional and your supervisor directly.`, head: '\ud83d\udea9 Flagged on this screen only \u2014 not sent to anyone', tail: ' Tell the site safety professional directly.' };
+  }
+}
+
+// Sends the flag to the safety inbox when someone is signed in; resolves once it is known whether it got there.
+function deliverEscalation(entry, job) {
+  const A = window.PreTaskIQAlerts;
+  if (!A || !A.enabled()) { entry.delivery = 'screen'; return Promise.resolve(entry); }
+  entry.delivery = 'sending';
+  const snap = window.PreTaskIQStore && window.PreTaskIQStore.getSnapshot ? window.PreTaskIQStore.getSnapshot() : null;
+  return A.raise({ hazard: entry.hazard, context: entry.context, job: job || '', planId: snap && snap.planId ? snap.planId : undefined })
+    .then((r) => { entry.delivery = r.ok ? 'delivered' : 'failed'; entry.deliveryError = r.ok ? '' : r.message; return entry; });
+}
+
+// What job is this flag about? The plan on screen, or else the first thing the foreman said in the planning conversation.
+function escalationJob() {
+  if (typeof activeJHA !== "undefined" && activeJHA && activeJHA.jobTitle) return activeJHA.jobTitle;
+  if (typeof apiMessages !== "undefined" && apiMessages && apiMessages[0] && typeof apiMessages[0].content === "string") return apiMessages[0].content;
+  return "";
+}
+
 function showEscalationToast(entry) {
   // Global toast, works regardless of which screen (conversation or Petey) triggered it
+  const sending = deliverEscalation(entry, escalationJob());
+  const words = escalationWords(entry);
   const toast = document.createElement("div");
   toast.className = "escalation-toast anim-in";
   toast.innerHTML = `
     <div class="escalation-toast-icon">🚩</div>
     <div class="escalation-toast-body">
-      <div class="escalation-toast-title">Hazard flagged — notification sent</div>
-      <div class="escalation-toast-text">"${escapeHtml(entry.hazard)}" was sent to ${escapeHtml(recipientNamesText(entry))}.</div>
+      <div class="escalation-toast-title">${words.title}</div>
+      <div class="escalation-toast-text">${words.text}</div>
     </div>
     <button class="escalation-toast-close" aria-label="Dismiss">&times;</button>
   `;
   document.body.appendChild(toast);
   toast.querySelector(".escalation-toast-close").addEventListener("click", () => toast.remove());
-  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 9000);
+  let removeTimer = setTimeout(() => { if (toast.parentNode) toast.remove(); }, 9000);
 
-  // Inline, permanent confirmation in whichever conversation log is currently visible
+  // Inline, permanent record in whichever conversation log is currently visible
   const inlineBox = document.createElement("div");
   inlineBox.className = "escalation-inline anim-in";
-  inlineBox.innerHTML = `
-    <div class="escalation-inline-head">🚩 Flagged to ${escapeHtml(recipientNamesText(entry))}</div>
-    <div class="escalation-inline-text">${escapeHtml(entry.hazard)} — logged at ${escapeHtml(entry.timestamp)}. Work decisions remain with the crew and supervisor.</div>
+  const paintInline = (w) => {
+    inlineBox.innerHTML = `
+    <div class="escalation-inline-head">${w.head}</div>
+    <div class="escalation-inline-text">${escapeHtml(entry.hazard)} — logged at ${escapeHtml(entry.timestamp)}.${w.tail}</div>
   `;
+  };
+  paintInline(words);
   if (document.getElementById("screen-petey").classList.contains("active")) {
     peteyLogInner.appendChild(inlineBox);
     requestAnimationFrame(() => { const log = document.getElementById("petey-log"); log.scrollTop = log.scrollHeight; });
@@ -97,6 +132,18 @@ function showEscalationToast(entry) {
     convScrollInner.appendChild(inlineBox);
     scrollConvToBottom();
   }
+
+  // When the result is known, correct the words. A failure stays on screen until it is dismissed.
+  sending.then(() => {
+    const w = escalationWords(entry);
+    const t = toast.querySelector(".escalation-toast-title"), x = toast.querySelector(".escalation-toast-text");
+    if (t) t.innerHTML = w.title;
+    if (x) x.innerHTML = w.text;
+    paintInline(w);
+    clearTimeout(removeTimer);
+    if (entry.delivery !== 'failed') removeTimer = setTimeout(() => { if (toast.parentNode) toast.remove(); }, 9000);
+    if (typeof renderNotificationLog === "function") { try { renderNotificationLog(); } catch (e) { /* settings not open */ } }
+  });
 }
 
 function parseIncidentTag(rawText) {

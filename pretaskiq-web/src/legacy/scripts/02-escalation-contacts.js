@@ -31,13 +31,13 @@ function closeSettingsModal() {
 function renderNotificationLog() {
   const list = document.getElementById("notification-log-list");
   if (notificationLog.length === 0) {
-    list.innerHTML = `<div class="notification-log-empty">No hazard notifications sent yet this session.</div>`;
+    list.innerHTML = `<div class="notification-log-empty">No hazards flagged yet this session.</div>`;
     return;
   }
   list.innerHTML = notificationLog.map(entry => `
     <div class="notification-log-item">
       <div class="notification-log-item-time">${escapeHtml(entry.timestamp)} · ${escapeHtml(entry.context)}</div>
-      <div class="notification-log-item-text">${escapeHtml(entry.hazard)} → ${escapeHtml(recipientNamesText(entry))}</div>
+      <div class="notification-log-item-text">${escapeHtml(entry.hazard)} — ${escapeHtml(({ delivered: 'in the safety inbox', sending: 'sending to the safety inbox\u2026', failed: 'NOT delivered', screen: 'on this screen only, not sent to anyone' })[entry.delivery] || 'on this screen only, not sent to anyone')}</div>
     </div>
   `).join("");
 }
