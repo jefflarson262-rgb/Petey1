@@ -23,3 +23,8 @@ flushSync(() => root.render(<App />));
 
 // 3. ...then start the prototype's scripts, exactly as the single HTML file did.
 bootLegacyApp();
+
+// The voice check page opens only when the address asks for it (?voicecheck=1). See api/voicecheck.js.
+if (/[?&]voicecheck(=|&|$)/.test(window.location.search)) {
+  import('./api/voicecheck.js').then((m) => m.startVoiceCheck(speech)).catch(() => {});
+}

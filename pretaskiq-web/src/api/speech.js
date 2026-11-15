@@ -51,8 +51,14 @@ const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent || '') || (navig
 const canRecord = () => Boolean(navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function' && (window.AudioContext || window.webkitAudioContext));
 
 // ---------- natural voice (speaking) ----------
-// True when the server has the voice service and it is not resting after trouble.
-const ready = () => configured === true && Date.now() >= tts.pausedUntil;
+// In the shared-code mode the voice service needs the access code too, and the code is kept only in the tab: a fresh Safari tab has none until the
+// first AI call asks for it. Without it a request can only be refused (401), and a refusal puts the service to rest for five minutes, so the whole
+// planning conversation would have used the phone's own voice. So until a code is stored the service is simply "not available yet" (no request,
+// no resting), and it switches on by itself as soon as the code is typed. A code that IS stored but refused still counts as trouble.
+const haveCredentials = () => getMode() === 'supabase' || Boolean(getStoredCode());
+
+// True when the server has the voice service, this tab may use it, and it is not resting after trouble.
+const ready = () => configured === true && haveCredentials() && Date.now() >= tts.pausedUntil;
 
 const authHeaders = async () => {
   const headers = { 'content-type': 'application/json' };
@@ -114,7 +120,7 @@ const noteUnplayable = () => noteFailure(tts, 0);
 // ---------- listening through the server ----------
 // True when this device should record the answer and send it to the server (see the note above).
 const listenViaServer = () => {
-  if (configured !== true || Date.now() < stt.pausedUntil || !canRecord()) return false;
+  if (configured !== true || !haveCredentials() || Date.now() < stt.pausedUntil || !canRecord()) return false;
   const pref = preference();
   return pref === 'server' || (pref === 'auto' && isIOS());
 };
@@ -128,6 +134,38 @@ function transcribe(wavBase64, signal) {
   });
 }
 
+// ---------- for the voice check page ----------
+// Asks the server whether the natural voice is on and tries one very short line, and reports what came back. It only reports numbers and the error
+// NAMES the server itself sends (never the key or the access code), and it does not count as trouble for the resting rules above.
+async function diagnose({ send = true } = {}) {
+  const out = { configured: null, status: null, error: '', providerStatus: null, bytes: 0, type: '', blob: null };
+  try {
+    const r = await nativeFetch(SPEAK_URL, { method: 'GET' });
+    const j = r.ok ? await r.json() : null;
+    out.configured = Boolean(j && j.configured === true);
+  } catch { return out; }                                  // configured stays null: the site could not be reached
+  if (!out.configured || !send) return out;                // send:false only asks whether the voice is on; nothing is spoken or billed
+  try {
+    const res = await nativeFetch(SPEAK_URL, { method: 'POST', headers: await authHeaders(), body: JSON.stringify({ text: 'Voice check.' }) });
+    out.status = res.status;
+    if (!res.ok) {
+      let j = null; try { j = await res.json(); } catch { /* no body */ }
+      out.error = j && typeof j.error === 'string' ? j.error : '';
+      out.providerStatus = j && Number.isFinite(j.providerStatus) ? j.providerStatus : null;
+      return out;
+    }
+    const blob = await res.blob();
+    out.bytes = blob.size; out.type = blob.type || ''; out.blob = blob;
+  } catch { out.status = 0; out.error = 'network'; }
+  return out;
+}
+
+// What the page believes right now, for the voice check page.
+const state = () => ({
+  configured, haveCredentials: haveCredentials(), supabase: getMode() === 'supabase',
+  speakRestMs: Math.max(0, tts.pausedUntil - Date.now()), listenRestMs: Math.max(0, stt.pausedUntil - Date.now()),
+});
+
 preference();
 
-export const speech = { check, ready, fetchAudio, noteUnplayable, listenViaServer, transcribe, isIOS, preference };
+export const speech = { check, ready, fetchAudio, noteUnplayable, listenViaServer, transcribe, isIOS, preference, diagnose, state };
