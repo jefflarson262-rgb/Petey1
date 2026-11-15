@@ -253,22 +253,27 @@
     var rec = new SR();
     // iPhone Safari: continuous mode returns overlapping results; a single-answer session behaves better (reported on WebKit's bug tracker).
     rec.lang = 'en-US'; rec.continuous = !ios; rec.interimResults = true; rec.maxAlternatives = 1;
-    var finals = '', interim = '', heard = false, finished = false, errCode = '', cancelled = false, quietTimer = null, maxTimer = null, startTimer = null;
+    var finals = '', interim = '', heard = false, finished = false, ended = false, errCode = '', cancelled = false, quietTimer = null, maxTimer = null, startTimer = null;
     function currentText() { return collapse([finals, interim]); }
     function done() {
       if (finished) return; finished = true;
       clearTimeout(quietTimer); clearTimeout(maxTimer); clearTimeout(startTimer);
+      // From here this session is over. A cloud recognizer can still deliver text a moment later; it must not write into the answer box or start timers
+      // (that is how one spoken answer used to be sent twice: first cut off, then complete).
+      rec.onresult = null; rec.onerror = null; rec.onend = null;
+      if (!ended) { try { rec.abort(); } catch (e) {} }
       if (activeListen === ctl) activeListen = null;
-      var text = currentText();
+      var text = cancelled ? '' : currentText();       // a session that was thrown away (stop) hands over nothing, as listenServer does
       var reason = cancelled ? 'cancelled' : text ? 'ok'
         : (errCode === 'not-allowed' || errCode === 'service-not-allowed') ? 'denied'
         : errCode === 'audio-capture' ? 'no-mic' : errCode === 'network' ? 'network'
         : (errCode && errCode !== 'no-speech' && errCode !== 'aborted') ? 'error' : 'no-speech';
       opts.onDone(text, reason);
     }
-    function endSoon() { try { rec.stop(); } catch (e) {} setTimeout(done, 1500); }     // 'end' normally fires first; this is the safety net
+    function endSoon() { try { rec.stop(); } catch (e) {} setTimeout(done, 4000); }     // 'end' normally fires first, once the final text is in. This is the safety net: some recognizers need two or three seconds after stop() to deliver it
     var ctl = { stop: function () { cancelled = true; try { rec.abort(); } catch (e) {} setTimeout(done, 0); }, finish: endSoon };
     rec.onresult = function (ev) {
+      if (finished) return;
       heard = true;
       var fin = [], inter = [];
       for (var i = 0; i < ev.results.length; i++) { var r = ev.results[i]; (r.isFinal ? fin : inter).push(r[0].transcript); }
@@ -279,7 +284,7 @@
       clearTimeout(quietTimer); quietTimer = setTimeout(endSoon, ios ? Math.max(opts.silenceMs || 1800, 4500) : (opts.silenceMs || 1800));
     };
     rec.onerror = function (ev) { errCode = ev && ev.error || 'error'; };
-    rec.onend = function () { done(); };
+    rec.onend = function () { ended = true; done(); };
     // Reported on WebKit's bug tracker (unconfirmed by Apple): a short utterance before each session helps iPhone recognition start hearing again.
     if (ios && synth) { try { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch (e) {} }
     try { rec.start(); } catch (e) { errCode = 'error'; setTimeout(done, 0); return ctl; }
@@ -477,7 +482,7 @@
       onStage: function (st) { if (st === 'transcribing' && cv.on) cvPhase('thinking', 'Got it… working out what you said.'); },
       onText: function (t) { convInputEl.value = t; },
       onDone: function (text, reason) {
-        if (!cv.on) return;
+        if (!cv.on || reason === 'cancelled') return;      // thrown away on purpose (the person typed, or left): nothing to send, nothing went wrong
         if (text) {
           cv.quietRetries = 0;
           convInputEl.value = text;
@@ -563,6 +568,7 @@
       onText: function (t) { intakeBox.value = (base ? base + ' ' : '') + t; intakeFieldChanged(); },
       onDone: function (text, reason) {
         intakeVoice.listening = false; intakeUi();
+        if (reason === 'cancelled') return;                // thrown away on purpose (the person left the screen): nothing to start, nothing went wrong
         if (!text) { setStatus(intakeStatusEl, reason === 'no-speech' ? 'I did not hear anything. Tap Talk to Petey to try again, or type.' : problemText(reason), 'problem'); if (reason !== 'no-speech') intakeVoice.wanted = false; intakeUi(); return; }
         intakeBox.value = (base ? base + ' ' : '') + text; intakeFieldChanged();
         setStatus(intakeStatusEl, 'Heard: “' + intakeBox.value + '”. Starting in a moment. Tap the box to change it.');
