@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
       phase = phase.trim();
 
       if (!text && !drawingNum) {
-        alert('Please enter a description or document number.');
+        alert('Paste the document text (or a description) into the box first. A document number is optional. To add a file instead, use the upload area above.');
         return;
       }
       // Build rich description from structured fields
@@ -177,7 +177,7 @@ function renderKbEntries() {
     return '<div class="kb-entry-card ' + e.status + '">'
       + '<div class="kb-entry-header">'
       + '<span style="font-size:14px;">' + icon + '</span>'
-      + '<span class="kb-entry-title">' + e2(e.title || '') + (e.revision ? ' -- ' + e2(e.revision) : '') + '</span>'
+      + '<span class="kb-entry-title">' + e2(e.title || '') + (e.revision && String(e.title || '').indexOf(e.revision) < 0 ? ' -- ' + e2(e.revision) : '') + '</span>'
       + '<span class="kb-entry-badge ' + e.status + '">' + (e.status === 'processing' ? 'Parsing...' : 'Ready') + '</span>'
       + '</div>'
       + (e.change_description ? '<div style="font-size:13px;color:#444;margin-top:5px;">' + e2(e.change_description) + '</div>' : '')

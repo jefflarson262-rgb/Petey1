@@ -164,6 +164,8 @@ async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType
       entry.title = parsed.drawing_number + (parsed.revision ? ' ' + parsed.revision : '');
     }
     if (parsed.revision && !entry.revision) entry.revision = parsed.revision;
+    // No number typed and none found in the document: name the entry from what it says, so it is easy to tell apart in the list
+    if (/^(Manual entry|Untitled)$/i.test(entry.title) && entry.change_description) entry.title = entry.change_description.replace(/\s+/g, ' ').slice(0, 60).replace(/\s+\S*$/, '').trim() || entry.title;
 
   } catch (err) {
     entry.status = 'ready';
