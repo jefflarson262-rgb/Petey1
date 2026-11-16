@@ -220,7 +220,7 @@
     for (var i = 0; i < cb.length; i++) cb[i].className = 'rx-chap' + (i === cur ? ' on' : '');
   }
   var lastCap = null;
-  function paint() { var cap = R.scene.render(R.t), txt = (cap[0] + ' ' + cap[1]).trim(); if (txt !== lastCap) { lastCap = txt; $('rx-sr').textContent = txt; } ui(); }
+  function paint() { var cap = R.scene.render(R.t, DEFS[R.id]), txt = (cap[0] + ' ' + cap[1]).trim(); if (txt !== lastCap) { lastCap = txt; $('rx-sr').textContent = txt; } ui(); }
   function loop(now) { if (!R.playing) return; R.t = Math.min(R.dur, R.t + (now - R.last) / 1000); R.last = now; paint(); if (R.t >= R.dur) { R.playing = false; ui(); return; } R.raf = requestAnimationFrame(loop); }
   function play() { if (R.t >= R.dur - 0.02) R.t = 0; R.playing = true; R.last = performance.now(); ui(); R.raf = requestAnimationFrame(loop); }
   function pause() { R.playing = false; cancelAnimationFrame(R.raf); ui(); }
@@ -246,7 +246,7 @@
   function open(id, opener) {
     var def = DEFS[id], sc = def && window.RX_SCENES && window.RX_SCENES[def.scene || 'overhead']; if (!def || !sc) return;
     ensure(); R.id = id; R.scene = sc; R.dur = def.dur; R.opener = opener || document.activeElement; lastCap = null;
-    if (R.builtScene !== (def.scene || 'overhead')) { sc.build($('rx-svg')); R.builtScene = def.scene || 'overhead'; }
+    if (sc.perDef || R.builtScene !== (def.scene || 'overhead')) { sc.build($('rx-svg'), def); R.builtScene = sc.perDef ? null : (def.scene || 'overhead'); }   // data-driven scenes are drawn from this one definition, so they are rebuilt every time
     $('rx-seek').max = R.dur; $('rx-title').textContent = def.title; $('rx-note').textContent = def.note || ''; $('rx-list-h').textContent = def.listTitle || 'Corrective actions';
     var cs = $('rx-chaps'); cs.innerHTML = ''; DEFS[id].chapters.forEach(function (c) { var b = document.createElement('button'); b.className = 'rx-chap'; b.textContent = c[1]; b.onclick = function () { seek(c[0]); play(); }; cs.appendChild(b); });
     var ol = $('rx-list-ol'); ol.innerHTML = ''; (DEFS[id].controls || []).forEach(function (c) { var li = document.createElement('li'); li.textContent = c.full; ol.appendChild(li); });

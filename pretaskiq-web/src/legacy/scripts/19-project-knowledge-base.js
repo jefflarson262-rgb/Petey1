@@ -45,6 +45,7 @@ function handleKbFile(file) {
     var scope = document.getElementById('kb-scope').value.trim();
 
     var entry = addKbEntryPending(drawingNum || file.name, revision, scope, file.name);
+    if (typeof currentKbType !== 'undefined') entry.kbType = currentKbType;      // (fix) a file added under another tab was being filed as a drawing
     // Check RCA methodology template flag
     var setTemplate = document.getElementById('rca-set-template');
     if (currentKbType === 'rca' && setTemplate && setTemplate.checked) {
@@ -116,7 +117,8 @@ async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType
       + '  "change_description": "one sentence describing what changed",\n'
       + '  "affected_work": "what field work is affected — trade, location, scope",\n'
       + '  "keywords": ["array", "of", "5-10", "keywords", "for", "matching"],\n'
-      + '  "hold_question": "the confirming question Petey should ask a crew before they start this work"' + (typeof stkyPromptField === 'function' ? stkyPromptField(entry) : '') + '\n'
+      + '  "hold_question": "the confirming question Petey should ask a crew before they start this work"' + (typeof stkyPromptField === 'function' ? stkyPromptField(entry) : '')
+      + (entry.kbType === 'incident' ? ',\n  "incident_narrative": "a faithful plain-language account of what happened, in order (max 1500 characters). Use roles, never names. Include only facts the document states; if a detail is not stated, leave it out"' : '') + '\n'
       + '}';
 
     userContent.push({ type: 'text', text: prompt });
@@ -127,7 +129,7 @@ async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
+        max_tokens: 1800,
         messages: messages
       })
     });
@@ -143,6 +145,10 @@ async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType
     entry.keywords = parsed.keywords || [];
     entry.hold_question = parsed.hold_question || '';
     entry.summary = parsed.change_description || '';
+    if (entry.kbType === 'incident') {
+      if (typeof parsed.incident_narrative === 'string' && parsed.incident_narrative.trim()) entry.incident_narrative = parsed.incident_narrative.trim().slice(0, 2000);
+      if (textDescription) entry.sourceText = String(textDescription).slice(0, 6000);   // the written account, kept so a reenactment can be drafted from it
+    }
     if (typeof stkyResolveIds === 'function') entry.stkyCategoryIds = stkyResolveIds(entry, parsed);
     // If marked as methodology template, store the full document text for RCA assistant
     if (entry.isMethodologyTemplate && description) {

@@ -6,6 +6,8 @@ import { installApiClient } from './api/client.js';
 import * as plansStore from './plans/store.js';
 import * as alertsStore from './alerts/store.js';
 import * as kbStore from './kb/store.js';
+import * as reenactRegister from './reenact/register.js';
+import * as reenactStore from './reenact/store.js';
 import { speech } from './api/speech.js';
 import { bootLegacyApp } from './legacy/boot.js';
 
@@ -17,6 +19,12 @@ window.PreTaskIQAlerts = alertsStore;
 
 // The knowledge-base scripts (19, 21) save entries to the database, and the planning conversation refreshes the list, through this.
 window.PreTaskIQKb = kbStore;
+
+// Approved reenactment storyboards are made playable (and drafts previewed) through this.
+window.PreTaskIQReenact = reenactRegister;
+
+// The 'Create reenactment' buttons on incident cards (21-knowledge-base-types.js) open the review screen through this.
+window.PreTaskIQReenactUI = { openFor: reenactStore.openFor };
 
 // The prototype's voice script (30-voice-conversation.js) uses the natural-voice service through this, when the server has one.
 window.PreTaskIQSpeech = speech;

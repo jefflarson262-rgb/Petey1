@@ -161,6 +161,19 @@ function renderKbEntries() {
       : e.saveState === 'failed' ? '<div class="kb-entry-meta" style="color:#C62F2A;font-weight:700;">NOT saved (' + e2(e.saveError || 'no connection') + '). It will be lost if you close this page. <a href="#" onclick="PreTaskIQKb.retry(\'' + safeId(e.id) + '\'); return false;">Try again</a></div>'
       : '<div class="kb-entry-meta">Kept in this tab only. Sign in to save it for everyone.</div>';
     var rm = e.dbId && KB && KB.mayEdit(e) ? ' <a href="#" class="kb-remove" onclick="kbRemoveEntry(\'' + safeId(e.dbId) + '\'); return false;">Remove</a>' : '';
+    // Incident reenactment: a Safety Admin drafts, reviews and approves it; only an approved one is ever shown to crews.
+    var rx = '';
+    if (e.kbType === 'incident' && e.status === 'ready' && e.dbId && e.saveState === 'saved') {
+      var RU = window.PreTaskIQReenactUI, canRx = !!(RU && KB && KB.mayEdit(e));
+      var live = e.reenactment && e.reenactment.status === 'approved';
+      if (live) {
+        rx = '<div class="kb-entry-meta">🎬 Reenactment approved' + (e.reenactment.approvedBy ? ' by ' + e2(e.reenactment.approvedBy) : '') + ' · crews can watch it '
+          + '<a href="#" onclick="openReenactment(\'' + safeId(e.dbId) + '\'); return false;">Watch</a>'
+          + (canRx ? ' · <a href="#" onclick="PreTaskIQReenactUI.openFor(\'' + safeId(e.dbId) + '\'); return false;">Edit</a>' : '') + '</div>';
+      } else if (canRx) {
+        rx = '<div class="kb-entry-meta"><a href="#" onclick="PreTaskIQReenactUI.openFor(\'' + safeId(e.dbId) + '\'); return false;">🎬 Create reenactment</a> (you review it before crews see it)</div>';
+      }
+    }
     return '<div class="kb-entry-card ' + e.status + '">'
       + '<div class="kb-entry-header">'
       + '<span style="font-size:14px;">' + icon + '</span>'
@@ -170,7 +183,7 @@ function renderKbEntries() {
       + (e.change_description ? '<div style="font-size:13px;color:#444;margin-top:5px;">' + e2(e.change_description) + '</div>' : '')
       + (e.affected_work ? '<div class="kb-entry-meta">Affects: ' + e2(e.affected_work) + '</div>' : '')
       + (typeof stkyEntryMetaHtml === 'function' ? stkyEntryMetaHtml(e) : '')
-      + keep + rm
+      + keep + rx + rm
       + '</div>';
   }).join('');
 }

@@ -54,8 +54,8 @@ test('the same entry sent twice (a retry) is saved once; a different person with
 
 test('an entry can be changed by someone allowed to write that kind, and not by anyone else', async () => {
   const id = (await post(U.sam, { entry: entry('incident') })).json.entry.id;
-  const ok = await post(U.sue, { id, entry: { title: 'INC-301 (updated)', data: { status: 'ready', summary: 'Changed', reenactment: { scene: 'panel' } } } });
-  assert.equal(ok.status, 200); assert.equal(ok.json.entry.title, 'INC-301 (updated)'); assert.equal(ok.json.entry.data.reenactment.scene, 'panel');
+  const ok = await post(U.sue, { id, entry: { title: 'INC-301 (updated)', data: { status: 'ready', summary: 'Changed', lessons: { scene: 'panel' } } } });
+  assert.equal(ok.status, 200); assert.equal(ok.json.entry.title, 'INC-301 (updated)'); assert.equal(ok.json.entry.data.lessons.scene, 'panel');
   assert.equal((await post(U.carl, { id, entry: { data: { status: 'ready' } } })).status, 403);
   assert.equal((await post(U.ann, { id, entry: { data: { status: 'ready' } } })).status, 403);
   assert.equal(fake.state.tables.kb_entries[0].data.summary, 'Changed');

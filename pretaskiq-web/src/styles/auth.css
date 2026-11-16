@@ -70,3 +70,23 @@
 .alert-seen { min-height: 44px; padding: 10px 18px; font-size: 14px; }
 
 .kb-remove { margin-left: 8px; font-size: 12px; font-weight: 700; color: #C62F2A; }
+
+/* Reenactment review screen */
+.rx-dlg { max-width: 720px; }
+.rx-label { display: block; margin: 12px 0 4px; font-size: 12px; font-weight: 700; color: var(--slate); }
+.rx-beats { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.rx-beat { display: grid; gap: 6px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+.rx-phase { justify-self: start; padding: 2px 8px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; border-radius: 999px; color: #fff; background: #E8701A; }
+.rx-phase.controls { background: #2E7D5B; }
+.rx-unknowns { margin-top: 14px; padding: 10px 12px; border-radius: 10px; background: #FFF6E5; border: 1px solid #F2D9A6; }
+.rx-unknowns ul { margin: 0 0 8px; padding-left: 18px; font-size: 13px; }
+.rx-check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; cursor: pointer; }
+.rx-check input { margin-top: 3px; min-width: 20px; min-height: 20px; }
+.rx-actions { margin-top: 14px; }
+.rx-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.rx-btn { min-height: 44px; }
+.rx-primary { background: #2E7D5B; border-color: #2E7D5B; color: #fff; }
+.rx-minor { margin-top: 8px; gap: 16px; }
+.rx-dlg .settings-input { width: 100%; box-sizing: border-box; min-height: 40px; }
+.rx-dlg .plans-link { min-height: 44px; }
+.rx-dlg .plans-close { min-width: 44px; min-height: 44px; }

@@ -60,7 +60,7 @@ function getMergedKBText() {
     rootCauseAnalyses: [...(active.rootCauseAnalyses || []), ...uploadedRCAs],
     procedures: [...(active.procedures || []), ...uploadedProcedures],
     stky: (typeof STKY_CATEGORIES !== 'undefined') ? STKY_CATEGORIES : []
-  }, function (k, v) { return (k === 'dbId' || k === 'saveState' || k === 'saveError' || k === 'savedBy') ? undefined : v; });   // bookkeeping for the screen, not for the AI
+  }, function (k, v) { return (k === 'dbId' || k === 'saveState' || k === 'saveError' || k === 'savedBy' || k === 'reenactment' || k === 'sourceText') ? undefined : v; });   // bookkeeping for the screen, not for the AI
 }
 
 function getKBText() {

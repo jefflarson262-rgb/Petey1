@@ -3,6 +3,7 @@
 // Not signed in (shared-code mode): nothing here runs, entries stay in the tab only, and the screen says so.
 import { apiJson } from '../api/client.js';
 import { getSnapshot as auth } from '../auth/session.js';
+import { syncApproved } from '../reenact/register.js';
 
 const POLL_MS = 60_000;
 let canWrite = [];
@@ -10,13 +11,15 @@ let lastLoad = 0, loading = null, timer = null;
 
 export const enabled = () => { const a = auth(); return a.mode === 'supabase' && a.phase === 'signed_in'; };
 const list = () => (window.projectKnowledgeBase = window.projectKnowledgeBase || []);
-const repaint = () => { try { if (typeof window.renderKbEntries === 'function') window.renderKbEntries(); } catch { /* settings box not open */ } };
+// Every change to the list also refreshes which approved reenactments crews can play.
+const repaint = () => { try { syncApproved(list()); } catch { /* never block the list on this */ } try { if (typeof window.renderKbEntries === 'function') window.renderKbEntries(); } catch { /* settings box not open */ } };
 
 // Turn a database row into the entry object the rest of the app already understands.
 const fromRow = (r) => ({ ...(r.data || {}), kbType: r.kb_type, title: r.title, status: 'ready', dbId: r.id, savedBy: r.created_by_name || '', saveState: 'saved' });
 // What goes into the database: the entry without the bookkeeping fields that only mean something in this tab.
 const toData = (e) => { const { dbId, saveState, saveError, savedBy, ...rest } = e; return rest; };
 
+export const resync = () => repaint();
 export const mayWrite = (kbType) => canWrite.includes(kbType);
 export const mayEdit = (entry) => !!(entry && entry.dbId && mayWrite(entry.kbType));
 
@@ -58,7 +61,9 @@ export async function save(entry) {
       ? { id: entry.dbId, entry: { title: entry.title, data: toData(entry) } }
       : { entry: { kbType: entry.kbType || 'drawings', title: entry.title, data: toData(entry) }, clientKey: String(entry.id || '') };
     const out = await apiJson('/api/kb', { method: 'POST', body });
-    entry.dbId = out.entry.id; entry.savedBy = out.entry.created_by_name || ''; entry.saveState = 'saved';
+    entry.dbId = out.entry.id;
+    if (out.entry.data && out.entry.data.reenactment) entry.reenactment = out.entry.data.reenactment;     // the server's stamped, cleaned copy (who approved it, when)
+    entry.savedBy = out.entry.created_by_name || ''; entry.saveState = 'saved';
   } catch (e) {
     entry.saveState = 'failed'; entry.saveError = (e && e.message) || 'Could not reach the server.';
   }

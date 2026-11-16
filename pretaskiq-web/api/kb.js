@@ -6,6 +6,7 @@
 import { requireUser } from '../server/auth.js';
 import { dbError } from '../server/supabase.js';
 import { HttpError, send, handle, readJson } from '../server/http.js';
+import { sanitizeStoryboard } from '../src/shared/storyboard.js';
 
 export const KB_TYPES = ['drawings', 'incident', 'rca', 'policy', 'procedure'];
 const MAY_WRITE = { safety: KB_TYPES, construction: ['drawings'] };
@@ -13,6 +14,20 @@ const MAX_DATA_CHARS = 150_000;
 const COLUMNS = 'id,kb_type,title,data,created_by_name,created_at,updated_at';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const clean = (v, max) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
+
+// A reenactment can only be attached to an incident, only by a safety administrator, and only if it passes the same checks the player uses.
+// The approver's name and time are stamped here (never trusted from the browser), except when the same approval is simply being re-saved.
+function checkReenactment(data, kbType, me, existing) {
+  const r = data.reenactment;
+  if (r === undefined) return;
+  if (kbType !== 'incident' || me.profile.role !== 'safety') throw new HttpError(403, 'wrong_role');
+  if (!r || typeof r !== 'object' || Array.isArray(r) || r.status !== 'approved') throw new HttpError(400, 'invalid_reenactment');
+  const clean = sanitizeStoryboard(r.storyboard);
+  if (!clean.ok) throw new HttpError(400, 'invalid_reenactment');
+  const was = existing && existing.reenactment;
+  const same = was && was.approvedAt && was.approvedAt === r.approvedAt && JSON.stringify(was.storyboard) === JSON.stringify(clean.storyboard);
+  data.reenactment = same ? was : { status: 'approved', storyboard: clean.storyboard, approvedBy: me.profile.display_name || me.user.email || '', approvedAt: new Date().toISOString() };
+}
 
 function checkData(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) throw new HttpError(400, 'invalid_entry');
@@ -39,7 +54,7 @@ export default handle(async (req, res) => {
   // Change or remove an existing entry
   if (body.id !== undefined) {
     if (typeof body.id !== 'string' || !UUID.test(body.id)) throw new HttpError(404, 'entry_not_found');
-    const { data: found, error } = await admin.from('kb_entries').select('id,kb_type,archived_at').eq('id', body.id).maybeSingle();
+    const { data: found, error } = await admin.from('kb_entries').select('id,kb_type,archived_at,data').eq('id', body.id).maybeSingle();
     if (error) throw dbError(error);
     if (!found || found.archived_at) throw new HttpError(404, 'entry_not_found');
     if (!mayWrite(me.profile, found.kb_type)) throw new HttpError(403, 'wrong_role');
@@ -50,6 +65,7 @@ export default handle(async (req, res) => {
     }
     if (!body.entry || typeof body.entry !== 'object') throw new HttpError(400, 'invalid_entry');
     checkData(body.entry.data);
+    checkReenactment(body.entry.data, found.kb_type, me, found.data);
     const patch = { data: body.entry.data, updated_at: new Date().toISOString() };
     const title = clean(body.entry.title, 200); if (title) patch.title = title;
     const { data: after, error: e3 } = await admin.from('kb_entries').update(patch).eq('id', found.id).select(COLUMNS).single();
@@ -63,6 +79,7 @@ export default handle(async (req, res) => {
   if (!KB_TYPES.includes(e.kbType)) throw new HttpError(400, 'invalid_entry');
   if (!mayWrite(me.profile, e.kbType)) throw new HttpError(403, 'wrong_role');
   checkData(e.data);
+  checkReenactment(e.data, e.kbType, me, null);
   const clientKey = clean(body.clientKey === undefined ? '' : String(body.clientKey), 80) || null;
   if (clientKey) {
     const { data: dupe, error: de } = await admin.from('kb_entries').select(COLUMNS).eq('created_by', me.user.id).eq('client_key', clientKey).maybeSingle();
