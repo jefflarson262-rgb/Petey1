@@ -22,17 +22,39 @@ var ROLE_MENUS = {
         items: [
           { icon: '📋', label: 'New JHA', sub: 'Start a pre-task hazard analysis', action: "showScreen('intake'); closeNavDropdown();" },
           { icon: '🎙️', label: 'Petey', sub: 'Field companion', action: "showScreen('petey'); closeNavDropdown();" },
-          { icon: '📊', label: 'Safety Dashboard', sub: 'Live JHA completion across all crews', action: "switchRole('admin'); closeNavDropdown();" },
         ]
       },
       {
-        label: 'Safety Knowledge Base',
+        label: 'Dashboards & Alerts',
         items: [
-          { icon: '👥', label: 'Escalation Contacts', sub: 'Names for hazard flags (alerts go to the safety inbox)', action: "openSettingsModal(); closeNavDropdown();", id: 'settings-open-btn' },
+          { icon: '📊', label: 'Safety Dashboard', sub: 'Live JHA completion across all crews', action: "switchRole('admin'); closeNavDropdown();" },
+          { icon: '🚨', label: 'Safety Alerts Inbox', sub: 'Hazards flagged by crews (needs sign-in)', action: "closeNavDropdown(); if (window.PreTaskIQAlerts && PreTaskIQAlerts.enabled()) PreTaskIQAlerts.openDialog(); else alert('The safety inbox works once sign-in is turned on.');" },
+        ]
+      },
+      {
+        label: 'Incidents',
+        items: [
           { icon: '⚠️', label: 'Upload Incident', sub: 'Petey surfaces lessons learned in context', action: "openSettingsToKb('incident'); closeNavDropdown();" },
+          { icon: '🎬', label: 'Incident Reenactments', sub: 'Draft, review and approve replays (open an incident, then Create reenactment)', action: "openSettingsToKb('incident'); closeNavDropdown();" },
+        ]
+      },
+      {
+        label: 'Root Cause Analyses',
+        items: [
           { icon: '🔍', label: 'Upload Root Cause Analysis', sub: 'Corrective actions Petey can probe for', action: "openSettingsToKb('rca'); closeNavDropdown();" },
+        ]
+      },
+      {
+        label: 'Policies & Procedures',
+        items: [
           { icon: '📋', label: 'Upload Policy', sub: 'Safety and operational policies', action: "openSettingsToKb('policy'); closeNavDropdown();" },
           { icon: '📝', label: 'Upload Procedure', sub: 'Step-by-step procedures Petey can track live', action: "openSettingsToKb('procedure'); closeNavDropdown();" },
+        ]
+      },
+      {
+        label: 'Setup',
+        items: [
+          { icon: '👥', label: 'Escalation Contacts', sub: 'Names for hazard flags (alerts go to the safety inbox)', action: "openSettingsModal(); closeNavDropdown();", id: 'settings-open-btn' },
         ]
       }
     ]
