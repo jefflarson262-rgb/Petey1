@@ -5,6 +5,14 @@
       <button id="settings-close-btn" class="settings-close-btn" aria-label="Close">&times;</button>
     </div>
 
+    <div class="settings-tabs" role="tablist" aria-label="Settings sections">
+      <button type="button" class="settings-tab active" role="tab" data-pane="org" onclick="switchSettingsPane('org')">Organization</button>
+      <button type="button" class="settings-tab" role="tab" data-pane="kb" onclick="switchSettingsPane('kb')">Knowledge Base</button>
+      <button type="button" class="settings-tab" role="tab" data-pane="jha" onclick="switchSettingsPane('jha')">JHA Template</button>
+      <button type="button" class="settings-tab" role="tab" data-pane="log" onclick="switchSettingsPane('log')">Notifications</button>
+    </div>
+
+    <div class="settings-pane" data-pane="org">
     <div class="settings-field-label" style="margin-bottom:6px;">Scope of Work Profile</div>
     <div class="settings-modal-sub" style="margin-bottom:12px;">Tells PreTaskIQ what kind of work your crews typically do, so questions and hazard analysis stay relevant to your scope.</div>
 
@@ -57,8 +65,9 @@
       <button id="petey-voice-preview" class="btn-secondary" style="font-size:13px;padding:8px 16px;">&#9654; Preview voice</button>
     </div>
 
-    <div class="settings-divider"></div>
+    </div>
 
+    <div class="settings-pane" data-pane="kb" style="display:none;">
     <!-- Knowledge Base Upload — five types -->
     <div class="settings-field-label" style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">&#128196; Knowledge Base</div>
 
@@ -117,8 +126,9 @@
       </div>
     </div>
 
-    <div class="settings-divider"></div>
+    </div>
 
+    <div class="settings-pane" data-pane="jha" style="display:none;">
     <!-- Custom JHA Template Fields -->
     <div style="margin-bottom:16px;">
       <div class="settings-field-label" style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">&#128196; Custom JHA Template</div>
@@ -162,12 +172,15 @@
       </div>
     </div>
 
-    <div class="settings-modal-footer">
+    </div>
+
+    <div class="settings-modal-footer" id="settings-footer">
       <button id="settings-save-btn" class="btn-primary">Save settings</button>
     </div>
 
-    <div class="settings-divider"></div>
+    <div class="settings-pane" data-pane="log" style="display:none;">
     <div class="settings-field-label" style="margin-bottom:10px;">Notification Log</div>
     <div id="notification-log-list" class="notification-log-list"></div>
+    </div>
   </div>
 </div>

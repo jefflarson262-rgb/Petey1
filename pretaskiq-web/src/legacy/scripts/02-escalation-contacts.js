@@ -4,6 +4,7 @@
 const settingsOverlay = document.getElementById("settings-modal-overlay");
 
 function openSettingsModal() {
+  if (typeof switchSettingsPane === 'function') switchSettingsPane('org');      // always start on the first tab
   // Restore baseline policy preference
   var savedPref = localStorage.getItem('baseline_pref');
   if (savedPref) baselinePolicyPref = savedPref;

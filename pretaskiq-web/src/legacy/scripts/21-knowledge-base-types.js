@@ -58,8 +58,19 @@ function switchKbTab(type) {
 }
 
 // Update openSettingsToKb to accept type
+// Settings is split into tabs (Organization, Knowledge Base, JHA Template, Notifications) so it is not one long scroll.
+function switchSettingsPane(name) {
+  document.querySelectorAll('#settings-modal-overlay .settings-pane').forEach(function(p) { p.style.display = p.getAttribute('data-pane') === name ? '' : 'none'; });
+  document.querySelectorAll('#settings-modal-overlay .settings-tab').forEach(function(t) {
+    var on = t.getAttribute('data-pane') === name; t.classList.toggle('active', on); t.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  var f = document.getElementById('settings-footer'); if (f) f.style.display = name === 'log' ? 'none' : '';
+  var m = document.querySelector('#settings-modal-overlay .settings-modal'); if (m) m.scrollTop = 0;
+}
+
 function openSettingsToKb(type) {
   openSettingsModal();
+  switchSettingsPane('kb');
   setTimeout(function() {
     if (type) switchKbTab(type);
     var zone = document.getElementById('kb-upload-zone');

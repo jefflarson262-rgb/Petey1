@@ -426,3 +426,6 @@
   /* ---- Petey ---- */
   #petey-wrap { max-width: 760px; margin: 0 auto; padding: 28px 24px 24px; display: flex; flex-direction: column; height: 100vh; }
   .petey-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+  .settings-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 16px; }
+  .settings-tab { flex: 1 1 auto; min-height: 44px; padding: 8px 12px; font: 600 13px 'Space Grotesk', sans-serif; color: var(--slate); background: #F0F2F5; border: 0; border-radius: 10px; cursor: pointer; }
+  .settings-tab.active { color: #fff; background: var(--navy); }
