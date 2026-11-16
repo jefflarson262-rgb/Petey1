@@ -181,6 +181,8 @@ async function sendTurn(newApiMessages) {
   convSend.disabled = true;
   showTyping();
   try {
+    // Pick up any knowledge-base entry saved in the last minute (a drawing revision, a new policy) before the AI is asked. Never held up for long.
+    if (window.PreTaskIQKb) { try { await window.PreTaskIQKb.ensureFresh(); } catch (e) { /* use what is already loaded */ } }
     // The pace line (which question this is, and when to close) is added to the system prompt only, never to the conversation itself.
     const rawReply = await callClaude({ system: buildInterviewSystemPrompt(newApiMessages), messages: newApiMessages });
     hideTyping();

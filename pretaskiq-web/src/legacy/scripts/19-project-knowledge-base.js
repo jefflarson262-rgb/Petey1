@@ -174,6 +174,8 @@ async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType
   document.getElementById('kb-scope').value = '';
 
   renderKbEntries();
+  // Keep it: with a signed-in account the entry is saved for the whole company (the screen shows whether it worked).
+  if (window.PreTaskIQKb) window.PreTaskIQKb.save(entry); else entry.saveState = 'session';
 }
 
 function renderKbEntries() {
@@ -261,7 +263,7 @@ function runLiveKbDemo() {
     var card = document.createElement('div');
     card.style.cssText = 'background:#FFF4EE;border:1px solid #F4C09A;border-left:4px solid var(--orange);border-radius:10px;padding:12px 14px;margin-top:10px;';
     card.innerHTML = '<div style="font-size:12px;font-weight:700;color:#7A3510;margin-bottom:4px;">Project document hold point surfaced</div>'
-      + '<div style="font-size:13px;color:#7A3510;">' + (entry.title || entry.change_description || 'Matched project KB record') + '</div>'
+      + '<div style="font-size:13px;color:#7A3510;">' + escapeHtml(entry.title || entry.change_description || 'Matched project KB record') + '</div>'
       + '<button onclick="this.closest(\'div\').nextElementSibling && 0" style="margin-top:8px;background:var(--navy);color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Notify super</button>';
     log.appendChild(card);
     log.scrollTop = log.scrollHeight;

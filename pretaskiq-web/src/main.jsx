@@ -5,6 +5,7 @@ import App from './App.jsx';
 import { installApiClient } from './api/client.js';
 import * as plansStore from './plans/store.js';
 import * as alertsStore from './alerts/store.js';
+import * as kbStore from './kb/store.js';
 import { speech } from './api/speech.js';
 import { bootLegacyApp } from './legacy/boot.js';
 
@@ -13,6 +14,9 @@ window.PreTaskIQStore = plansStore;
 
 // The prototype's scripts (08-phase2-conversation.js) raise a hazard alert in the safety inbox through this.
 window.PreTaskIQAlerts = alertsStore;
+
+// The knowledge-base scripts (19, 21) save entries to the database, and the planning conversation refreshes the list, through this.
+window.PreTaskIQKb = kbStore;
 
 // The prototype's voice script (30-voice-conversation.js) uses the natural-voice service through this, when the server has one.
 window.PreTaskIQSpeech = speech;

@@ -105,3 +105,24 @@ create index if not exists alerts_raised_by_idx on public.alerts (raised_by, cre
 alter table public.alerts enable row level security;
 revoke all on public.alerts from anon, authenticated;
 grant all on public.alerts to service_role;
+
+-- 9. Knowledge base. Incident reports, root cause analyses, policies, procedures and revised drawings that Petey draws on. Shared by everyone in the company:
+--    everyone signed in reads them; safety administrators add any kind, construction administrators add drawings. Removing one hides it (archived_at), it is never erased.
+create table if not exists public.kb_entries (
+  id              uuid primary key default gen_random_uuid(),
+  kb_type         text not null check (kb_type in ('drawings', 'incident', 'rca', 'policy', 'procedure')),
+  title           text not null default 'Untitled',
+  data            jsonb not null,
+  client_key      text,
+  created_by      uuid not null references public.profiles (id),
+  created_by_name text,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now(),
+  archived_at     timestamptz,
+  archived_by     uuid references public.profiles (id)
+);
+create index if not exists kb_entries_live_idx on public.kb_entries (kb_type, created_at) where archived_at is null;
+create unique index if not exists kb_entries_client_key_idx on public.kb_entries (created_by, client_key) where client_key is not null;
+alter table public.kb_entries enable row level security;
+revoke all on public.kb_entries from anon, authenticated;
+grant all on public.kb_entries to service_role;

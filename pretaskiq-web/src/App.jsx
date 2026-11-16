@@ -7,6 +7,7 @@ import SaveStatus from './components/SaveStatus.jsx';
 import AlertsDialog from './components/AlertsDialog.jsx';
 import AlertBanner from './components/AlertBanner.jsx';
 import * as alerts from './alerts/store.js';
+import * as kb from './kb/store.js';
 import { allowedViews, getSnapshot, initAuth, subscribe } from './auth/session.js';
 
 // The prototype's screens are plain HTML that its own scripts manage (they rewrite parts of it constantly).
@@ -36,6 +37,8 @@ export default function App() {
     if (!role) alerts.reset();
     return undefined;
   }, [role, auth.user && auth.user.id]);
+  // The saved knowledge base: everyone signed in loads it and keeps it fresh; signing out takes it off the screen.
+  useEffect(() => { if (auth.phase === 'signed_in') kb.startWatching(); else kb.reset(); return undefined; }, [auth.phase, auth.user && auth.user.id]);
   const baseTitle = useRef(document.title);
   const waiting = role === 'safety' ? alerts.openCount(alertState) : 0;
   useEffect(() => { document.title = waiting ? `(${waiting}) ${baseTitle.current}` : baseTitle.current; }, [waiting]);

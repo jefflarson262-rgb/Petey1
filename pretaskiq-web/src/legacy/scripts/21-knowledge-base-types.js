@@ -149,17 +149,34 @@ function renderKbEntries() {
     return;
   }
   var typeIcons = { drawings: '📐', incident: '⚠️', rca: '🔍', policy: '📋', procedure: '📝' };
+  var KB = window.PreTaskIQKb;
+  var e2 = escapeHtml;
+  var safeId = function(v) { return String(v).replace(/[^A-Za-z0-9_-]/g, ''); };      // ids go inside an onclick attribute: letters, digits, dash only
   list.innerHTML = projectKnowledgeBase.map(function(e) {
     var icon = typeIcons[e.kbType] || '📄';
+    // Where the entry is kept: saved for the whole company, being saved, not saved (with a retry), or only in this tab (nobody signed in)
+    var keep = e.status === 'processing' ? ''
+      : e.saveState === 'saved' ? '<div class="kb-entry-meta">Saved for everyone' + (e.savedBy ? ' · added by ' + e2(e.savedBy) : '') + '</div>'
+      : e.saveState === 'saving' ? '<div class="kb-entry-meta">Saving…</div>'
+      : e.saveState === 'failed' ? '<div class="kb-entry-meta" style="color:#C62F2A;font-weight:700;">NOT saved (' + e2(e.saveError || 'no connection') + '). It will be lost if you close this page. <a href="#" onclick="PreTaskIQKb.retry(\'' + safeId(e.id) + '\'); return false;">Try again</a></div>'
+      : '<div class="kb-entry-meta">Kept in this tab only. Sign in to save it for everyone.</div>';
+    var rm = e.dbId && KB && KB.mayEdit(e) ? ' <a href="#" class="kb-remove" onclick="kbRemoveEntry(\'' + safeId(e.dbId) + '\'); return false;">Remove</a>' : '';
     return '<div class="kb-entry-card ' + e.status + '">'
       + '<div class="kb-entry-header">'
       + '<span style="font-size:14px;">' + icon + '</span>'
-      + '<span class="kb-entry-title">' + e.title + (e.revision ? ' -- ' + e.revision : '') + '</span>'
+      + '<span class="kb-entry-title">' + e2(e.title || '') + (e.revision ? ' -- ' + e2(e.revision) : '') + '</span>'
       + '<span class="kb-entry-badge ' + e.status + '">' + (e.status === 'processing' ? 'Parsing...' : 'Ready') + '</span>'
       + '</div>'
-      + (e.change_description ? '<div style="font-size:13px;color:#444;margin-top:5px;">' + e.change_description + '</div>' : '')
-      + (e.affected_work ? '<div class="kb-entry-meta">Affects: ' + e.affected_work + '</div>' : '')
+      + (e.change_description ? '<div style="font-size:13px;color:#444;margin-top:5px;">' + e2(e.change_description) + '</div>' : '')
+      + (e.affected_work ? '<div class="kb-entry-meta">Affects: ' + e2(e.affected_work) + '</div>' : '')
       + (typeof stkyEntryMetaHtml === 'function' ? stkyEntryMetaHtml(e) : '')
+      + keep + rm
       + '</div>';
   }).join('');
+}
+
+function kbRemoveEntry(dbId) {
+  if (!window.PreTaskIQKb) return;
+  if (!confirm('Remove this entry for everyone? Petey will stop using it. (It is kept in the database, so an administrator can still recover it.)')) return;
+  window.PreTaskIQKb.remove(dbId).then(function(r) { if (!r.ok) alert('Could not remove it: ' + r.message); });
 }

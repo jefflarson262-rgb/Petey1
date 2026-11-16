@@ -48,6 +48,12 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   assert.deepEqual((await db.query(`select status, acknowledged_at from public.alerts`)).rows, [{ status: 'open', acknowledged_at: null }]);
   await assert.rejects(db.query(`insert into public.alerts (raised_by, hazard, status) values ($1, 'x', 'bogus')`, [uid]), /check constraint/);
   await assert.rejects(db.query(`insert into public.alerts (raised_by) values ($1)`, [uid]), /null value/);        // a hazard is required
+  // Knowledge base: only the five known kinds, content required, and one client key per person (a retry cannot make a duplicate)
+  await db.query(`insert into public.kb_entries (kb_type, data, client_key, created_by) values ('incident', '{"status":"ready"}', 'k1', $1)`, [uid]);
+  await assert.rejects(db.query(`insert into public.kb_entries (kb_type, data, created_by) values ('bogus', '{}', $1)`, [uid]), /check constraint/);
+  await assert.rejects(db.query(`insert into public.kb_entries (kb_type, created_by) values ('policy', $1)`, [uid]), /null value/);
+  await assert.rejects(db.query(`insert into public.kb_entries (kb_type, data, client_key, created_by) values ('incident', '{}', 'k1', $1)`, [uid]), /duplicate key/);
+  await db.query(`insert into public.kb_entries (kb_type, data, created_by) values ('incident', '{}', $1), ('policy', '{}', $1)`, [uid]);   // no key = never a duplicate
   await db.query(`update public.alerts set status = 'acknowledged', acknowledged_by = $1, acknowledged_at = now()`, [uid]);
   await db.exec('reset role');
 
@@ -59,7 +65,7 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   // The browser keys (anon, and signed-in users going straight to the database) can read and write nothing
   for (const role of ['anon', 'authenticated']) {
     await db.exec(`set role ${role}`);
-    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts']) {
+    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries']) {
       await assert.rejects(db.query(`select * from public.${t}`), /permission denied/, `${role} must not read ${t}`);
     }
     await assert.rejects(db.query(`insert into public.ai_usage (user_id) values (gen_random_uuid())`), /permission denied/);
