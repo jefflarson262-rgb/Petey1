@@ -463,3 +463,11 @@
 .kbl-sum { font-size: 13px; color: #444; margin-top: 3px; line-height: 1.4; }
 .kbl-meta { font-size: 12px; color: var(--slate); margin-top: 4px; line-height: 1.4; }
 .kbl-empty { padding: 24px 0; text-align: center; font-size: 14px; color: var(--slate); }
+
+.bubble-row.ai { gap: 8px; align-items: flex-start; }
+.bubble-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; object-fit: cover; background: #FFF1E3; border: 1px solid var(--line); margin-top: 18px; }
+.bubble-row.ai .bubble-col { max-width: calc(78% - 44px); }
+.petey-mascot { height: 190px; width: auto; display: block; margin: 0 auto 14px; }
+.petey-greeting { display: flex; align-items: center; gap: 14px; background: #FFF6EC; border: 1px solid #F6D9B8; border-radius: 14px; padding: 12px 14px; margin-bottom: 18px; }
+.petey-greeting-img { width: 64px; height: 64px; border-radius: 50%; background: #FFF1E3; border: 1px solid #F6D9B8; flex-shrink: 0; object-fit: cover; }
+.petey-greeting-text { font-size: 15px; line-height: 1.45; color: var(--navy); font-weight: 600; }

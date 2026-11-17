@@ -128,7 +128,7 @@ function renderOnboardingStep() {
   const hasValue = currentVal.trim().length > 0 || step.optional;
   nextBtn.disabled = !hasValue;
 
-  let innerHtml = `
+  let innerHtml = (onboardingStep === 0 ? `<div class="petey-greeting"><img class="petey-greeting-img" src="${PETEY_HEAD}" alt="Petey"><div class="petey-greeting-text">${PETEY_GREETING}</div></div>` : "") + `
     <div class="onboarding-step">
       <div class="onboarding-step-eyebrow">${step.eyebrow}</div>
       <div class="onboarding-step-title">${step.title}</div>

@@ -25,6 +25,7 @@ function addBubble(role, text) {
   bubble.textContent = text;
   col.appendChild(label);
   col.appendChild(bubble);
+  if (role === "assistant") row.appendChild(peteyAvatarEl());
   row.appendChild(col);
   convScrollInner.appendChild(row);
   scrollConvToBottom();
@@ -35,7 +36,7 @@ let typingRow = null;
 function showTyping() {
   typingRow = document.createElement("div");
   typingRow.className = "bubble-row ai anim-in";
-  typingRow.innerHTML = `<div class="bubble ai"><span class="pulse-dots"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></span></div>`;
+  typingRow.innerHTML = `<img class="bubble-avatar" src="${PETEY_HEAD}" alt="" aria-hidden="true"><div class="bubble ai"><span class="pulse-dots"><span class="pulse-dot"></span><span class="pulse-dot"></span><span class="pulse-dot"></span></span></div>`;
   convScrollInner.appendChild(typingRow);
   scrollConvToBottom();
 }
