@@ -16,16 +16,22 @@ function logoSVG(size) {
   </svg>`;
 }
 
-function renderLogo(elId, size) {
+// The PreTaskIQ logo (the crane and wordmark supplied by the owner). Files live in public/. "size" is the old icon size; the picture is sized from it.
+function renderLogo(elId, size, variant) {
   const el = document.getElementById(elId);
   if (!el) return;
-  el.innerHTML = `${logoSVG(size)}<span class="display" style="font-weight:700;font-size:${size * 0.62}px;color:var(--navy);letter-spacing:-0.02em;">PreTask<span style="color:var(--orange);">IQ</span></span>`;
+  const src = variant === "full" ? "/logo-full.png" : variant === "light" ? "/logo-wordmark-light.png" : "/logo-wordmark.png";
+  const h = variant === "full" ? Math.round(size * 2.6) : Math.round(size * 1.45);
+  el.innerHTML = `<img src="${src}" alt="PreTaskIQ" class="app-logo-img" style="height:${h}px;width:auto;display:block;">`;
 }
 
 ["logo-intake", "logo-conv", "logo-gen", "logo-err", "logo-doc"].forEach(id => {
   const size = id === "logo-conv" ? 26 : 28;
-  renderLogo(id, size);
+  renderLogo(id, size, id === "logo-intake" ? "full" : undefined);   // the start screen shows the full logo with its tagline
 });
+renderLogo("logo-nav", 20, "light");                                  // the top bar is dark, so it gets the white-lettered version
+const taglineText = document.querySelector("#logo-intake + .logo-tagline");
+if (taglineText) taglineText.style.display = "none";                 // the full logo already carries "EVERY JOB. EVERY LESSON."
 
 const examples = [
   "Stage material, set up the scissor lift, then install bus duct in Building 2.",
