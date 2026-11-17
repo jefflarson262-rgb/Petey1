@@ -73,7 +73,9 @@
     position: absolute; top: calc(100% + 8px); right: 0;
     background: #fff; border: 1px solid #E0E8F0; border-radius: 14px;
     box-shadow: 0 8px 32px rgba(15,30,46,0.18);
-    min-width: 260px; overflow: hidden;
+    min-width: 260px; overflow-x: hidden; overflow-y: auto;
+    max-height: calc(100vh - 96px); max-height: calc(100dvh - 96px);   /* never taller than the window; scrolls when the list is longer */
+    overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
     opacity: 0; transform: translateY(-6px); pointer-events: none;
     transition: opacity 0.18s, transform 0.18s;
   }
