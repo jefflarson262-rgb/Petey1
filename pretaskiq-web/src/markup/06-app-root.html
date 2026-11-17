@@ -8,8 +8,13 @@
           <div class="logo-tagline">EVERY JOB. EVERY LESSON.</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
-          <button class="btn-primary" onclick="showScreen('petey')" style="display:inline-flex;align-items:center;gap:8px;">
-            <span style="font-size:16px;">🎙️</span> Demo Petey
+          <button type="button" class="demo-petey-btn" id="demo-petey-btn" onclick="showScreen('petey')" aria-label="Demo Petey">
+            <span class="demo-petey-face"><img id="demo-petey-img" alt="" aria-hidden="true"></span>
+            <span class="demo-petey-text">
+              <span class="demo-petey-name">Demo <em>Petey</em></span>
+              <span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+            </span>
+            <svg class="demo-petey-chev" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
       </div>

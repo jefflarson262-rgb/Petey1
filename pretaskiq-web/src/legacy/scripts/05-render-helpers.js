@@ -45,6 +45,8 @@ function renderLogo(elId, size, variant) {
   renderLogo(id, size, id === "logo-intake" ? "full" : undefined);   // the start screen shows the full logo with its tagline
 });
 renderLogo("logo-nav", 20, "light");
+const demoPeteyImg = document.getElementById("demo-petey-img");
+if (demoPeteyImg) demoPeteyImg.src = PETEY_HEAD;
 const peteyMascotImg = document.getElementById("petey-mascot");
 if (peteyMascotImg) { peteyMascotImg.src = PETEY_FULL; peteyMascotImg.style.display = ""; }                                  // the top bar is dark, so it gets the white-lettered version
 const taglineText = document.querySelector("#logo-intake + .logo-tagline");
