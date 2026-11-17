@@ -332,7 +332,7 @@
     var S = window.PreTaskIQSpeech;
     var stage = 'starting', finished = false, heard = false, abort = new AbortController();
     var stream = null, src = null, proc = null, mute = null, startTimer = null;
-    var chunks = [], rate = 44100, t = 0, floor = null, loudRun = 0, lastLoud = 0, firstLoudIdx = -1, lastLoudIdx = -1;
+    var chunks = [], rate = 44100, t = 0, floor = null, peak = 0, loudRun = 0, lastLoud = 0, firstLoudIdx = -1, lastLoudIdx = -1;
     var silenceMs = opts.silenceMs || 1800, maxMs = Math.min(opts.maxMs || 60000, 55000), noSpeechMs = opts.noSpeechMs || 9000;   // 55 s: what the server accepts
 
     function release() {                                       // let go of the microphone (so the phone's speaker goes back to normal)
@@ -353,6 +353,9 @@
     function endTalking() {                                    // I am done talking: send what was recorded
       if (finished || stage !== 'recording') { if (stage === 'starting') done('', 'no-speech'); return; }
       release();
+      // Our own loudness check found no speech, but there was some sound (soft voice, phone held far away, the phone's gain still adjusting):
+      // send the whole recording and let the speech service decide, instead of throwing it away.
+      if (!heard && peak > 0.004 && chunks.length) { heard = true; firstLoudIdx = 0; lastLoudIdx = chunks.length - 1; }
       if (!heard) { done('', 'no-speech'); return; }
       stage = 'transcribing'; if (opts.onStage) { try { opts.onStage('transcribing'); } catch (e) {} }
       var wav;
@@ -373,14 +376,15 @@
       var rms = Math.sqrt(sum / n);
       chunks.push(new Float32Array(d)); t += n / rate * 1000;
       var idx = chunks.length - 1;
+      if (rms > peak) peak = rms;
       floor = floor === null ? Math.min(rms, 0.02) : (rms < floor ? rms : floor + (rms - floor) * 0.03);
       floor = Math.min(floor, 0.03);
-      if (rms > Math.max(0.012, floor * 3)) {
+      if (rms > Math.max(0.008, floor * 3)) {
         loudRun++;
         if (loudRun >= 2) { if (!heard) { heard = true; firstLoudIdx = idx - 1; } lastLoud = t; lastLoudIdx = idx; }
       } else loudRun = 0;
       if (heard && t - lastLoud > silenceMs) endTalking();
-      else if (!heard && t > noSpeechMs) done('', 'no-speech');
+      else if (!heard && t > noSpeechMs) endTalking();
       else if (t > maxMs) endTalking();
     }
 
