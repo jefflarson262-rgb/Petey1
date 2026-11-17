@@ -16,7 +16,8 @@ function buildRCASystemPrompt() {
     ? '\n\nCUSTOMER METHODOLOGY TEMPLATE:\nThis organization has uploaded an example RCA document that defines their preferred methodology and structure. When generating the final RCA document, replicate the section order, terminology, and structure from this template as closely as possible. The template is from: ' + template.source + '\n\nTemplate content:\n' + template.description + '\n\nDo not deviate from this structure. Use the same section headings, same level of detail, and same terminology the customer uses in their own RCAs.'
     : '';
 
-  return RCA_SYSTEM_PROMPT_BASE + methodologySection;
+  var reportSection = '\n\nSTARTING FROM AN INCIDENT REPORT: the first user message may say it comes from an uploaded incident report, with a summary of what the document states (names removed). Treat that summary as the facts the investigator already has: do not ask for anything it already answers. In your first reply, in a few short lines, restate the problem definition it supports (what happened, the impact, the sequence), say plainly what is NOT in the report (timeline gaps, evidence, who was involved by role, the work being done), then ask ONE question about the most important gap. Never treat a cause that the report only implies as established; the investigation decides causes. Never use a personal name.';
+  return RCA_SYSTEM_PROMPT_BASE + methodologySection + reportSection;
 }
 
 var RCA_SYSTEM_PROMPT_BASE = `You are an experienced safety investigation facilitator helping a safety professional develop a root cause analysis (RCA) for a workplace incident, near-miss, or significant close call.
@@ -63,6 +64,8 @@ function openRCAAssistant() {
   var inputRow = document.getElementById('rca-input-row');
   if (inputRow) inputRow.style.display = 'flex';
 
+  var upRow = document.getElementById('rca-upload-row'); if (upRow) upRow.style.display = '';
+  rcaBusyUpload = false;
   updateRCAPhases(1);
   showScreen('rca');
 
@@ -119,6 +122,7 @@ async function sendRCAMessage() {
   if (!text) return;
 
   input.value = '';
+  var upRow0 = document.getElementById('rca-upload-row'); if (upRow0) upRow0.style.display = 'none';   // only offered before the investigation starts
   addRCABubble('user', text);
   rcaMessages.push({ role: 'user', content: text });
 
@@ -395,4 +399,86 @@ document.addEventListener('DOMContentLoaded', function() {
   var style = document.createElement('style');
   style.textContent = '.rca-phase-chip { font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;background:#E8ECF0;color:#777;cursor:default; }';
   document.head.appendChild(style);
+});
+
+
+// ---- Start from an incident report --------------------------------------------------------------------------------------------------
+// The administrator uploads a report (names removed). It is read once, here, into a short plain-text summary that is shown in the chat so the
+// person can see exactly what was understood; only that text (never the file) goes into the rest of the conversation.
+var rcaBusyUpload = false;
+var RCA_MAX_FILE = 8 * 1024 * 1024;
+function rcaSummaryPrompt() {
+  return 'Read this incident report and respond with ONLY a JSON object (no markdown):\n'
+    + '{\n'
+    + '  "what_happened": "plain account, in order, max 1200 characters, only what the document states",\n'
+    + '  "impact": "injury, damage, downtime or cost as stated, else empty string",\n'
+    + '  "when_where": "date and general place type as stated (for example a month and year; \'second floor of a building\'), no addresses",\n'
+    + '  "work_being_done": "the task or trade, else empty string",\n'
+    + '  "roles_involved": ["roles only, for example \'electrician\', \'foreman\'"],\n'
+    + '  "causes_stated": ["causes the document itself gives; empty if none"],\n'
+    + '  "actions_stated": ["immediate or corrective actions the document lists; empty if none"],\n'
+    + '  "not_stated": ["important things a root cause investigation needs that the document does not say, max 5 short phrases"],\n'
+    + '  "personal_info_found": true or false   // true if the document still contains a person\'s name, phone number, address, birth date or ID number\n'
+    + '}\n'
+    + 'Use roles, never names, in every field. Use only facts the document states; leave a field empty instead of guessing.';
+}
+function rcaTrim(v, n) { return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, n); }
+function rcaList(v, max, n) { return (Array.isArray(v) ? v : []).map(function(x) { return rcaTrim(x, n); }).filter(Boolean).slice(0, max); }
+function rcaSummaryText(j) {
+  var lines = ["I'm starting from an uploaded incident report. This is what it says (names removed):", ''];
+  var add = function(label, val) { if (val && val.length) lines.push(label + ': ' + (Array.isArray(val) ? val.join('; ') : val)); };
+  add('What happened', rcaTrim(j.what_happened, 1200)); add('Impact', rcaTrim(j.impact, 300)); add('When and where', rcaTrim(j.when_where, 200));
+  add('Work being done', rcaTrim(j.work_being_done, 200)); add('Roles involved', rcaList(j.roles_involved, 8, 60));
+  add('Causes the report states', rcaList(j.causes_stated, 6, 200)); add('Actions the report lists', rcaList(j.actions_stated, 6, 200));
+  add('Not in the report', rcaList(j.not_stated, 5, 120));
+  return lines.join('\n');
+}
+function rcaFileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var r = new FileReader();
+    r.onload = function() { resolve(String(r.result).split(',')[1] || ''); };
+    r.onerror = function() { reject(new Error('Could not read that file.')); };
+    r.readAsDataURL(file);
+  });
+}
+async function startRCAFromReport(file) {
+  if (rcaBusyUpload || rcaDone || rcaMessages.length) return;
+  var okType = file && (file.type === 'application/pdf' || file.type === 'image/png' || file.type === 'image/jpeg');
+  if (!okType) { addRCABubble('assistant', 'I can read a PDF, PNG or JPG. Please choose one of those.'); return; }
+  if (file.size > RCA_MAX_FILE) { addRCABubble('assistant', 'That file is over 8 MB. Please upload a smaller copy (for example, only the incident pages).'); return; }
+  rcaBusyUpload = true;
+  var btn = document.getElementById('rca-upload-btn'); if (btn) btn.disabled = true;
+  addRCABubble('user', '📎 ' + file.name);
+  addRCABubble('assistant', 'Reading the report…');
+  try {
+    var data64 = await rcaFileToBase64(file);
+    var block = file.type === 'application/pdf'
+      ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: data64 } }
+      : { type: 'image', source: { type: 'base64', media_type: file.type, data: data64 } };
+    var response = await fetch(window.PRETASKIQ_API_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1800, messages: [{ role: 'user', content: [block, { type: 'text', text: rcaSummaryPrompt() }] }] })
+    });
+    if (!response.ok) throw new Error('The report could not be read (' + response.status + '). You can describe what happened instead.');
+    var data = await response.json();
+    var text = (data.content || []).map(function(b) { return b.text || ''; }).join('').replace(/```json|```/g, '').trim();
+    var j; try { j = JSON.parse(text); } catch (e) { throw new Error('I could not make sense of that report. You can describe what happened instead.'); }
+    if (!rcaTrim(j.what_happened, 50)) throw new Error('I could not find an account of what happened in that file. You can describe it instead.');
+    var chat = document.getElementById('rca-chat'); var last = chat && chat.lastElementChild; if (last) last.remove();   // the "Reading the report…" line
+    if (j.personal_info_found === true) addRCABubble('assistant', 'Heads up: this report still seems to contain personal details (a name, phone number, address or similar). I left them out of my summary, but please remove them from the file before uploading in future.');
+    var up = document.getElementById('rca-upload-row'); if (up) up.style.display = 'none';
+    var input = document.getElementById('rca-input');
+    if (input) { input.value = rcaSummaryText(j); }
+    rcaBusyUpload = false;
+    await sendRCAMessage();
+  } catch (e) {
+    var chat2 = document.getElementById('rca-chat'); var l2 = chat2 && chat2.lastElementChild;
+    if (l2 && /Reading the report/.test(l2.textContent || '')) l2.remove();
+    addRCABubble('assistant', (e && e.message) || 'The report could not be read. You can describe what happened instead.');
+    rcaBusyUpload = false; if (btn) btn.disabled = false;
+  }
+}
+document.addEventListener('change', function(ev) {
+  var t = ev.target;
+  if (t && t.id === 'rca-file') { var f = t.files && t.files[0]; t.value = ''; if (f) startRCAFromReport(f); }
 });

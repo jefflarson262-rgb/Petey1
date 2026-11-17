@@ -36,6 +36,13 @@
     <!-- Chat area -->
     <div id="rca-chat" style="display:flex;flex-direction:column;gap:4px;min-height:200px;margin-bottom:16px;"></div>
 
+    <!-- Start from an incident report -->
+    <div id="rca-upload-row" class="rca-upload-row">
+      <button type="button" id="rca-upload-btn" class="btn-secondary" onclick="document.getElementById('rca-file').click()">📎 Start from an incident report</button>
+      <input type="file" id="rca-file" accept="application/pdf,image/png,image/jpeg" style="display:none">
+      <div class="rca-upload-note">PDF, PNG or JPG. Remove names and other personal information first. Petey reads the report so you don't have to retype what happened.</div>
+    </div>
+
     <!-- Input -->
     <div style="display:flex;gap:10px;" id="rca-input-row">
       <textarea id="rca-input" rows="2" style="flex:1;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;font-family:inherit;resize:none;color:var(--navy);outline:none;" placeholder="Describe what happened..."></textarea>

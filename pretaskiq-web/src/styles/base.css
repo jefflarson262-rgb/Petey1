@@ -436,3 +436,7 @@
 .kb-find-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; }
 .kb-find-buttons { display: flex; gap: 8px; margin-top: 10px; }
 .kb-find-buttons button { min-height: 44px; }
+
+.rca-upload-row { margin: 0 0 12px; }
+.rca-upload-row .btn-secondary { min-height: 44px; }
+.rca-upload-note { font-size: 12px; color: var(--slate); margin-top: 6px; line-height: 1.4; }
