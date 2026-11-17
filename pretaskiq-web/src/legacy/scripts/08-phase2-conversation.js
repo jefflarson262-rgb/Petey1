@@ -215,7 +215,14 @@ async function sendTurn(newApiMessages) {
       doneLine.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#2E7D5B"/><path d="M4.5 8.2l2.2 2.2 4.8-4.8" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> Building your hazard analysis...`;
       convScrollInner.appendChild(doneLine);
       scrollConvToBottom();
-      setTimeout(() => generateJHA(apiMessages), 1100);
+      // Let Petey finish his closing message before the screen changes (changing screens silences him mid-sentence). Never wait more than 30 s.
+      const waitStart = Date.now();
+      const buildWhenQuiet = () => {
+        const busy = typeof window.PreTaskIQVoiceBusy === "function" && window.PreTaskIQVoiceBusy();
+        if (busy && Date.now() - waitStart < 30000) return setTimeout(buildWhenQuiet, 250);
+        generateJHA(apiMessages);
+      };
+      setTimeout(buildWhenQuiet, 1100);
     } else {
       convInput.disabled = false;
       convSend.disabled = false;

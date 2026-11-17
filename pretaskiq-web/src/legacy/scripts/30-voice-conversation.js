@@ -498,6 +498,8 @@
   }
 
   // Used when a cut-off answer is replaced by the complete one: stop Petey speaking the reply to the cut-off one.
+  // True while Petey is still speaking his last message. The planning screen waits for this before it moves on, so the closing message is not cut off.
+  window.PreTaskIQVoiceBusy = function () { return !!cv.speak; };
   window.PreTaskIQVoiceInterrupt = function () {
     clearTimeout(cv.sendTimer); cv.sendTimer = null;
     if (cv.speak) { cv.speak.cancel(); cv.speak = null; }
