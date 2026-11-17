@@ -244,9 +244,30 @@ function startConversation(description) {
   sendTurn(apiMessages);
 }
 
+// Words only, lower case: so "verify uh the" and "verify, uh, the phases." can be compared.
+function plainWords(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9\s']/g, " ").replace(/\s+/g, " ").trim(); }
+
+// The same spoken answer can arrive twice: first cut off where the speaker paused, then complete. Instead of two answers and two different questions,
+// the cut-off one (and Petey's reply to it) is replaced by the complete one. Only when the new text begins with the earlier one, within a minute.
+let lastAnswer = null;   // { text, at, msgIndex, rowIndex }
+function replaceCutOffAnswer(val) {
+  const prev = lastAnswer;
+  if (!prev || Date.now() - prev.at > 60000) return false;
+  const a = plainWords(prev.text), b = plainWords(val);
+  if (a.split(" ").length < 4 || b.length <= a.length || !b.startsWith(a)) return false;
+  if (apiMessages.length !== prev.msgIndex + 2 || apiMessages[prev.msgIndex].content !== prev.text) return false;   // the conversation has moved on
+  apiMessages = apiMessages.slice(0, prev.msgIndex);
+  const rows = Array.from(convScrollInner.children);
+  rows.slice(prev.rowIndex).forEach(r => r.remove());
+  if (typeof window.PreTaskIQVoiceInterrupt === "function") window.PreTaskIQVoiceInterrupt();
+  return true;
+}
+
 function handleConvSend() {
   const val = convInput.value.trim();
   if (!val || convDone || convInput.disabled) return;
+  replaceCutOffAnswer(val);
+  lastAnswer = { text: val, at: Date.now(), msgIndex: apiMessages.length, rowIndex: convScrollInner.children.length };
   addBubble("user", val);
   const updated = [...apiMessages, { role: "user", content: val }];
   apiMessages = updated;

@@ -478,7 +478,7 @@
     if (convInputEl.disabled) { cvPhase('thinking', 'Petey is thinking…'); return; }   // the next question will start the listening
     cvPhase('listening', useServerListening() ? 'Listening… say your answer, then tap the mic when you are done.' : 'Listening… say your answer.', 'listening');
     listen({
-      silenceMs: 1800,
+      silenceMs: 2500,       // a foreman thinking mid-sentence ("verify, uh...") is not finished; 1.8 s was cutting answers off
       onStage: function (st) { if (st === 'transcribing' && cv.on) cvPhase('thinking', 'Got it… working out what you said.'); },
       onText: function (t) { convInputEl.value = t; },
       onDone: function (text, reason) {
@@ -496,6 +496,13 @@
       },
     });
   }
+
+  // Used when a cut-off answer is replaced by the complete one: stop Petey speaking the reply to the cut-off one.
+  window.PreTaskIQVoiceInterrupt = function () {
+    clearTimeout(cv.sendTimer); cv.sendTimer = null;
+    if (cv.speak) { cv.speak.cancel(); cv.speak = null; }
+    cancelSpeech();
+  };
 
   function cvSend() {
     cv.sendTimer = null;
