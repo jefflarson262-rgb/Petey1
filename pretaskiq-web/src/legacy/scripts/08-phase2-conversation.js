@@ -205,7 +205,9 @@ async function sendTurn(newApiMessages) {
     }
 
     const lower = reply.toLowerCase();
-    const isDone = lower.includes("generating it now") || lower.includes("generating the") || lower.includes("ready to generate") || lower.includes("putting the jha together") || lower.includes("put the jha together") || lower.includes("putting it together") || lower.includes("got everything i need") || lower.includes("got it — putting");
+    // A reply that ends in a question is waiting for the foreman's answer, whatever words it contains (the closing question itself says "put the JHA together").
+    const waitingForAnswer = /\?[\s"'”’)\]*_]*$/.test(reply.trim());
+    const isDone = !waitingForAnswer && (lower.includes("generating it now") || lower.includes("generating the") || lower.includes("ready to generate") || lower.includes("putting the jha together") || lower.includes("put the jha together") || lower.includes("putting it together") || lower.includes("got everything i need") || lower.includes("got it — putting"));
     if (isDone) {
       convDone = true;
       setConvStatus(false, true);
