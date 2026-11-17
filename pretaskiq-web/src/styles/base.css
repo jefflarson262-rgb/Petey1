@@ -442,3 +442,24 @@
 .rca-upload-row { margin: 0 0 12px; }
 .rca-upload-row .btn-secondary { min-height: 44px; }
 .rca-upload-note { font-size: 12px; color: var(--slate); margin-top: 6px; line-height: 1.4; }
+
+.kbl-overlay { position: fixed; inset: 0; z-index: 99970; background: rgba(15, 30, 46, 0.6); display: flex; justify-content: center; align-items: flex-start; padding: 16px; overflow-y: auto; }
+.kbl-panel { background: #fff; border-radius: 14px; width: 100%; max-width: 760px; padding: 18px 18px 22px; box-sizing: border-box; }
+.kbl-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.kbl-head h2 { margin: 0; font-size: 20px; color: var(--navy); }
+.kbl-head .btn-secondary, .kbl-open { min-height: 44px; }
+.kbl-sub { font-size: 13px; color: var(--slate); margin: 6px 0 12px; line-height: 1.4; }
+.kbl-search { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; }
+.kbl-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+.kbl-chip { min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font: inherit; font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; }
+.kbl-chip span { color: var(--slate); font-weight: 600; }
+.kbl-chip.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.kbl-chip.on span { color: #fff; }
+.kbl-count { font-size: 12px; color: var(--slate); margin: 8px 0; }
+.kbl-row { display: flex; gap: 10px; align-items: flex-start; padding: 12px 0; border-top: 1px solid #EEF0F4; }
+.kbl-icon { font-size: 20px; width: 26px; text-align: center; flex-shrink: 0; }
+.kbl-main { flex: 1; min-width: 0; }
+.kbl-name { font-size: 15px; font-weight: 700; color: var(--navy); overflow-wrap: anywhere; }
+.kbl-sum { font-size: 13px; color: #444; margin-top: 3px; line-height: 1.4; }
+.kbl-meta { font-size: 12px; color: var(--slate); margin-top: 4px; line-height: 1.4; }
+.kbl-empty { padding: 24px 0; text-align: center; font-size: 14px; color: var(--slate); }

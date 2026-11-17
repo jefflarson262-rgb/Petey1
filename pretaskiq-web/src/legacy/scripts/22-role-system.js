@@ -32,6 +32,12 @@ var ROLE_MENUS = {
         ]
       },
       {
+        label: 'Knowledge Base',
+        items: [
+          { icon: '🗂️', label: 'Knowledge Base Library', sub: 'Everything uploaded, in one searchable list', action: "closeNavDropdown(); openKbLibrary();" },
+        ]
+      },
+      {
         label: 'Incidents',
         items: [
           { icon: '⚠️', label: 'Upload Incident', sub: 'Petey surfaces lessons learned in context', action: "openSettingsToKb('incident'); closeNavDropdown();" },

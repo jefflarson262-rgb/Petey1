@@ -240,3 +240,67 @@ function kbRemoveEntry(dbId) {
   if (!confirm('Remove this entry for everyone? Petey will stop using it. (It is kept in the database, so an administrator can still recover it.)')) return;
   window.PreTaskIQKb.remove(dbId).then(function(r) { if (!r.ok) alert('Could not remove it: ' + r.message); });
 }
+
+
+// ---- Knowledge Base Library ----------------------------------------------------------------------------------------------------------
+// One searchable list of everything the company has added (drawings, incidents, RCAs, policies, procedures), newest first. Read-only: "Open"
+// takes you to that kind's upload tab, where entries are edited or removed. It lists the entries, not the original files (those are not kept).
+var KBL_TYPES = [['incident', 'Incidents', '⚠️'], ['rca', 'Root cause analyses', '🔍'], ['policy', 'Policies', '📋'], ['procedure', 'Procedures', '📝'], ['drawings', 'Drawings', '📐']];
+var kblState = { q: '', type: 'all' };
+function kblDate(e) {
+  var d = e.savedAt ? new Date(e.savedAt) : (typeof e.id === 'number' && e.id > 1e12 ? new Date(e.id) : null);
+  return d && !isNaN(d) ? d : null;
+}
+function kblText(e) {
+  var bits = [e.title, e.revision, e.scope, e.change_description, e.affected_work, e.summary, e.savedBy, e.failed_control]
+    .concat(e.keywords || [], e.root_causes || [], e.corrective_actions || [], e.lessons_learned || []);
+  return bits.filter(Boolean).join(' ').toLowerCase();
+}
+function openKbLibrary() {
+  var ov = document.getElementById('kbl-overlay');
+  if (!ov) {
+    ov = document.createElement('div'); ov.id = 'kbl-overlay'; ov.className = 'kbl-overlay';
+    ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'kbl-title');
+    ov.addEventListener('click', function(ev) { if (ev.target === ov) closeKbLibrary(); });
+    document.addEventListener('keydown', function(ev) { if (ev.key === 'Escape' && document.getElementById('kbl-overlay')) closeKbLibrary(); });
+    document.body.appendChild(ov);
+  }
+  kblState = { q: '', type: 'all' };
+  kblRender(true);
+  var s = document.getElementById('kbl-search'); if (s) s.focus();
+}
+function closeKbLibrary() { var ov = document.getElementById('kbl-overlay'); if (ov) ov.remove(); }
+function kblSetType(t) { kblState.type = t; kblRender(false); }
+function kblSearch(v) { kblState.q = v; kblRender(false); }
+function kblRender(full) {
+  var ov = document.getElementById('kbl-overlay'); if (!ov) return;
+  var e2 = escapeHtml, all = projectKnowledgeBase || [];
+  var count = function(t) { return all.filter(function(e) { return t === 'all' || (e.kbType || 'drawings') === t; }).length; };
+  var q = kblState.q.trim().toLowerCase();
+  var rows = all.filter(function(e) { return (kblState.type === 'all' || (e.kbType || 'drawings') === kblState.type) && (!q || kblText(e).indexOf(q) >= 0); })
+    .sort(function(a, b) { var da = kblDate(a), db = kblDate(b); return (db ? db.getTime() : 0) - (da ? da.getTime() : 0); });
+  var chips = [['all', 'All', '']].concat(KBL_TYPES).map(function(t) {
+    return '<button type="button" class="kbl-chip' + (kblState.type === t[0] ? ' on' : '') + '" onclick="kblSetType(\'' + t[0] + '\')">' + e2(t[1]) + ' <span>' + count(t[0]) + '</span></button>';
+  }).join('');
+  var list = rows.length ? rows.map(function(e) {
+    var t = KBL_TYPES.filter(function(x) { return x[0] === (e.kbType || 'drawings'); })[0] || ['drawings', 'Drawings', '📐'];
+    var d = kblDate(e);
+    var status = e.status === 'processing' ? 'Parsing…' : e.saveState === 'failed' ? 'NOT saved' : e.saveState === 'saving' ? 'Saving…' : e.saveState === 'saved' ? 'Saved for everyone' : 'This tab only';
+    var meta = [t[1], d ? d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '', e.savedBy ? 'added by ' + e.savedBy : '', status].filter(Boolean).map(e2).join(' · ');
+    var extra = e.kbType === 'incident' && e.reenactment && e.reenactment.status === 'approved' ? ' · 🎬 reenactment approved' : '';
+    return '<div class="kbl-row"><span class="kbl-icon">' + t[2] + '</span><div class="kbl-main">'
+      + '<div class="kbl-name">' + e2(e.title || 'Untitled') + '</div>'
+      + (e.change_description ? '<div class="kbl-sum">' + e2(e.change_description) + '</div>' : '')
+      + '<div class="kbl-meta">' + meta + e2(extra) + '</div></div>'
+      + '<button type="button" class="btn-secondary kbl-open" onclick="closeKbLibrary(); openSettingsToKb(\'' + String(e.kbType || 'drawings').replace(/[^a-z]/g, '') + '\')">Open</button></div>';
+  }).join('') : '<div class="kbl-empty">' + (all.length ? 'Nothing matches that search.' : 'Nothing has been added yet. Use the Upload items in the menu to add incidents, RCAs, policies or procedures.') + '</div>';
+  if (full) {
+    ov.innerHTML = '<div class="kbl-panel"><div class="kbl-head"><h2 id="kbl-title">Knowledge Base Library</h2><button type="button" class="btn-secondary" onclick="closeKbLibrary()">Close</button></div>'
+      + '<div class="kbl-sub">Everything your company has added for Petey to draw on. Original files are not kept; this lists what Petey read from each one.</div>'
+      + '<input id="kbl-search" class="kbl-search" type="search" placeholder="Search titles, summaries, causes, actions…" aria-label="Search the library" oninput="kblSearch(this.value)">'
+      + '<div class="kbl-chips" id="kbl-chips"></div><div class="kbl-count" id="kbl-count"></div><div class="kbl-list" id="kbl-list"></div></div>';
+  }
+  document.getElementById('kbl-chips').innerHTML = chips;
+  document.getElementById('kbl-count').textContent = rows.length + (rows.length === 1 ? ' entry' : ' entries') + (kblState.type !== 'all' || q ? ' shown of ' + all.length : '');
+  document.getElementById('kbl-list').innerHTML = list;
+}
