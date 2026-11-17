@@ -53,7 +53,7 @@
   // Letter-by-letter abbreviations that voices tend to read as odd words.
   function speakable(text) {
     return String(text || '')
-      .replace(/\bJHA(s?)\b/g, 'J H A$1').replace(/\bPPE\b/g, 'P P E').replace(/\bPTP\b/g, 'P T P').replace(/\bSTKY\b/g, 'S T K Y');
+      .replace(/\bJHA(s?)\b/g, 'J H A$1').replace(/\bPPE\b/g, 'P P E').replace(/\bPTP\b/g, 'P T P').replace(/\b(?:STKY|STCKY)\b/g, 'sticky');
   }
 
   // Long utterances can stall in some browsers (Chrome desktop is reported to have trouble past about 14 seconds), so speak sentence by sentence.
