@@ -559,7 +559,7 @@
     intakeMic.classList.toggle('on', intakeVoice.wanted);
     intakeMic.classList.toggle('listening', intakeVoice.listening);
     intakeMic.setAttribute('aria-pressed', String(intakeVoice.wanted));
-    var l = document.getElementById('intake-mic-label'); if (l) l.textContent = intakeVoice.listening ? 'Listening…' : 'Talk to Petey';
+    var l = document.getElementById('intake-mic-label'); if (l) l.innerHTML = intakeVoice.listening ? 'Listening…' : 'Talk to <em>Petey</em>';
   }
   function intakeCancelSend() { clearTimeout(intakeVoice.sendTimer); intakeVoice.sendTimer = null; }
   function intakeFieldChanged() { intakeSubmitBtn.disabled = !intakeBox.value.trim(); }
