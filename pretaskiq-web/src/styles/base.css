@@ -559,3 +559,9 @@
 
 .ask-bulb-wrap { display: inline-flex; flex-shrink: 0; margin-left: 12px; }
 @media (max-width: 480px) { .ask-bulb { width: 30px; height: 30px; } }
+
+/* Start Planning matches the Talk to Petey button's size */
+.start-planning-btn, .start-planning-btn.btn-primary { min-height: 48px; padding: 0 16px 0 22px; gap: 8px; border-width: 2.5px; }
+.start-planning-btn .talk-petey-name { font-size: 16px; }
+.start-planning-btn .demo-petey-chev { width: 18px; height: 18px; }
+@media (max-width: 480px) { .start-planning-btn, .start-planning-btn.btn-primary { min-height: 44px; } .start-planning-btn .talk-petey-name { font-size: 15px; } }
