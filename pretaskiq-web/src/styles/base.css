@@ -547,3 +547,7 @@
 .btn-secondary:hover:not(:disabled) { background: #FFF4EA; transform: translateY(-1px); }
 .btn-secondary:disabled { opacity: .5; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) { .btn-primary, .btn-send, .btn-secondary { transition: none; } }
+
+/* the document's bottom "Submit and start shift" bar button uses the same pill */
+.doc-petey-bar-btn { border: 2.5px solid var(--orange); border-radius: 999px; background: linear-gradient(180deg, #14294A 0%, #0B1B33 100%); font-family: "Space Grotesk", "Inter", sans-serif; font-weight: 700; font-size: 15px; padding: 12px 26px; box-shadow: 0 3px 10px rgba(15,30,46,0.25), inset 0 1px 0 rgba(255,255,255,0.12); }
+.doc-petey-bar-btn:hover { background: linear-gradient(180deg, #1a3560 0%, #0F2342 100%); }
