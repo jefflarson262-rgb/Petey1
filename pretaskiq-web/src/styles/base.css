@@ -513,3 +513,4 @@
 @media (prefers-reduced-motion: reduce) { .talk-petey-btn { transition: none; } }
 .doc-petey-bar .talk-petey-btn { pointer-events: all; }
 @media (max-width: 480px) { .intake-actions { flex-wrap: wrap; gap: 10px; justify-content: center; } .intake-mic-btn.talk-petey-btn { margin-right: 0; } }
+.talk-petey-btn.no-face, .talk-petey-btn.intake-mic-btn.no-face { padding-left: 24px; }
