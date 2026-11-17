@@ -62,7 +62,7 @@ function applyOfflineUI() {
     banner.style.display = "flex";
     offlineActions.style.display = "block";
     onlineExamples.style.display = "none";
-    intakeSubmit.textContent = "Connected only";
+    { const l = intakeSubmit.querySelector(".sp-label"); if (l) l.textContent = "Connected only"; else intakeSubmit.textContent = "Connected only"; }
     intakeSubmit.disabled = true;
     intakeTitle.textContent = "What's on the plan today?";
     intakeSub.textContent = "You're offline. Use a cached plan from a previous shift, or complete the guided checklist below.";
@@ -75,7 +75,7 @@ function applyOfflineUI() {
     intakeTitle.textContent = "What tasks are planned for today?";
     intakeSub.textContent = "List everything on the shift — one task or several. I'll start with the highest-risk work and walk the full plan with you, the way a safety pro would on site.";
     const val = document.getElementById("intake-textarea").value.trim();
-    intakeSubmit.textContent = "Start planning →";
+    { const l = intakeSubmit.querySelector(".sp-label"); if (l) l.textContent = "Start Planning"; else intakeSubmit.textContent = "Start planning →"; }
     intakeSubmit.disabled = !val;
     renderSyncQueueNotice();
   }

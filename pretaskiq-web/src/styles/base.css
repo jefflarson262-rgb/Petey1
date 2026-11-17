@@ -551,3 +551,11 @@
 /* the document's bottom "Submit and start shift" bar button uses the same pill */
 .doc-petey-bar-btn { border: 2.5px solid var(--orange); border-radius: 999px; background: linear-gradient(180deg, #14294A 0%, #0B1B33 100%); font-family: "Space Grotesk", "Inter", sans-serif; font-weight: 700; font-size: 15px; padding: 12px 26px; box-shadow: 0 3px 10px rgba(15,30,46,0.25), inset 0 1px 0 rgba(255,255,255,0.12); }
 .doc-petey-bar-btn:hover { background: linear-gradient(180deg, #1a3560 0%, #0F2342 100%); }
+
+/* Start Planning button */
+.start-planning-btn { min-height: 52px; padding: 0 20px 0 26px; gap: 14px; }
+.start-planning-btn .talk-petey-name { font-size: 18px; }
+.start-planning-btn:disabled .demo-petey-slash i, .start-planning-btn:disabled .demo-petey-slash b { background: #A8A296; }
+
+.ask-bulb-wrap { display: inline-flex; flex-shrink: 0; margin-left: 12px; }
+@media (max-width: 480px) { .ask-bulb { width: 30px; height: 30px; } }
