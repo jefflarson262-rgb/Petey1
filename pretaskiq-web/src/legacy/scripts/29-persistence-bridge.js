@@ -114,6 +114,10 @@
     });
     var bar = document.querySelector('.nav-role-bar');
     if (bar) bar.style.display = allowed.length > 1 ? '' : 'none';
+    // A field-only person (foreman) gets the field tools: no knowledge base uploads or JHA template editing in Settings.
+    var fieldOnly = allowed.length === 1 && allowed[0] === 'foreman';
+    document.querySelectorAll('#settings-modal-overlay .settings-tab[data-pane="kb"], #settings-modal-overlay .settings-tab[data-pane="jha"]').forEach(function (t) { t.style.display = fieldOnly ? 'none' : ''; });
+    document.body.classList.toggle('field-only', fieldOnly);
   }
 
   // ---- 3. Start-up --------------------------------------------------------------------------------
@@ -123,8 +127,8 @@
     renderDemoStep(0);
   };
 
-  // opts.allowed (a list of role views) when signed in. Everyone lands on the planning screen (after the one-time setup questions on a new device), which is the foreman view,
-  // whatever their role; people with more access switch views with the buttons in the top bar. The demo is opt-in
+  // opts.allowed (a list of role views) when signed in. Foremen, and administrators on a phone, land on the planning screen (after the one-time setup questions on a new device);
+  // administrators on a wide screen land on their own console. People with more access switch views with the buttons in the top bar. The demo is opt-in
   // (account menu, or ?demo in the address).
   PT.startApp = function (opts) {
     opts = opts || {};
@@ -140,6 +144,14 @@
     }
     if (/[?&]demo(=|&|$)/.test(location.search)) PT.openDemo();
     else if (shouldShowOnboarding()) startOnboarding();        // this device's first visit: the five short setup questions (they can be skipped)
-    else showScreen('intake');
+    else {
+      showScreen('intake');
+      // Administrators on a laptop or desktop open their own console; on a phone everyone opens the field screens.
+      var wide = window.matchMedia && window.matchMedia('(min-width: 900px)').matches;
+      if (opts.allowed && wide) {
+        if (opts.allowed.indexOf('safety') !== -1) setRole('safety');
+        else if (opts.allowed.indexOf('construction') !== -1) setRole('construction');
+      }
+    }
   };
 })();
