@@ -87,7 +87,8 @@
     var bar = $('crew-addbar');
     if (!bar) return;
     if (PT.readOnlyPlan || !j) { bar.innerHTML = ''; return; }
-    bar.innerHTML = '<label class="crew-label" for="crew-input">Who is on the crew today? <span>Include yourself.</span></label>'
+    bar.innerHTML = '<div class="crew-review-note"><strong>Before anyone signs:</strong> read this plan out to the whole crew and ask for their feedback. If they spot something missing or wrong, change it here (or ask Petey) first. Everyone signs after that.</div>'
+      + '<label class="crew-label" for="crew-input">Who is on the crew today? <span>Include yourself.</span></label>'
       + '<div class="crew-add-row"><input id="crew-input" class="crew-input" type="text" autocomplete="off" autocapitalize="words" enterkeyhint="done" maxlength="400" placeholder="Type names, separated by commas">'
       + '<button id="crew-add" class="btn-secondary" type="button">Add</button>'
       + (canDictate() ? '<button id="crew-mic" class="btn-secondary" type="button">🎙️ Say the names</button>' : '') + '</div>'
