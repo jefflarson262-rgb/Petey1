@@ -87,6 +87,19 @@ function addKbEntryPending(title, revision, scope, filename) {
   return entry;
 }
 
+// What an incident or RCA document says about why it happened and what was done about it. Each list is trimmed and capped, so the model's
+// answer (or an administrator's typing) can never grow without limit. Empty means "the document did not say", never a guess.
+function kbCleanList(v, max, len) {
+  var arr = Array.isArray(v) ? v : (typeof v === 'string' ? v.split(/\n+/) : []);
+  return arr.map(function(x) { return String(x == null ? '' : x).replace(/\s+/g, ' ').trim().slice(0, len); }).filter(Boolean).slice(0, max);
+}
+function kbApplyFindings(entry, src) {
+  entry.root_causes = kbCleanList(src.root_causes, 4, 160);
+  entry.failed_control = String(src.failed_control == null ? '' : src.failed_control).replace(/\s+/g, ' ').trim().slice(0, 200);
+  entry.corrective_actions = kbCleanList(src.corrective_actions, 5, 160);
+  entry.lessons_learned = kbCleanList(src.lessons_learned, 4, 160);
+}
+
 async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType) {
   try {
     var messages = [];
@@ -118,7 +131,11 @@ async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType
       + '  "affected_work": "what field work is affected — trade, location, scope",\n'
       + '  "keywords": ["array", "of", "5-10", "keywords", "for", "matching"],\n'
       + '  "hold_question": "the confirming question Petey should ask a crew before they start this work"' + (typeof stkyPromptField === 'function' ? stkyPromptField(entry) : '')
-      + (entry.kbType === 'incident' ? ',\n  "incident_narrative": "a faithful plain-language account of what happened, in order (max 1500 characters). Use roles, never names. Include only facts the document states; if a detail is not stated, leave it out"' : '') + '\n'
+      + (entry.kbType === 'incident' ? ',\n  "incident_narrative": "a faithful plain-language account of what happened, in order (max 1500 characters). Use roles, never names. Include only facts the document states; if a detail is not stated, leave it out"'
+        + ',\n  "root_causes": ["up to 4 short phrases (max 160 characters each): the causes the document itself gives. Empty array if it gives none; never infer one"]'
+        + ',\n  "failed_control": "one short sentence (max 200 characters): the safeguard or control that was missing or failed, as the document states it, else empty string"'
+        + ',\n  "corrective_actions": ["up to 5 short phrases (max 160 characters each): the corrective actions or retraining the document lists. Empty array if none"]'
+        + ',\n  "lessons_learned": ["up to 4 short phrases (max 160 characters each): the lessons learned the document states. Empty array if none"]' : '') + '\n'
       + '}';
 
     userContent.push({ type: 'text', text: prompt });
@@ -147,6 +164,7 @@ async function parseKbEntryWithAI(entry, textDescription, imageBase64, mediaType
     entry.summary = parsed.change_description || '';
     if (entry.kbType === 'incident') {
       if (typeof parsed.incident_narrative === 'string' && parsed.incident_narrative.trim()) entry.incident_narrative = parsed.incident_narrative.trim().slice(0, 2000);
+      kbApplyFindings(entry, parsed);
       if (textDescription) entry.sourceText = String(textDescription).slice(0, 6000);   // the written account, kept so a reenactment can be drafted from it
     }
     if (typeof stkyResolveIds === 'function') entry.stkyCategoryIds = stkyResolveIds(entry, parsed);

@@ -7,7 +7,14 @@ export const MIN_SOURCE_CHARS = 160;
 // The words the draft may be built from: the written account if the record kept one, otherwise the summary fields.
 export function sourceFor(entry) {
   const e = entry || {};
-  const parts = [e.sourceText, e.incident_narrative, e.change_description, e.affected_work, e.summary]
+  const list = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string' && x.trim()).join('; ') : '');
+  const found = [
+    list(e.root_causes) && 'Root causes (from the document): ' + list(e.root_causes),
+    typeof e.failed_control === 'string' && e.failed_control.trim() && 'Control that failed or was missing: ' + e.failed_control.trim(),
+    list(e.corrective_actions) && 'Corrective actions (from the document): ' + list(e.corrective_actions),
+    list(e.lessons_learned) && 'Lessons learned (from the document): ' + list(e.lessons_learned),
+  ].filter(Boolean).join('\n');
+  const parts = [e.sourceText, e.incident_narrative, e.change_description, e.affected_work, e.summary, found]
     .filter((p) => typeof p === 'string' && p.trim());
   const seen = new Set(); const uniq = parts.filter((p) => { const k = p.trim(); if (seen.has(k)) return false; seen.add(k); return true; });
   const text = uniq.join('\n\n').slice(0, 8000);
@@ -16,6 +23,7 @@ export function sourceFor(entry) {
 
 export const SYSTEM = [
   'You draw simple storyboards for safety training from a written incident record. A person reviews your draft before any crew sees it.',
+  'If the record lists corrective actions or a failed control, the "controls" must come from those, and the controls scene should show the incident going differently because of them.',
   'Use ONLY facts stated in the record. Never invent details: no names, no injuries beyond what is written, no causes, tools, heights or distances that are not stated.',
   'Refer to people by role only (for example "Worker on ladder", "Worker below"). Never use a real name. Show no graphic injury; describe it plainly and briefly.',
   'Anything the record does not say that a viewer might wonder about goes in "unknowns", not in the picture.',

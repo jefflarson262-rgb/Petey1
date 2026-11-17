@@ -194,9 +194,45 @@ function renderKbEntries() {
       + (e.change_description ? '<div style="font-size:13px;color:#444;margin-top:5px;">' + e2(e.change_description) + '</div>' : '')
       + (e.affected_work ? '<div class="kb-entry-meta">Affects: ' + e2(e.affected_work) + '</div>' : '')
       + (typeof stkyEntryMetaHtml === 'function' ? stkyEntryMetaHtml(e) : '')
+      + kbFindingsHtml(e)
       + keep + rx + rm
       + '</div>';
   }).join('');
+}
+
+// What the incident document says about why it happened and what was done (root causes, the control that failed, corrective actions, lessons
+// learned). Shown on the card so a Safety Admin can check what the AI read; the edit form is for fixing it. Petey and the reenactment use these.
+var kbFindingsEditing = null;   // the dbId being edited (kept here, not on the entry, so it is never saved)
+function kbFindingsHtml(e) {
+  if (e.kbType !== 'incident' || e.status !== 'ready') return '';
+  var e2 = escapeHtml, safeId = function(v) { return String(v).replace(/[^A-Za-z0-9_-]/g, ''); };
+  var KB = window.PreTaskIQKb, can = !!(e.dbId && KB && KB.mayEdit && KB.mayEdit(e));
+  var causes = e.root_causes || [], acts = e.corrective_actions || [], les = e.lessons_learned || [], fc = e.failed_control || '';
+  var id = e.dbId ? safeId(e.dbId) : '';
+  if (can && kbFindingsEditing === e.dbId) {
+    var ta = function(label, key, val) { return '<label class="kb-find-label" for="kbf-' + key + '">' + label + '</label><textarea id="kbf-' + key + '" class="kb-find-input" rows="3" maxlength="900">' + e2(val) + '</textarea>'; };
+    return '<div class="kb-findings">' + '<div class="kb-entry-meta">One item per line. Leave a box empty if the document does not say.</div>'
+      + ta('Root causes', 'root', causes.join('\n')) + ta('Control that failed or was missing', 'fail', fc)
+      + ta('Corrective actions', 'act', acts.join('\n')) + ta('Lessons learned', 'les', les.join('\n'))
+      + '<div class="kb-find-buttons"><button type="button" class="btn-primary" onclick="kbSaveFindings(\'' + id + '\')">Save</button> <button type="button" class="btn-secondary" onclick="kbEditFindings(null)">Cancel</button></div></div>';
+  }
+  var any = causes.length || acts.length || les.length || fc;
+  var list = function(label, arr) { return arr.length ? '<div class="kb-find-row"><strong>' + label + ':</strong> ' + arr.map(e2).join('; ') + '</div>' : ''; };
+  return '<div class="kb-findings">'
+    + (any ? list('Root causes', causes) + (fc ? '<div class="kb-find-row"><strong>Control that failed:</strong> ' + e2(fc) + '</div>' : '') + list('Corrective actions', acts) + list('Lessons learned', les)
+           : '<div class="kb-entry-meta">No root causes, corrective actions or lessons were found in this record' + (can ? '. You can add them so Petey can use them.' : '.') + '</div>')
+    + (can ? '<div class="kb-entry-meta"><a href="#" onclick="kbEditFindings(\'' + id + '\'); return false;">' + (any ? 'Edit' : 'Add') + ' what Petey learns from this</a></div>' : '')
+    + '</div>';
+}
+function kbEditFindings(dbId) { kbFindingsEditing = dbId || null; renderKbEntries(); }
+function kbSaveFindings(dbId) {
+  var e = (projectKnowledgeBase || []).filter(function(x) { return x.dbId === dbId; })[0];
+  var v = function(k) { var el = document.getElementById('kbf-' + k); return el ? el.value : ''; };
+  if (!e) return;
+  kbApplyFindings(e, { root_causes: v('root'), failed_control: v('fail'), corrective_actions: v('act'), lessons_learned: v('les') });
+  kbFindingsEditing = null;
+  renderKbEntries();
+  if (window.PreTaskIQKb) window.PreTaskIQKb.save(e);
 }
 
 function kbRemoveEntry(dbId) {

@@ -80,7 +80,13 @@ function getProjectKBText() {
     affected_work: e.affected_work || '',
     keywords: e.keywords || [],
     hold_question: e.hold_question || '',
-    stkyCategoryIds: e.stkyCategoryIds || []
+    stkyCategoryIds: e.stkyCategoryIds || [],
+    ...(e.kbType === 'incident' ? {
+      root_causes: e.root_causes || [],
+      failed_control: e.failed_control || '',
+      corrective_actions: e.corrective_actions || [],
+      lessons_learned: e.lessons_learned || []
+    } : {})
   })));
 }
 

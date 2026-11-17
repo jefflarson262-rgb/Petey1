@@ -84,3 +84,16 @@ test('the AI reply is read as a storyboard, as "not enough to draw", or as an er
   assert.ok(parseDraft('not json at all').error);
   assert.equal(parseDraft(JSON.stringify({ actors: [{ id: 'p1' }], beats: [{ caption: ['x'] }] })).insufficient, true);     // too few steps to draw
 });
+
+test('the draft source carries the root causes, failed control, corrective actions and lessons from the document', async () => {
+  const { sourceFor, buildUserPrompt, SYSTEM } = await import('../src/reenact/draft.js');
+  const entry = { title: 'INC', incident_narrative: 'A crew of three worked inside a panel after only a panel-level lockout. Individual locks were not applied. One worker touched energized parts.',
+    root_causes: ['Individual locks not used'], failed_control: 'Individual lockout of every source was not applied', corrective_actions: ['Individual locks on every source'], lessons_learned: ['Verify zero energy'] };
+  const { text } = sourceFor(entry);
+  assert.match(text, /Root causes \(from the document\): Individual locks not used/);
+  assert.match(text, /Control that failed or was missing: Individual lockout/);
+  assert.match(text, /Corrective actions \(from the document\): Individual locks on every source/);
+  assert.match(buildUserPrompt(entry), /Lessons learned \(from the document\): Verify zero energy/);
+  assert.match(SYSTEM, /corrective actions or a failed control/);
+  assert.equal(sourceFor({ incident_narrative: 'x'.repeat(200), root_causes: 'not a list', corrective_actions: [3, null] }).text.includes('Root causes'), false);
+});
