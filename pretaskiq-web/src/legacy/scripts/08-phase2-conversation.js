@@ -175,7 +175,13 @@ function parseEscalationTag(rawText) {
   return { text: rawText.trim(), hazardSummary: null };
 }
 
+// Only one question may be waiting on the AI at a time. A second start (a double click, the voice auto-send plus a tap on the button, an example chip)
+// used to ask the AI twice, and both answers appeared: two similar but different questions.
+let turnInFlight = false;
+
 async function sendTurn(newApiMessages) {
+  if (turnInFlight) return;
+  turnInFlight = true;
   setConvStatus(true, false);
   convInput.disabled = true;
   convSend.disabled = true;
@@ -221,10 +227,13 @@ async function sendTurn(newApiMessages) {
     showConvError(e.message || "Something went wrong talking to the planning assistant.");
     convInput.disabled = false;
     convSend.disabled = false;
+  } finally {
+    turnInFlight = false;
   }
 }
 
 function startConversation(description) {
+  if (turnInFlight) return;            // already waiting for the first question
   apiMessages = [{ role: "user", content: description }];
   convDone = false;
   convScrollInner.innerHTML = "";

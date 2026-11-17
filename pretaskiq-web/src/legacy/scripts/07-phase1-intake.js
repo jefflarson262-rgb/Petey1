@@ -10,5 +10,8 @@ intakeTextarea.addEventListener("input", () => {
 
 intakeSubmit.addEventListener("click", () => {
   const val = intakeTextarea.value.trim();
-  if (val) startConversation(val);
+  if (!val) return;
+  intakeSubmit.disabled = true;        // one tap starts one conversation
+  startConversation(val);
+  setTimeout(() => { intakeSubmit.disabled = !intakeTextarea.value.trim(); }, 1500);      // available again if they come back to this screen
 });
