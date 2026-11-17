@@ -75,7 +75,7 @@ function applyOfflineUI() {
     intakeTitle.textContent = "What tasks are planned for today?";
     intakeSub.textContent = "List everything on the shift — one task or several. I'll start with the highest-risk work and walk the full plan with you, the way a safety pro would on site.";
     const val = document.getElementById("intake-textarea").value.trim();
-    { const l = intakeSubmit.querySelector(".sp-label"); if (l) l.textContent = "Start Planning"; else intakeSubmit.textContent = "Start planning →"; }
+    { const l = intakeSubmit.querySelector(".sp-label"); if (l) l.textContent = "Start Typing the Plan"; else intakeSubmit.textContent = "Start planning →"; }
     intakeSubmit.disabled = false;
     renderSyncQueueNotice();
   }
