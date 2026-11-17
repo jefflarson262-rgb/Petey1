@@ -487,3 +487,10 @@
 .demo-petey-slash b { flex: 1; height: 2px; background: linear-gradient(90deg, var(--orange), rgba(247,127,32,0)); display: block; border-radius: 2px; }
 .demo-petey-chev { flex-shrink: 0; margin-left: 2px; }
 @media (max-width: 480px) { .demo-petey-btn { min-height: 56px; } .demo-petey-face { width: 46px; height: 46px; } .demo-petey-name { font-size: 20px; } }
+
+.demo-petey-btn { min-height: 84px; gap: 14px; padding-right: 26px; }
+.demo-petey-face { width: 68px; height: 68px; margin: -4px 0; }
+.demo-petey-text { gap: 5px; }
+.demo-petey-name { font-size: 26px; }
+.demo-petey-sub { font-size: 15px; font-style: italic; font-weight: 600; color: #fff; letter-spacing: 0.01em; line-height: 1.1; white-space: nowrap; }
+@media (max-width: 480px) { .demo-petey-btn { min-height: 76px; gap: 12px; padding-right: 20px; } .demo-petey-face { width: 58px; height: 58px; } .demo-petey-name { font-size: 22px; } .demo-petey-sub { font-size: 13.5px; } }
