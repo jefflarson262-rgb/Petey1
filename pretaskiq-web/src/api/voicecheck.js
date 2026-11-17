@@ -83,7 +83,7 @@ export function startVoiceCheck(speech) {
     if (d.configured === null) return lines(natural, ['Could not reach the site\'s voice service.']);
     if (d.configured === false) return lines(natural, ['The site says the natural voice is OFF, so there is nothing to test.']);
     if (d.error || !d.blob) {
-      const out = ['Failed: the site answered ' + d.status + (d.error ? ' ' + d.error : '') + (d.providerStatus ? ' (ElevenLabs said ' + d.providerStatus + ')' : '') + '.'];
+      const out = ['Failed: the site answered ' + d.status + (d.error ? ' ' + d.error : '') + (d.providerStatus ? ' (ElevenLabs said ' + d.providerStatus + (d.providerReason ? ', reason: ' + d.providerReason : '') + ')' : '') + '.'];
       if (HINTS[d.error]) out.push(HINTS[d.error]);
       return lines(natural, out);
     }

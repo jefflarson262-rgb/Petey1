@@ -67,9 +67,11 @@ export default handle(async (req, res) => {
     if (process.env.NODE_ENV !== 'test') console.error('[speak] ElevenLabs answered', upstream.status);
     const code = upstream.status === 401 || upstream.status === 403 ? 'speech_provider_auth'
       : upstream.status === 429 ? 'speech_busy'
-      : upstream.status === 404 || upstream.status === 422 ? 'speech_provider_request'
+      : upstream.status === 400 || upstream.status === 404 || upstream.status === 422 ? 'speech_provider_request'
       : 'speech_provider_error';
-    throw new HttpError(502, code, { providerStatus: upstream.status });
+    let providerReason = '';                                          // ElevenLabs' short error label (e.g. "voice_not_found"); letters, digits and underscores only
+    try { const j = await upstream.json(); const d = j && j.detail; const raw = d && typeof d === 'object' ? (d.status || d.code || '') : ''; providerReason = String(raw).replace(/[^A-Za-z0-9_]/g, '').slice(0, 60); } catch { /* no readable reason */ }
+    throw new HttpError(502, code, { providerStatus: upstream.status, providerReason });
   }
 
   const audio = Buffer.from(await upstream.arrayBuffer());

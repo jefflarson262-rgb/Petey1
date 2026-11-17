@@ -138,7 +138,7 @@ function transcribe(wavBase64, signal) {
 // Asks the server whether the natural voice is on and tries one very short line, and reports what came back. It only reports numbers and the error
 // NAMES the server itself sends (never the key or the access code), and it does not count as trouble for the resting rules above.
 async function diagnose({ send = true } = {}) {
-  const out = { configured: null, status: null, error: '', providerStatus: null, bytes: 0, type: '', blob: null };
+  const out = { configured: null, status: null, error: '', providerStatus: null, providerReason: '', bytes: 0, type: '', blob: null };
   try {
     const r = await nativeFetch(SPEAK_URL, { method: 'GET' });
     const j = r.ok ? await r.json() : null;
@@ -152,6 +152,7 @@ async function diagnose({ send = true } = {}) {
       let j = null; try { j = await res.json(); } catch { /* no body */ }
       out.error = j && typeof j.error === 'string' ? j.error : '';
       out.providerStatus = j && Number.isFinite(j.providerStatus) ? j.providerStatus : null;
+      out.providerReason = j && typeof j.providerReason === 'string' ? j.providerReason.replace(/[^A-Za-z0-9_]/g, '').slice(0, 60) : '';
       return out;
     }
     const blob = await res.blob();
