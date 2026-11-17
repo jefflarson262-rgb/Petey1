@@ -562,7 +562,7 @@
     var l = document.getElementById('intake-mic-label'); if (l) l.innerHTML = intakeVoice.listening ? 'Listening…' : 'Talk to <em>Petey</em>';
   }
   function intakeCancelSend() { clearTimeout(intakeVoice.sendTimer); intakeVoice.sendTimer = null; }
-  function intakeFieldChanged() { intakeSubmitBtn.disabled = !intakeBox.value.trim(); }
+  function intakeFieldChanged() { /* the Start Planning button stays active */ }
 
   if (intakeMic) intakeMic.addEventListener('click', function () {
     if (intakeVoice.listening) { finishListening(); return; }            // second tap: done talking
