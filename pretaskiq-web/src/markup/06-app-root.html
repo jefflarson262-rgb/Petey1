@@ -2,24 +2,6 @@
   <!-- Phase 1: Intake -->
   <div id="screen-intake" class="screen anim-fade">
     <div id="intake-wrap">
-      <div class="doc-top" style="margin-bottom:40px;">
-        <div>
-          <div class="logo-row" id="logo-intake"></div>
-          <div class="logo-tagline">EVERY JOB. EVERY LESSON.</div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <button type="button" class="demo-petey-btn" id="demo-petey-btn" onclick="showScreen('petey')" aria-label="Demo Petey as a shift companion">
-            <span class="demo-petey-face"><img id="demo-petey-img" alt="" aria-hidden="true"></span>
-            <span class="demo-petey-text">
-              <span class="demo-petey-name">Demo <em>Petey</em></span>
-              <span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
-              <span class="demo-petey-sub">as a shift companion</span>
-            </span>
-            <svg class="demo-petey-chev" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-      </div>
-
       <div id="offline-banner" style="display:none;" class="offline-banner anim-in">
         <span class="offline-banner-dot"></span>
         <div>
@@ -28,14 +10,32 @@
         </div>
       </div>
 
-      <h1 class="intake-title display" id="intake-title">What tasks are planned for today?</h1>
-      <p class="intake-sub" id="intake-sub">List everything on the shift — one task or several. I'll start with the highest-risk work and walk the full plan with you, the way a safety pro would on site.</p>
-      <div class="intake-box">
-        <textarea id="intake-textarea" rows="4" placeholder="Stage material, set up the scissor lift, install bus duct in Building 2, then close out..."></textarea>
-        <div class="intake-actions" id="intake-actions-row">
-          <button id="intake-mic" class="intake-mic-btn talk-petey-btn no-face" type="button" aria-pressed="false" aria-label="Talk to Petey" title="Say the day's tasks out loud. Petey will then talk you through the plan."><span class="talk-petey-text"><span class="talk-petey-name"><span id="intake-mic-label">Talk to <em>Petey</em></span></span><span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span></span><svg class="demo-petey-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
-          <button id="intake-submit" class="btn-primary start-planning-btn" type="button"><span class="talk-petey-text"><span class="talk-petey-name sp-label">Start Typing the Plan</span><span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span></span><svg class="demo-petey-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
+      <div class="intake-eyebrow"><span>YOUR SHIFT STARTS HERE</span><i></i></div>
+      <h1 class="intake-hero display">Plan the work.<br><em>Protect your crew.</em></h1>
+      <p class="intake-hero-sub">Tell Petey what's planned. Build a safer shift, one task at a time.</p>
+
+      <div class="intake-card">
+        <div class="intake-card-head">
+          <span class="intake-petey"><img class="talk-petey-img" alt="Petey, your AI safety assistant"></span>
+          <span class="intake-card-divider" aria-hidden="true"></span>
+          <div>
+            <h2 class="intake-card-title display" id="intake-title">What's on the plan today?</h2>
+            <p class="intake-card-sub" id="intake-sub">Include every task for your shift.</p>
+          </div>
         </div>
+        <div class="intake-box">
+          <textarea id="intake-textarea" rows="3" placeholder="Stage material, set up the scissor lift, and install bus duct in Building 2..."></textarea>
+        </div>
+        <div class="intake-chips" role="group" aria-label="Quick add">
+          <button type="button" class="intake-chip" data-add="Electrical work"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M13.5 2 5 13.5h6L10 22l9-12.5h-6.2z" fill="#F47920"/></svg><span>Electrical work</span></button>
+          <button type="button" class="intake-chip" data-add="Lift work"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#F47920" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21h16M7 21l5-6M17 21l-5-6M5 4h14v6H5zM8 10l4 5 4-5M12 4v6"/></svg><span>Lift work</span></button>
+          <button type="button" class="intake-chip" data-add=""><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#F47920" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Add task</span></button>
+        </div>
+        <div class="intake-actions intake-actions-stack" id="intake-actions-row">
+          <button id="intake-mic" class="intake-mic-btn intake-talk-btn" type="button" aria-pressed="false" aria-label="Talk to Petey" title="Say the day's tasks out loud. Petey will then talk you through the plan."><svg class="itb-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0"/><line x1="12" y1="18.5" x2="12" y2="21.5"/></svg><span class="itb-label" id="intake-mic-label">Talk to Petey</span><svg class="itb-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
+          <button id="intake-submit" class="intake-type-btn" type="button"><svg class="itb-ico" viewBox="0 0 28 20" width="28" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2" width="25" height="16" rx="3"/><path d="M6 7h.01M10 7h.01M14 7h.01M18 7h.01M22 7h.01M6 11h.01M10 11h.01M14 11h.01M18 11h.01M22 11h.01M9 15h10"/></svg><span class="itb-label sp-label">Type my plan</span><svg class="itb-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
+        </div>
+        <div class="intake-review-note"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#6b7480" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg><span>Review your plan before work begins.</span></div>
       </div>
       <div id="intake-voice-status" class="voice-status" role="status" aria-live="polite"></div>
 
@@ -46,6 +46,21 @@
           📋 Start guided offline checklist
         </button>
       </div>
+
+      <button type="button" class="intake-meet" id="demo-petey-btn" onclick="showScreen('petey')" aria-label="Meet your shift companion. See how Petey helps your crew.">
+        <span class="intake-meet-text"><span class="intake-meet-title">Meet your shift companion</span><span class="intake-meet-sub">See how Petey helps your crew.</span></span>
+        <svg viewBox="0 0 48 48" width="46" height="46" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="#fff" stroke-width="3"/><path d="M20 16.5v15l12-7.5z" fill="#fff"/></svg>
+      </button>
+
+      <ol class="intake-steps" aria-label="How it works">
+        <li><span class="intake-step-n">1</span><b>Describe</b></li>
+        <li class="intake-step-line" aria-hidden="true"></li>
+        <li><span class="intake-step-n">2</span><b>Review</b></li>
+        <li class="intake-step-line" aria-hidden="true"></li>
+        <li><span class="intake-step-n">3</span><b>Brief your crew</b></li>
+      </ol>
+
+      <div class="intake-foot"><span class="intake-foot-line"></span><span class="intake-foot-text">EVERY JOB. EVERY LESSON.</span><span class="intake-foot-line"></span><span class="intake-foot-slashes" aria-hidden="true"><i></i><i></i><i></i></span></div>
 
       <div id="online-examples-wrap">
         <div class="examples-label">Or try an example</div>
