@@ -23,18 +23,3 @@ intakeSubmit.addEventListener("click", () => {
   setTimeout(() => { intakeSubmit.disabled = !navigator.onLine; }, 1500);      // available again if they come back to this screen
 });
 
-
-// Quick-add chips under the box: tap to drop a phrase into the plan (or just add a separator for the next task).
-document.querySelectorAll(".intake-chip").forEach((chip) => {
-  chip.addEventListener("click", () => {
-    const phrase = chip.getAttribute("data-add") || "";
-    let v = intakeTextarea.value.replace(/\s+$/, "");
-    if (v && !/[,.;:]$/.test(v)) v += ",";
-    if (v) v += " ";
-    intakeTextarea.value = v + phrase;
-    intakeTextarea.focus();
-    const end = intakeTextarea.value.length;
-    try { intakeTextarea.setSelectionRange(end, end); } catch (e) {}
-    intakeTextarea.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-});

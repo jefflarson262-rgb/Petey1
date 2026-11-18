@@ -654,3 +654,5 @@
   .intake-steps .intake-step-line { min-width: 6px; flex-basis: 6px; }
 }
 #online-examples-wrap { margin-top: 14px; }
+.nav-role-bar-btn .nav-hat { vertical-align: -3px; margin-right: 2px; }
+.intake-card .intake-box { margin-bottom: 14px; }
