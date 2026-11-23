@@ -11,20 +11,20 @@
       <!-- Three-way role toggle -->
       <div class="nav-role-bar">
         <button class="nav-role-bar-btn active" id="role-btn-foreman" onclick="setRole('foreman')">
-          <svg class="nav-hat" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#fff" d="M12 4c-4.2 0-7.3 3-7.8 7H3.5a1 1 0 0 0-1 1v1.5a1 1 0 0 0 1 1h17a1 1 0 0 0 1-1V12a1 1 0 0 0-1-1h-.7C19.3 7 16.2 4 12 4zm-1.3 1.6h2.6V11h-2.6z"/></svg> Foreman
+          <img class="nav-hat-img" alt="" aria-hidden="true"> Foreman
         </button>
         <button class="nav-role-bar-btn" id="role-btn-safety" onclick="setRole('safety')">
-          🦺 Safety Admin
+          <span class="nav-ico">🦺</span> Safety Admin
         </button>
         <button class="nav-role-bar-btn" id="role-btn-construction" onclick="setRole('construction')">
-          🏗️ Construction Admin
+          <span class="nav-ico">🏗️</span> Construction Admin
         </button>
       </div>
 
       <!-- Context menu (shown based on active role) -->
       <div class="nav-settings-wrap">
         <button class="nav-settings-btn" id="nav-context-btn" onclick="toggleNavDropdown('context')">
-          ⚙️ <span class="caret">▼</span>
+          <span class="nav-gear" aria-hidden="true">⚙️</span> <span class="caret">▼</span>
         </button>
         <div class="nav-dropdown" id="nav-dropdown-context" style="min-width:300px;">
           <!-- Populated by setRole() -->

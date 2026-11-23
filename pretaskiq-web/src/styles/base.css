@@ -656,3 +656,15 @@
 #online-examples-wrap { margin-top: 14px; }
 .nav-role-bar-btn .nav-hat { vertical-align: -3px; margin-right: 2px; }
 .intake-card .intake-box { margin-bottom: 14px; }
+
+/* ---- Bigger top-bar icons; Petey's PreTaskIQ hard hat on the Foreman tab ---- */
+.nav-role-bar-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 16px; font-size: 13.5px; }
+.nav-role-bar-btn .nav-ico { font-size: 22px; line-height: 1; }
+.nav-hat-img { height: 24px; width: auto; display: block; }
+.nav-settings-btn { font-size: 14px; padding: 8px 14px; }
+.nav-settings-btn .nav-gear { font-size: 21px; line-height: 1; }
+@media (max-width: 640px) {
+  .nav-role-bar-btn { padding: 8px 4px; font-size: 12.5px; gap: 6px; flex-direction: column; }
+  .nav-role-bar-btn .nav-ico { font-size: 22px; }
+  .nav-hat-img { height: 22px; }
+}
