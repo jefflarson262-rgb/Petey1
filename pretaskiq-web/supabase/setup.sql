@@ -126,3 +126,30 @@ create unique index if not exists kb_entries_client_key_idx on public.kb_entries
 alter table public.kb_entries enable row level security;
 revoke all on public.kb_entries from anon, authenticated;
 grant all on public.kb_entries to service_role;
+
+-- 9. Incident reports. A foreman files a short preliminary report; a safety administrator then completes the in-depth report (timeline,
+--    evidence, witnesses, contributing factors, interim controls) that sets up the root cause analysis. Same lock as the tables above.
+create table if not exists public.incident_reports (
+  id               uuid primary key default gen_random_uuid(),
+  kind             text not null check (kind in ('near_miss', 'injury', 'damage')),
+  title            text not null,
+  reported_by      uuid not null references public.profiles (id),
+  reported_by_name text,
+  reporter_role    text,
+  data             jsonb not null default '{}'::jsonb,          -- the preliminary account
+  full_report      jsonb,                                       -- the in-depth report (saved as it is worked on)
+  status           text not null default 'preliminary' check (status in ('preliminary', 'complete')),
+  due_at           timestamptz not null,
+  completed_by     uuid references public.profiles (id),
+  completed_by_name text,
+  completed_at     timestamptz,
+  kb_entry_id      uuid,
+  client_key       text,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+create unique index if not exists incident_reports_client_key_idx on public.incident_reports (reported_by, client_key) where client_key is not null;
+create index if not exists incident_reports_status_idx on public.incident_reports (status, due_at);
+alter table public.incident_reports enable row level security;
+revoke all on public.incident_reports from anon, authenticated;
+grant all on public.incident_reports to service_role;

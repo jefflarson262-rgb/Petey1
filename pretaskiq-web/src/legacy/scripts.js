@@ -35,6 +35,8 @@ import s30 from './scripts/30-voice-conversation.js?raw';
 import s31 from './scripts/31-crew-signoff.js?raw';
 import s32 from './scripts/32-submit-plan.js?raw';
 import s33 from './scripts/33-storyboard-scene.js?raw';
+import s34 from './scripts/34-incident-report.js?raw';
+import s35 from './scripts/35-incident-full.js?raw';
 
 export const LEGACY_SCRIPTS = [
   ['01-knowledge-base-helpers.js', s01],
@@ -70,4 +72,6 @@ export const LEGACY_SCRIPTS = [
   ['31-crew-signoff.js', s31],
   ['32-submit-plan.js', s32],
   ['33-storyboard-scene.js', s33],
+  ['34-incident-report.js', s34],
+  ['35-incident-full.js', s35],
 ];

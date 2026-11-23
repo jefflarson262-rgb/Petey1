@@ -1,0 +1,44 @@
+<!-- ═══════════════════════════════════════════════════════
+     INCIDENT REPORT SCREEN (Safety Admin): Petey takes the report, the admin reviews it, it goes into the Knowledge Base
+══════════════════════════════════════════════════════════ -->
+<div id="screen-incident" class="screen anim-fade" style="display:none;">
+  <div class="rca-wrap ir-wrap">
+
+    <div class="doc-top" style="margin-bottom:16px;">
+      <div>
+        <div id="ir-role-label" style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;">Safety Admin</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">Report an Incident</div>
+        <div id="ir-sub" style="font-size:13px;color:#777;margin-top:2px;">A quick preliminary report with Petey.</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button id="ir-back" class="btn-secondary" type="button" onclick="setRole('safety')">&#8592; Dashboard</button>
+      </div>
+    </div>
+
+    <div class="ir-safety-note"><strong>If anyone is hurt or in danger, get help first.</strong> Call 911 and your supervisor, then come back and report once everyone is safe.</div>
+    <div class="ir-note">Use roles, not names (for example "the electrician"). Petey does not decide whether something is recordable or reportable. That is a decision for your safety professional.</div>
+
+    <!-- Step 1: what kind of report -->
+    <div id="ir-types" class="ir-types">
+      <div class="ir-types-label">What are you reporting?</div>
+      <button type="button" class="ir-type" data-kind="near_miss"><b>Near miss</b><span>It could have hurt someone, but did not.</span></button>
+      <button type="button" class="ir-type" data-kind="injury"><b>Injury or first aid</b><span>Someone was hurt, even a minor injury.</span></button>
+      <button type="button" class="ir-type" data-kind="damage"><b>Property damage or equipment</b><span>Something was damaged and no one was hurt.</span></button>
+    </div>
+
+    <!-- Step 2: the conversation -->
+    <div id="ir-chat" class="ir-chat" style="display:none;"></div>
+    <div id="ir-voice-status" class="voice-status" role="status" aria-live="polite"></div>
+    <div id="ir-input-row" class="ir-input-row" style="display:none;">
+      <textarea id="ir-input" rows="2" placeholder="Type your answer, or tap the mic and say it"></textarea>
+      <button id="ir-mic" class="ir-mic" type="button" aria-label="Say your answer" aria-pressed="false" title="Say your answer"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0"/><line x1="12" y1="18.5" x2="12" y2="21.5"/></svg></button>
+      <button id="ir-send" class="btn-send" type="button" style="align-self:stretch;">Send</button>
+    </div>
+
+    <!-- Step 3: review, then submit -->
+    <div id="ir-review" class="ir-review" style="display:none;"></div>
+
+    <!-- Step 4: done -->
+    <div id="ir-done" class="ir-done" style="display:none;"></div>
+  </div>
+</div>

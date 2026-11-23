@@ -49,6 +49,13 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   await assert.rejects(db.query(`insert into public.alerts (raised_by, hazard, status) values ($1, 'x', 'bogus')`, [uid]), /check constraint/);
   await assert.rejects(db.query(`insert into public.alerts (raised_by) values ($1)`, [uid]), /null value/);        // a hazard is required
   // Knowledge base: only the five known kinds, content required, and one client key per person (a retry cannot make a duplicate)
+  // Incident reports: a kind and a due time are required, only known kinds/states are allowed, and a repeated client key is refused
+  await db.query(`insert into public.incident_reports (kind, title, reported_by, due_at, client_key) values ('near_miss', 'T', $1, now(), 'c1')`, [uid]);
+  assert.deepEqual((await db.query(`select status, full_report from public.incident_reports`)).rows, [{ status: 'preliminary', full_report: null }]);
+  await assert.rejects(db.query(`insert into public.incident_reports (kind, title, reported_by, due_at) values ('bogus', 'T', $1, now())`, [uid]), /check constraint/);
+  await assert.rejects(db.query(`insert into public.incident_reports (kind, title, reported_by, due_at, status) values ('injury', 'T', $1, now(), 'bogus')`, [uid]), /check constraint/);
+  await assert.rejects(db.query(`insert into public.incident_reports (kind, title, reported_by) values ('injury', 'T', $1)`, [uid]), /null value/);
+  await assert.rejects(db.query(`insert into public.incident_reports (kind, title, reported_by, due_at, client_key) values ('damage', 'T', $1, now(), 'c1')`, [uid]), /duplicate key/);
   await db.query(`insert into public.kb_entries (kb_type, data, client_key, created_by) values ('incident', '{"status":"ready"}', 'k1', $1)`, [uid]);
   await assert.rejects(db.query(`insert into public.kb_entries (kb_type, data, created_by) values ('bogus', '{}', $1)`, [uid]), /check constraint/);
   await assert.rejects(db.query(`insert into public.kb_entries (kb_type, created_by) values ('policy', $1)`, [uid]), /null value/);
@@ -65,7 +72,7 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   // The browser keys (anon, and signed-in users going straight to the database) can read and write nothing
   for (const role of ['anon', 'authenticated']) {
     await db.exec(`set role ${role}`);
-    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries']) {
+    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries', 'incident_reports']) {
       await assert.rejects(db.query(`select * from public.${t}`), /permission denied/, `${role} must not read ${t}`);
     }
     await assert.rejects(db.query(`insert into public.ai_usage (user_id) values (gen_random_uuid())`), /permission denied/);

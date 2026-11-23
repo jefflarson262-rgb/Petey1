@@ -26,7 +26,7 @@ export function friendlyMessage(status, code, body) {
 }
 
 export class ApiError extends Error {
-  constructor(status, code, message) { super(message); this.status = status; this.code = code; }
+  constructor(status, code, message, body) { super(message); this.status = status; this.code = code; this.body = body || null; }
 }
 
 // Calls one of our own JSON endpoints (/api/plans, ...) as the signed-in person. Throws ApiError with a message fit to show.
@@ -42,7 +42,7 @@ export async function apiJson(path, { method = 'GET', body } = {}) {
   if (res.ok) return json;
   const code = json && typeof json.error === 'string' ? json.error : 'error';
   if (res.status === 401) handleSessionExpired();
-  throw new ApiError(res.status, code, friendlyMessage(res.status, code, json));
+  throw new ApiError(res.status, code, friendlyMessage(res.status, code, json), json);
 }
 
 // The prototype prints "API error <status>: <body>" in the chat when a request fails. For a missing or wrong access

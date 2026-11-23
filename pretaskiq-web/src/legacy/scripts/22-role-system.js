@@ -10,6 +10,7 @@ var ROLE_MENUS = {
         items: [
           { icon: '📋', label: 'New JHA', sub: 'Start a pre-task hazard analysis', action: "showScreen('intake'); closeNavDropdown();" },
           { icon: '🎙️', label: 'Petey', sub: 'Procedure tracking, policy recall, escalation', action: "showScreen('petey'); closeNavDropdown();" },
+          { icon: '📝', label: 'Report an Incident', sub: 'A quick report with Petey. Safety finishes the full report', action: "closeNavDropdown(); openIncidentReport();" },
         ]
       }
     ]
@@ -40,6 +41,7 @@ var ROLE_MENUS = {
       {
         label: 'Incidents',
         items: [
+          { icon: '📝', label: 'Report an Incident', sub: 'Talk it through with Petey. He writes it up for your review', action: "closeNavDropdown(); openIncidentReport();" },
           { icon: '⚠️', label: 'Upload Incident', sub: 'Petey surfaces lessons learned in context', action: "openSettingsToKb('incident'); closeNavDropdown();" },
           { icon: '🎬', label: 'Incident Reenactments', sub: 'Draft, review and approve replays (open an incident, then Create reenactment)', action: "openSettingsToKb('incident'); closeNavDropdown();" },
         ]
@@ -116,6 +118,7 @@ function setRole(role) {
     showScreen('admin');
     startAdminClock();
     renderAdminCrews();
+    if (typeof renderAdminIncidents === 'function') renderAdminIncidents(true);
   } else if (role === 'construction') {
     showScreen('construction');
   }
