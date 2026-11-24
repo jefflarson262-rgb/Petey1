@@ -2,6 +2,7 @@
 //   GET  /api/plans                      list plans you may see (newest first)
 //   GET  /api/plans?id=ID                one plan including its full content
 //   GET  /api/plans?id=ID&revisions=1    the revision history of one plan (no content)
+//   GET  /api/plans?overview=1&since=ISO the Site Overview: a short summary of every plan changed since that time (safety and construction administrators only)
 //   POST /api/plans                      save: { id?, data, source?, note? }  -> creates the plan, or adds a revision to it
 //
 // Who can do what: a foreman sees and changes only their own plans. Safety administrators see and change all plans.
@@ -9,6 +10,7 @@
 import { requireUser } from '../server/auth.js';
 import { dbError } from '../server/supabase.js';
 import { HttpError, send, handle, readJson } from '../server/http.js';
+import { summarizePlan } from '../src/shared/siteOverview.js';
 
 const LIST_COLUMNS = 'id,title,current_revision,created_by,owner_name,created_at,updated_at';
 const SOURCES = ['planning', 'petey_update', 'edit'];
@@ -32,6 +34,16 @@ export default handle(async (req, res) => {
   const { admin } = me;
   const url = new URL(req.url || '/', 'http://x');
   const id = url.searchParams.get('id');
+
+  if (method === 'GET' && !id && url.searchParams.get('overview')) {
+    if (me.profile.role === 'foreman') throw new HttpError(403, 'not_allowed');
+    const sinceRaw = url.searchParams.get('since');
+    const sinceMs = sinceRaw ? Date.parse(sinceRaw) : NaN;
+    const since = new Date(Number.isFinite(sinceMs) && sinceMs > 0 && sinceMs < Date.now() + 86400000 ? sinceMs : Date.now() - 24 * 3600 * 1000).toISOString();
+    const { data, error } = await admin.from('plans').select('id,title,owner_name,updated_at,data').gte('updated_at', since).order('updated_at', { ascending: false }).limit(60);
+    if (error) throw dbError(error);
+    return send(res, 200, { since, plans: (data || []).map(summarizePlan) });
+  }
 
   if (method === 'GET' && !id) {
     let q = admin.from('plans').select(LIST_COLUMNS).order('updated_at', { ascending: false }).limit(100);

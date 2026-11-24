@@ -135,6 +135,19 @@ test('plans: safety sees and edits every plan; construction sees all but edits o
   assert.equal(blocked.status, 403); assert.equal(blocked.json.error, 'read_only');
   assert.equal((await save(U.carl, { data: plan({ jobTitle: 'Carl own' }) })).status, 201);
 });
+test('plans overview: administrators see a summary of today\'s plans; a foreman is refused; the summary carries no plan content', async () => {
+  const p = (await save(U.ann, { data: plan({ jobTitle: 'Overview job', location: 'Roof, north', crew: [{ id: 'a', name: 'Al', signature: { d: 'M0 0L1 1', at: 'x', revision: 1 } }], taskSteps: [{ step: 's', hazards: [{ riskRating: 'high' }] }] }) })).json.plan;
+  const since = new Date(Date.now() - 3600 * 1000).toISOString();
+  const adm = await call(plansApi, { method: 'GET', url: '/api/plans?overview=1&since=' + encodeURIComponent(since), headers: as(U.admin) });
+  assert.equal(adm.status, 200);
+  const row = adm.json.plans.find((x) => x.id === p.id);
+  assert.ok(row); assert.equal(row.task, 'Overview job'); assert.equal(row.area, 'Roof, north'); assert.equal(row.risk, 'high'); assert.equal(row.status, 'ready');
+  assert.ok(row.foreman && !('data' in row));
+  assert.equal((await call(plansApi, { method: 'GET', url: '/api/plans?overview=1&since=' + encodeURIComponent(since), headers: as(U.carl) })).status, 200);
+  assert.equal((await call(plansApi, { method: 'GET', url: '/api/plans?overview=1', headers: as(U.ann) })).status, 403);
+  const future = await call(plansApi, { method: 'GET', url: '/api/plans?overview=1&since=' + encodeURIComponent(new Date(Date.now() + 3600 * 1000).toISOString()), headers: as(U.admin) });
+  assert.ok(!future.json.plans.some((x) => x.id === p.id), 'plans older than the start time are left out');
+});
 test('plans: every revision is kept; saving the same revision twice replaces it instead of duplicating', async () => {
   const p = (await save(U.ann, { data: plan({ revision: 1 }), source: 'planning' })).json.plan;
   await save(U.ann, { id: p.id, data: plan({ revision: 2, lastUpdated: 'a' }), source: 'petey_update', note: 'Crew added a second ladder' });
