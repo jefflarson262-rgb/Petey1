@@ -121,3 +121,7 @@ body:has(:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-f
   .fm-tiles .ov-tile-text small { padding-right: 0; }
   .fm-tiles .ov-go { top: 50%; bottom: auto; transform: translateY(-50%); }
 }
+
+/* "Talk to Petey" uses the same text size and weight as "Type my plan" (voice.css was shrinking it to 14px) */
+.intake-actions .intake-talk-btn { font-size: 20px; font-weight: 700; letter-spacing: -0.005em; }
+@media (max-width: 480px) { .intake-actions .intake-talk-btn { font-size: 19px; } }
