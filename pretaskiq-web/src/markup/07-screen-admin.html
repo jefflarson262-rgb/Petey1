@@ -2,95 +2,58 @@
      ADMIN / SAFETY MANAGER DASHBOARD SCREEN
 ══════════════════════════════════════════════════════════ -->
 <div id="screen-admin" class="screen anim-fade">
-  <div class="admin-wrap ov-wrap">
-    <div class="ov-hero">
-      <svg class="ov-sky" viewBox="0 0 640 220" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="ovsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14264A"/><stop offset=".55" stop-color="#6B3F7A"/><stop offset=".8" stop-color="#E9722F"/><stop offset="1" stop-color="#F7B15A"/></linearGradient>
-          <linearGradient id="ovfade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0B1830" stop-opacity="1"/><stop offset=".45" stop-color="#0B1830" stop-opacity=".35"/><stop offset="1" stop-color="#0B1830" stop-opacity="0"/></linearGradient>
-        </defs>
-        <rect width="640" height="220" fill="url(#ovsky)"/>
-        <circle cx="470" cy="165" r="26" fill="#FFD9A0" opacity=".55"/>
-        <g fill="#0B1830" stroke="#0B1830">
-          <rect x="250" y="128" width="190" height="92" opacity=".9"/>
-          <rect x="300" y="100" width="150" height="120" opacity=".95"/>
-          <rect x="470" y="140" width="170" height="80"/>
-        </g>
-        <g stroke="#2A4468" stroke-width="1.2" fill="none" opacity=".9">
-          <path d="M300 100v120M340 100v120M380 100v120M420 100v120M450 100v120M250 128v92M290 128v92M330 128v92M370 128v92M410 128v92M440 128v92M470 140v80M510 140v80M550 140v80M590 140v80M630 140v80"/>
-          <path d="M250 150h190M250 172h190M250 194h190M300 118h150M300 138h150M300 158h150M470 158h170M470 178h170M470 198h170"/>
-        </g>
-        <g stroke="#0B1830" stroke-width="3" fill="none" stroke-linecap="square">
-          <path d="M520 220V40"/><path d="M510 220V40M530 220V40" stroke-width="1.6"/>
-          <path d="M420 44h190" stroke-width="3"/><path d="M420 44l100-22 90 22" stroke-width="1.6"/>
-          <path d="M575 44v38" stroke-width="1.4"/><rect x="568" y="82" width="14" height="8" fill="#0B1830"/>
-          <path d="M435 44v22" stroke-width="1.4"/><rect x="428" y="66" width="14" height="10" fill="#0B1830"/>
-          <path d="M515 40l5-14 5 14" stroke-width="1.6"/>
-        </g>
-        <rect width="640" height="220" fill="url(#ovfade)"/>
-      </svg>
-      <div class="ov-head">
-        <div>
-          <div class="admin-title ov-title"><span class="ov-slash" aria-hidden="true"><i></i><i></i></span>Site Overview</div>
-          <div class="admin-sub ov-sub">JHA STATUS TODAY &nbsp;•&nbsp; ALL PLANS</div>
-        </div>
+  <div class="admin-wrap">
+    <div class="doc-top">
+      <div>
         <span class="admin-time" id="admin-clock">06:45</span>
+        <div class="admin-title">Site Overview</div>
+        <div class="admin-sub">Real-time JHA status — all work groups</div>
       </div>
-      <div class="ov-actions">
-        <div class="ov-ask"><button class="talk-petey-btn" type="button" aria-label="Ask Petey" onclick="openAdminPetey()"><span class="ask-bulb-wrap"><svg class="ask-bulb" viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g stroke="#F47920" stroke-width="3.2" stroke-linecap="round"><line x1="24" y1="3" x2="24" y2="8"/><line x1="8" y1="9" x2="12" y2="13"/><line x1="40" y1="9" x2="36" y2="13"/><line x1="3" y1="23" x2="8" y2="23"/><line x1="45" y1="23" x2="40" y2="23"/></g><path fill="#fff" d="M24 11c-6.6 0-11.5 4.9-11.5 11 0 3.8 1.9 6.3 3.8 8.3 1 1.1 1.7 2.2 1.7 3.7v1h11.9v-1c0-1.5.7-2.6 1.7-3.7 1.9-2 3.8-4.5 3.8-8.3 0-6.1-4.9-11-11.4-11z"/><rect x="18" y="37" width="12" height="3.2" rx="1.6" fill="#fff"/><rect x="20" y="41.5" width="8" height="3" rx="1.5" fill="#fff"/></svg></span><span class="talk-petey-text"><span class="talk-petey-name">Ask <em>Petey</em></span><span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span></span><svg class="demo-petey-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
-        <div class="ov-tiles">
-        <button class="ov-tile " type="button" onclick="openIncidentReport()"><span class="ov-tile-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M12 10v6M9 13h6"/></svg></span><span class="ov-tile-text"><b>Report an Incident</b><small>Injuries, near misses &amp; events</small></span><span class="ov-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg></span></button>
-        <button class="ov-tile " type="button" onclick="openAuditHome()"><span class="ov-tile-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 12l2 2 4-4M9 17h6"/></svg></span><span class="ov-tile-text"><b>Safety Audits</b><small>Inspections &amp; compliance checks</small></span><span class="ov-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg></span></button>
-        <button class="ov-tile " type="button" onclick="openProtectionObserve()"><span class="ov-tile-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="15" r="3.5"/><circle cx="17" cy="15" r="3.5"/><path d="M10 15h4M7 11.5L9 6h2M17 11.5L15 6h-2"/></svg></span><span class="ov-tile-text"><b>Safety Observation</b><small>Identify and prevent hazards</small></span><span class="ov-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg></span></button>
-        <button class="ov-tile " type="button" onclick="openRCAAssistant()"><span class="ov-tile-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l5 5M11 8v3l2 1.5"/></svg></span><span class="ov-tile-text"><b>New RCA</b><small>Root cause investigation</small></span><span class="ov-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg></span></button>
-        </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="talk-petey-btn" type="button" aria-label="Ask Petey" onclick="openAdminPetey()"><span class="ask-bulb-wrap"><svg class="ask-bulb" viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g stroke="#F47920" stroke-width="3.2" stroke-linecap="round"><line x1="24" y1="3" x2="24" y2="8"/><line x1="8" y1="9" x2="12" y2="13"/><line x1="40" y1="9" x2="36" y2="13"/><line x1="3" y1="23" x2="8" y2="23"/><line x1="45" y1="23" x2="40" y2="23"/></g><path fill="#fff" d="M24 11c-6.6 0-11.5 4.9-11.5 11 0 3.8 1.9 6.3 3.8 8.3 1 1.1 1.7 2.2 1.7 3.7v1h11.9v-1c0-1.5.7-2.6 1.7-3.7 1.9-2 3.8-4.5 3.8-8.3 0-6.1-4.9-11-11.4-11z"/><rect x="18" y="37" width="12" height="3.2" rx="1.6" fill="#fff"/><rect x="20" y="41.5" width="8" height="3" rx="1.5" fill="#fff"/></svg></span><span class="talk-petey-text"><span class="talk-petey-name">Ask <em>Petey</em></span><span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span></span><svg class="demo-petey-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
+        <button class="btn-secondary" onclick="openIncidentReport()">
+          <span style="font-size:16px;">&#128221;</span> Report an Incident
+        </button>
+        <button class="btn-secondary" onclick="openAuditHome()">
+          <span style="font-size:16px;">&#128270;</span> Audits
+        </button>
+        <button class="btn-secondary" onclick="openProtectionResults()">
+          <span style="font-size:16px;">&#128200;</span> Protection
+        </button>
+        <button class="btn-secondary" onclick="openRCAAssistant()">
+          <span style="font-size:16px;">&#128269;</span> New RCA
+        </button>
       </div>
     </div>
 
     <!-- Incident reports that still need the full report -->
     <div id="admin-incidents" class="admin-card inc-card" style="display:none;"></div>
 
-    <div class="ov-grid">
-    <div class="ov-left">
     <!-- JHA Completion Counter -->
-    <div class="admin-card ov-card">
-      <div class="admin-card-label" id="admin-count-label">JHA Completed Today</div>
+    <div class="admin-card">
+      <div class="admin-card-label">JHA Completed Today</div>
       <div>
         <span class="admin-completion-num" id="admin-count">4</span>
-        <span class="admin-completion-denom" id="admin-denom"> / 6 groups</span>
+        <span class="admin-completion-denom"> / 6 groups</span>
       </div>
-      <div class="ov-bar" aria-hidden="true"><i id="admin-bar-fill" style="width:67%"></i></div><span class="ov-pct" id="admin-pct">67%</span>
-      <div class="admin-completion-sub" id="admin-count-sub">Filter by group, trade, or zone — completion rolls up live.</div>
+      <div class="admin-completion-sub">Filter by group, trade, or zone — completion rolls up live.</div>
     </div>
 
     <!-- Live Flag -->
     <div class="admin-flag-card" id="admin-flag-card">
       <div class="admin-flag-row">
-        <span class="admin-flag-chip" id="admin-flag-chip">Awaiting Review</span>
-        <span class="admin-flag-time" id="admin-flag-time">06:53</span>
+        <span class="admin-flag-chip">Awaiting Review</span>
+        <span class="admin-flag-time">06:53</span>
       </div>
-      <div class="admin-flag-title" id="admin-flag-title">Fire Protection · JHA Rev 2</div>
-      <div class="admin-flag-sub" id="admin-flag-sub">Petey revised a hazard control in the field. One tap to approve.</div>
+      <div class="admin-flag-title">Fire Protection · JHA Rev 2</div>
+      <div class="admin-flag-sub">Petey revised a hazard control in the field. One tap to approve.</div>
     </div>
 
-
-    <div class="admin-card ov-card ov-insights">
-      <div class="admin-card-label">Quick Insights</div>
-      <div class="ov-ins-row">
-        <div><b id="admin-qi-plans">6</b><small>Plans today</small></div>
-        <div><b id="admin-qi-done">4</b><small>Submitted</small></div>
-        <div class="ov-ins-warn"><b id="admin-qi-changed">1</b><small>Changed after submit</small></div>
-      </div>
-    </div>
-    </div>
-    <div class="ov-right ov-card-wrap">
     <!-- Work Groups Section -->
-    <div class="admin-card-label" id="admin-list-label" style="margin-bottom:10px; padding:0 2px;">Customizable Work Groups · JHA Status Today</div>
+    <div class="admin-card-label" style="margin-bottom:10px; padding:0 2px;">Customizable Work Groups · JHA Status Today</div>
 
     <div id="admin-crew-list">
       <!-- rows injected by JS -->
-    </div>
-    </div>
     </div>
   </div>
 </div>
