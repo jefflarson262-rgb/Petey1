@@ -5,18 +5,21 @@
   <div class="cadmin-wrap">
 
     <!-- Header -->
-    <div class="doc-top" style="margin-bottom:20px;">
-      <div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;" id="cadmin-clock-label">Construction Admin</div>
-        <div style="font-size:22px;font-weight:800;color:var(--navy);">Project Overview</div>
-        <div style="font-size:13px;color:#777;margin-top:2px;">Documents, revisions and field coordination</div>
+    <div class="co-hero">
+      <div class="co-photo" aria-hidden="true"></div>
+      <div class="co-head">
+        <div>
+          <div class="co-label" id="cadmin-clock-label">Construction Admin</div>
+          <div class="co-title"><span class="ov-slash" aria-hidden="true"><i></i><i></i></span>Project <em>Overview</em></div>
+          <div class="co-sub">Documents, revisions and field coordination</div>
+        </div>
+        <div class="co-ask"><button class="talk-petey-btn" type="button" aria-label="Ask Petey" onclick="openAdminPetey()"><span class="ask-bulb-wrap"><svg class="ask-bulb" viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g stroke="#F47920" stroke-width="3.2" stroke-linecap="round"><line x1="24" y1="3" x2="24" y2="8"/><line x1="8" y1="9" x2="12" y2="13"/><line x1="40" y1="9" x2="36" y2="13"/><line x1="3" y1="23" x2="8" y2="23"/><line x1="45" y1="23" x2="40" y2="23"/></g><path fill="#fff" d="M24 11c-6.6 0-11.5 4.9-11.5 11 0 3.8 1.9 6.3 3.8 8.3 1 1.1 1.7 2.2 1.7 3.7v1h11.9v-1c0-1.5.7-2.6 1.7-3.7 1.9-2 3.8-4.5 3.8-8.3 0-6.1-4.9-11-11.4-11z"/><rect x="18" y="37" width="12" height="3.2" rx="1.6" fill="#fff"/><rect x="20" y="41.5" width="8" height="3" rx="1.5" fill="#fff"/></svg></span><span class="talk-petey-text"><span class="talk-petey-name">Ask <em>Petey</em></span><span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span></span><svg class="demo-petey-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
       </div>
-      <button class="talk-petey-btn" type="button" aria-label="Ask Petey" onclick="openAdminPetey()"><span class="ask-bulb-wrap"><svg class="ask-bulb" viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><g stroke="#F47920" stroke-width="3.2" stroke-linecap="round"><line x1="24" y1="3" x2="24" y2="8"/><line x1="8" y1="9" x2="12" y2="13"/><line x1="40" y1="9" x2="36" y2="13"/><line x1="3" y1="23" x2="8" y2="23"/><line x1="45" y1="23" x2="40" y2="23"/></g><path fill="#fff" d="M24 11c-6.6 0-11.5 4.9-11.5 11 0 3.8 1.9 6.3 3.8 8.3 1 1.1 1.7 2.2 1.7 3.7v1h11.9v-1c0-1.5.7-2.6 1.7-3.7 1.9-2 3.8-4.5 3.8-8.3 0-6.1-4.9-11-11.4-11z"/><rect x="18" y="37" width="12" height="3.2" rx="1.6" fill="#fff"/><rect x="20" y="41.5" width="8" height="3" rx="1.5" fill="#fff"/></svg></span><span class="talk-petey-text"><span class="talk-petey-name">Ask <em>Petey</em></span><span class="demo-petey-slash" aria-hidden="true"><i></i><i></i><i></i><b></b></span></span><svg class="demo-petey-chev" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
     </div>
 
     <!-- Active Alert -->
     <div class="cadmin-alert">
-      <div class="cadmin-alert-icon">&#9888;&#65039;</div>
+      <div class="cadmin-alert-icon"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg></div>
       <div>
         <div class="cadmin-alert-title">Crew working off superseded drawing</div>
         <div class="cadmin-alert-sub">Bldg 2 electrical crew has not confirmed receipt of E-201 Rev 4. Feeders F-9 and F-11 routing changed. Petey has flagged — awaiting foreman confirmation.</div>
@@ -24,7 +27,7 @@
     </div>
 
     <!-- Drawing Revision Management -->
-    <div class="cadmin-section-title">&#128208; Drawing Revision Management</div>
+    <div class="cadmin-section-title"><svg class="co-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>Drawing Revision Management</div>
     <div class="cadmin-card">
       <div class="cadmin-row">
         <div class="cadmin-row-icon" style="background:#FDE8E8;">&#128208;</div>
@@ -53,7 +56,7 @@
     </div>
 
     <!-- RFI Awareness -->
-    <div class="cadmin-section-title">&#128236; RFI Awareness</div>
+    <div class="cadmin-section-title"><svg class="co-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M10 9.5a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9M12 14.5v.01"/></svg>RFI Awareness</div>
     <div class="cadmin-card">
       <div class="cadmin-row">
         <div class="cadmin-row-icon" style="background:#FEF3C7;">&#128236;</div>
@@ -82,7 +85,7 @@
     </div>
 
     <!-- Scope Change Tracking -->
-    <div class="cadmin-section-title">&#128260; Scope Change Tracking</div>
+    <div class="cadmin-section-title"><svg class="co-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-4M4 5v4h4M4 13a8 8 0 0 0 14 4M20 19v-4h-4"/></svg>Scope Change Tracking</div>
     <div class="cadmin-card">
       <div class="cadmin-row">
         <div class="cadmin-row-icon" style="background:#FDE8E8;">&#128260;</div>
@@ -103,7 +106,7 @@
     </div>
 
     <!-- Integration -->
-    <div class="cadmin-section-title">&#128279; Integrations</div>
+    <div class="cadmin-section-title"><svg class="co-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>Integrations</div>
     <button class="cadmin-connect-btn">
       <span style="font-size:20px;">&#128279;</span>
       <div>
