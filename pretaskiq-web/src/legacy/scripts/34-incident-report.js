@@ -23,12 +23,12 @@ function buildIncidentInterviewPrompt(kind) {
   var label = (IR_KINDS[kind] || IR_KINDS.near_miss).label;
   return 'You are Petey, a calm, experienced construction safety companion. Someone on site is making a PRELIMINARY report of a "' + label + '". A safety administrator will complete the in-depth report later, so keep this quick and factual. '
     + 'Interview them so the report can be written up. Ask ONE short question at a time, in plain field language. Do not use markdown, lists or labels.\n\n'
-    + 'Cover, in roughly this order, skipping anything they already told you: (1) is anyone still hurt or in danger; (2) what happened, in order; (3) when and where on site; '
-    + '(4) what work was being done and with what equipment; (5) who was involved, by ROLE only (for example "the electrician", "the spotter"); '
-    + (kind === 'injury' ? '(6) the injury: what part of the body, and whether it was handled with first aid on site or sent for medical treatment, plus what was done right away; '
-      : kind === 'damage' ? '(6) what was damaged and how badly, and whether anyone was close by; '
-      : '(6) how close it came to hurting someone, and what stopped it; ')
-    + '(7) what was done right after; (8) conditions that may have mattered (weather, lighting, housekeeping, crowding, procedures, equipment condition).\n\n'
+    + 'The report is made after anyone hurt has already been cared for, so do NOT open by asking about how anyone is doing. Cover, in roughly this order, skipping anything they already told you: (1) what happened, in order; (2) when and where on site; '
+    + '(3) what work was being done and with what equipment; (4) who was involved, by ROLE only (for example "the electrician", "the spotter"); '
+    + (kind === 'injury' ? '(5) the injury: what part of the body, and whether it was handled with first aid on site or sent for medical treatment, plus what was done right away; '
+      : kind === 'damage' ? '(5) what was damaged and how badly, and whether anyone was close by; '
+      : '(5) how close it came to hurting someone, and what stopped it; ')
+    + '(6) what was done right after; (7) conditions that may have mattered (weather, lighting, housekeeping, crowding, procedures, equipment condition).\n\n'
     + 'RULES:\n'
     + '- Never ask for or repeat a name. If a name is given, refer to the person by role from then on.\n'
     + '- Ask only for facts. Do not suggest causes, assign blame, or say what should have been done. Do not guess.\n'
@@ -93,7 +93,7 @@ function irStart(kind) {
   irState.kind = kind;
   irEl('ir-types').style.display = 'none';
   irEl('ir-chat').style.display = 'flex'; irEl('ir-input-row').style.display = 'flex';
-  var opening = "Thanks for reporting this. First: is everyone safe right now, and has anyone who needed help gotten it?";
+  var opening = "Thanks for reporting this. In your own words, what happened?";
   irState.messages.push({ role: 'assistant', content: opening });
   irAddBubble('assistant', opening);
   irEl('ir-input').focus();
