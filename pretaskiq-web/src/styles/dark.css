@@ -4,9 +4,9 @@ html:has(#screen-intake.active), body:has(#screen-intake.active) { background-co
 body:has(#screen-intake.active) { background: radial-gradient(900px 340px at 85% 0, rgba(244,121,32,.14), transparent 70%), linear-gradient(180deg, #071327 0%, #0A1B38 55%, #08142B 100%) no-repeat; background-attachment: scroll; min-height: 100vh; }
 #screen-intake { overflow-x: clip; }
 #screen-intake #intake-wrap { position: relative; max-width: 760px; overflow: visible; }
-#screen-intake .intake-sky { position: absolute; top: 0; right: calc(50% - 50vw); width: min(100vw, 880px); height: 170px; background: url('/skyline.jpg') right center / auto 100% no-repeat; opacity: .95; pointer-events: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 42%), linear-gradient(180deg, #000 68%, transparent 100%); -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 0, #000 42%), linear-gradient(180deg, #000 68%, transparent 100%); mask-composite: intersect; }
+#screen-intake .intake-sky { position: absolute; top: 0; right: calc(50% - 50vw); width: min(100vw, 880px); height: 190px; background: url('/skyline.jpg') right center / auto 100% no-repeat; opacity: .95; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,.18) 22%, rgba(0,0,0,.55) 45%, #000 78%), linear-gradient(180deg, rgba(0,0,0,.9) 0, #000 18%, rgba(0,0,0,.55) 55%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,.18) 22%, rgba(0,0,0,.55) 45%, #000 78%), linear-gradient(180deg, rgba(0,0,0,.9) 0, #000 18%, rgba(0,0,0,.55) 55%, transparent 100%); mask-composite: intersect; }
 #screen-intake .intake-eyebrow, #screen-intake .intake-hero, #screen-intake .intake-hero-sub { position: relative; }
 #screen-intake .intake-eyebrow span { color: #fff; }
 #screen-intake .intake-hero { color: #fff; }
