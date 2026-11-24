@@ -35,6 +35,13 @@
       </div>
       <div id="intake-voice-status" class="voice-status" role="status" aria-live="polite"></div>
 
+      <div class="fm-tiles" id="fm-tiles">
+        <button class="ov-tile ov-t-incident" type="button" onclick="openIncidentReport()"><span class="ov-tile-photo" aria-hidden="true"></span><span class="ov-tile-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M12 10v6M9 13h6"/></svg></span><span class="ov-tile-text"><b>Report an Incident</b><small>Injuries, near misses &amp; events</small></span><span class="ov-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg></span></button>
+        <button class="ov-tile ov-t-audits" type="button" onclick="openAuditHome()"><span class="ov-tile-photo" aria-hidden="true"></span><span class="ov-tile-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 12l2 2 4-4M9 17h6"/></svg></span><span class="ov-tile-text"><b>Safety Audits</b><small>Inspections &amp; compliance checks</small></span><span class="ov-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg></span></button>
+        <button class="ov-tile ov-t-plans" type="button" onclick="PreTaskIQ.openMyPlans()"><span class="ov-tile-photo" aria-hidden="true"></span><span class="ov-tile-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="ov-tile-text"><b>My Plans</b><small>Plans you saved earlier</small></span><span class="ov-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg></span></button>
+      </div>
+      <div id="fm-note" class="fm-note" role="status" aria-live="polite" style="display:none;"></div>
+
       <div id="offline-actions" style="display:none;">
         <div class="examples-label">Offline options</div>
         <div id="cached-jha-list"></div>

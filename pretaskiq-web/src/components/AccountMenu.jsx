@@ -17,6 +17,12 @@ export default function AccountMenu() {
   const wrap = useRef(null);
 
   useEffect(() => { setSlot(document.getElementById('account-slot')); }, []);
+  // The "My Plans" tile on the foreman home screen asks for the same dialog
+  useEffect(() => {
+    const openPlans = () => setPlansOpen(true);
+    window.addEventListener('pretaskiq:open-plans', openPlans);
+    return () => window.removeEventListener('pretaskiq:open-plans', openPlans);
+  }, []);
   useEffect(() => {
     if (!open) return undefined;
     const close = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };

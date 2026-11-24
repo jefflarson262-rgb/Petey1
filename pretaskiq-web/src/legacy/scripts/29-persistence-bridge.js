@@ -83,6 +83,18 @@
 
   PT.currentPlan = function () { return activeJHA; };
 
+  // The "My Plans" tile on the foreman home screen. Saved plans exist only when someone is signed in.
+  var noteTimer = null;
+  PT.openMyPlans = function () {
+    if (saving()) { window.dispatchEvent(new Event('pretaskiq:open-plans')); return; }
+    var n = document.getElementById('fm-note');
+    if (!n) return;
+    n.textContent = 'Saved plans are available once sign-in is turned on. For now a plan stays on this device only while you are working on it.';
+    n.style.display = '';
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(function () { n.style.display = 'none'; }, 6000);
+  };
+
   // Open a saved plan (record from /api/plans?id=...) on the document screen.
   PT.openPlan = function (rec) {
     if (!rec || !rec.data) return;

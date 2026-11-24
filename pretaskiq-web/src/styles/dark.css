@@ -101,3 +101,23 @@ body:has(:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-f
 #screen-offline > div > p { color: #C5D0E0 !important; }
 #screen-offline span[style*="8A4B11"] { color: #FDBA74 !important; }
 #screen-onboarding .onboarding-input { background: #fff; }
+
+/* Foreman home: the same photo tiles as the Safety Admin screen */
+.fm-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0 4px; }
+.fm-tiles .ov-tile { min-height: 172px; }
+.ov-t-plans .ov-tile-photo { background-image: url('/tile-plans.jpg'); }
+.ov-t-plans { border-color: rgba(120,175,245,.7); box-shadow: 0 0 0 1px rgba(120,175,245,.3), 0 0 22px rgba(90,150,230,.28), 0 6px 18px rgba(0,0,0,.4); }
+.ov-t-plans .ov-tile-ico { background: linear-gradient(135deg, #2D5A94, #173560); }
+.fm-note { margin: 8px 0 0; padding: 10px 12px; border-radius: 12px; background: rgba(14,34,66,.8); border: 1px solid rgba(110,160,230,.4); color: #E1E8F3; font-size: 14px; }
+
+.ov-tile-text small { padding-right: 30px; }
+
+/* Phone: the three foreman tiles become compact rows (icon left, photo fading in on the right) */
+@media (max-width: 520px) {
+  .fm-tiles { grid-template-columns: 1fr; gap: 10px; }
+  .fm-tiles .ov-tile { min-height: 88px; padding: 12px 52px 12px 74px; justify-content: center; }
+  .fm-tiles .ov-tile-ico { top: 50%; left: 12px; transform: translateY(-50%); padding: 10px; border-radius: 14px; clip-path: none; }
+  .fm-tiles .ov-tile-photo { width: 55%; height: 100%; }
+  .fm-tiles .ov-tile-text small { padding-right: 0; }
+  .fm-tiles .ov-go { top: 50%; bottom: auto; transform: translateY(-50%); }
+}
