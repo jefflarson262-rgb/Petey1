@@ -59,3 +59,6 @@ export const markOpened = (id, revision) => { failed = null; set({ status: 'idle
 export async function listPlans() { return (await apiJson('/api/plans')).plans || []; }
 export async function getPlan(id) { return (await apiJson(`/api/plans?id=${encodeURIComponent(id)}`)).plan; }
 export async function getRevisions(id) { return (await apiJson(`/api/plans?id=${encodeURIComponent(id)}&revisions=1`)).revisions || []; }
+
+// Site Overview (safety and construction administrators): a short summary of every plan changed since `sinceIso`.
+export async function listOverview(sinceIso) { return apiJson('/api/plans?overview=1&since=' + encodeURIComponent(sinceIso)); }
