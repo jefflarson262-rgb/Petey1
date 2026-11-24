@@ -37,6 +37,7 @@ import s32 from './scripts/32-submit-plan.js?raw';
 import s33 from './scripts/33-storyboard-scene.js?raw';
 import s34 from './scripts/34-incident-report.js?raw';
 import s35 from './scripts/35-incident-full.js?raw';
+import s36 from './scripts/36-protection.js?raw';
 
 export const LEGACY_SCRIPTS = [
   ['01-knowledge-base-helpers.js', s01],
@@ -74,4 +75,5 @@ export const LEGACY_SCRIPTS = [
   ['33-storyboard-scene.js', s33],
   ['34-incident-report.js', s34],
   ['35-incident-full.js', s35],
+  ['36-protection.js', s36],
 ];

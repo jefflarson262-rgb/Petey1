@@ -153,3 +153,41 @@ create index if not exists incident_reports_status_idx on public.incident_report
 alter table public.incident_reports enable row level security;
 revoke all on public.incident_reports from anon, authenticated;
 grant all on public.incident_reports to service_role;
+
+-- 10. Protection observations ("are the right controls in place?"). A safety administrator imports and approves a checklist of required
+--     controls for each work category; anyone approved then records an observation (answers per control, scored as found). Same lock as above.
+--     Observations carry no observer name; created_by exists only for double-tap protection and rate limits and is never returned by the API.
+create table if not exists public.protection_checklists (
+  id           uuid primary key default gen_random_uuid(),
+  category     text not null,
+  label        text not null,
+  controls     jsonb not null default '[]'::jsonb,           -- [{ id, kind: prevention|mitigation, text }]
+  status       text not null default 'draft' check (status in ('draft', 'approved')),
+  source_note  text,
+  created_by   uuid references public.profiles (id),
+  approved_by  uuid references public.profiles (id),
+  approved_at  timestamptz,
+  archived_at  timestamptz,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+create unique index if not exists protection_checklists_live_idx on public.protection_checklists (category) where status = 'approved' and archived_at is null;
+alter table public.protection_checklists enable row level security;
+revoke all on public.protection_checklists from anon, authenticated;
+grant all on public.protection_checklists to service_role;
+
+create table if not exists public.protection_observations (
+  id            uuid primary key default gen_random_uuid(),
+  category      text not null,
+  checklist_id  uuid references public.protection_checklists (id),
+  month         text not null check (month ~ '^[0-9]{4}-[0-9]{2}$'),
+  controls      jsonb not null,                              -- [{ id, kind, applies, present, works }] as found
+  created_by    uuid not null references public.profiles (id),
+  client_key    text,
+  created_at    timestamptz not null default now()
+);
+create unique index if not exists protection_observations_client_key_idx on public.protection_observations (created_by, client_key) where client_key is not null;
+create index if not exists protection_observations_month_idx on public.protection_observations (month, category);
+alter table public.protection_observations enable row level security;
+revoke all on public.protection_observations from anon, authenticated;
+grant all on public.protection_observations to service_role;

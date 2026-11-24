@@ -1,0 +1,47 @@
+<!-- ═══════════════════════════════════════════════════════
+     PROTECTION OBSERVATIONS: record a control check, see the roll-up, and (Safety Admin) import and approve the checklists
+══════════════════════════════════════════════════════════ -->
+<div id="screen-protection-observe" class="screen anim-fade" style="display:none;">
+  <div class="rca-wrap ir-wrap">
+    <div class="doc-top" style="margin-bottom:16px;">
+      <div>
+        <div id="pr-obs-role" style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;">Safety Observation</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">Are the controls in place?</div>
+        <div style="font-size:13px;color:#777;margin-top:2px;">Check each required control and score what you find, not what you fix. No names.</div>
+      </div>
+      <div style="display:flex;gap:10px;"><button id="pr-obs-back" class="btn-secondary" type="button">&#8592; Back</button></div>
+    </div>
+    <div id="pr-obs-body"></div>
+  </div>
+</div>
+
+<div id="screen-protection-results" class="screen anim-fade" style="display:none;">
+  <div class="rca-wrap ir-wrap">
+    <div class="doc-top" style="margin-bottom:16px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;">Safety Admin</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">Protection Results</div>
+        <div style="font-size:13px;color:#777;margin-top:2px;">How many of the required controls were in place when observed.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-secondary" type="button" onclick="openProtectionObserve()">Record an observation</button>
+        <button class="btn-secondary" type="button" onclick="setRole('safety')">&#8592; Dashboard</button>
+      </div>
+    </div>
+    <div id="pr-res-body"></div>
+  </div>
+</div>
+
+<div id="screen-protection-setup" class="screen anim-fade" style="display:none;">
+  <div class="rca-wrap ir-wrap">
+    <div class="doc-top" style="margin-bottom:16px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;">Safety Admin</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">Control Checklists</div>
+        <div style="font-size:13px;color:#777;margin-top:2px;">Import your list of required controls, review it, and approve it before crews can use it.</div>
+      </div>
+      <div style="display:flex;gap:10px;"><button class="btn-secondary" type="button" onclick="setRole('safety')">&#8592; Dashboard</button></div>
+    </div>
+    <div id="pr-setup-body"></div>
+  </div>
+</div>

@@ -11,6 +11,7 @@ var ROLE_MENUS = {
           { icon: '📋', label: 'New JHA', sub: 'Start a pre-task hazard analysis', action: "showScreen('intake'); closeNavDropdown();" },
           { icon: '🎙️', label: 'Petey', sub: 'Procedure tracking, policy recall, escalation', action: "showScreen('petey'); closeNavDropdown();" },
           { icon: '📝', label: 'Report an Incident', sub: 'A quick report with Petey. Safety finishes the full report', action: "closeNavDropdown(); openIncidentReport();" },
+          { icon: '✅', label: 'Safety Observation', sub: 'Check that the required controls are in place', action: "closeNavDropdown(); openProtectionObserve();" },
         ]
       }
     ]
@@ -36,6 +37,14 @@ var ROLE_MENUS = {
         label: 'Knowledge Base',
         items: [
           { icon: '🗂️', label: 'Knowledge Base Library', sub: 'Everything uploaded, in one searchable list', action: "closeNavDropdown(); openKbLibrary();" },
+        ]
+      },
+      {
+        label: 'Observations',
+        items: [
+          { icon: '✅', label: 'Record an Observation', sub: 'Check required controls, scored as found', action: "closeNavDropdown(); openProtectionObserve();" },
+          { icon: '📈', label: 'Protection Results', sub: 'Control coverage by category, gaps and trend', action: "closeNavDropdown(); openProtectionResults();" },
+          { icon: '🗒️', label: 'Control Checklists', sub: 'Import, review and approve the required controls', action: "closeNavDropdown(); openProtectionSetup();" },
         ]
       },
       {
