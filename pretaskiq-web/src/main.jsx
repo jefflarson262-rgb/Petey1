@@ -8,6 +8,7 @@ import * as alertsStore from './alerts/store.js';
 import * as kbStore from './kb/store.js';
 import * as incidentsStore from './incidents/store.js';
 import * as protectionStore from './protection/store.js';
+import * as auditsStore from './audits/store.js';
 import * as reenactRegister from './reenact/register.js';
 import * as reenactStore from './reenact/store.js';
 import { speech } from './api/speech.js';
@@ -27,6 +28,9 @@ window.PreTaskIQIncidents = incidentsStore;
 
 // The protection observation scripts (36, 37) record and roll up control checks through this.
 window.PreTaskIQProtection = protectionStore;
+
+// The safety audit scripts (38) build templates and run audits through this.
+window.PreTaskIQAudits = auditsStore;
 
 // Approved reenactment storyboards are made playable (and drafts previewed) through this.
 window.PreTaskIQReenact = reenactRegister;

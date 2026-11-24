@@ -49,6 +49,12 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   await assert.rejects(db.query(`insert into public.alerts (raised_by, hazard, status) values ($1, 'x', 'bogus')`, [uid]), /check constraint/);
   await assert.rejects(db.query(`insert into public.alerts (raised_by) values ($1)`, [uid]), /null value/);        // a hazard is required
   // Knowledge base: only the five known kinds, content required, and one client key per person (a retry cannot make a duplicate)
+  // Audits: a template needs a title; an audit needs its answers and a template title; a repeated client key is refused
+  await db.query(`insert into public.audit_templates (title) values ('T')`);
+  await assert.rejects(db.query(`insert into public.audit_templates (items) values ('[]')`), /null value/);
+  await db.query(`insert into public.audits (template_title, answers, created_by, client_key) values ('T', '[]', $1, 'a1')`, [uid]);
+  await assert.rejects(db.query(`insert into public.audits (template_title, created_by) values ('T', $1)`, [uid]), /null value/);
+  await assert.rejects(db.query(`insert into public.audits (template_title, answers, created_by, client_key) values ('T', '[]', $1, 'a1')`, [uid]), /duplicate key/);
   // Protection: one approved checklist per category; observations need a well-formed month and one repeated client key is refused
   await db.query(`insert into public.protection_checklists (category, label, status) values ('c1', 'C1', 'approved')`);
   await assert.rejects(db.query(`insert into public.protection_checklists (category, label, status) values ('c1', 'C1 again', 'approved')`), /duplicate key/);
@@ -80,7 +86,7 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   // The browser keys (anon, and signed-in users going straight to the database) can read and write nothing
   for (const role of ['anon', 'authenticated']) {
     await db.exec(`set role ${role}`);
-    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations']) {
+    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits']) {
       await assert.rejects(db.query(`select * from public.${t}`), /permission denied/, `${role} must not read ${t}`);
     }
     await assert.rejects(db.query(`insert into public.ai_usage (user_id) values (gen_random_uuid())`), /permission denied/);

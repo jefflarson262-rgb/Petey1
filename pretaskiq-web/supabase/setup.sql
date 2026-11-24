@@ -191,3 +191,41 @@ create index if not exists protection_observations_month_idx on public.protectio
 alter table public.protection_observations enable row level security;
 revoke all on public.protection_observations from anon, authenticated;
 grant all on public.protection_observations to service_role;
+
+-- 11. Safety audits. A safety administrator builds audit templates (a list of pass/fail items); anyone approved runs an audit from one.
+--     A failed item must carry a comment (enforced by the API). Photos are small JPEGs kept inside the audit. Same lock as above.
+create table if not exists public.audit_templates (
+  id          uuid primary key default gen_random_uuid(),
+  title       text not null,
+  description text,
+  items       jsonb not null default '[]'::jsonb,           -- [{ id, text, section }]
+  created_by  uuid references public.profiles (id),
+  archived_at timestamptz,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+create index if not exists audit_templates_live_idx on public.audit_templates (title) where archived_at is null;
+alter table public.audit_templates enable row level security;
+revoke all on public.audit_templates from anon, authenticated;
+grant all on public.audit_templates to service_role;
+
+create table if not exists public.audits (
+  id              uuid primary key default gen_random_uuid(),
+  template_id     uuid references public.audit_templates (id),
+  template_title  text not null,
+  location        text,
+  answers         jsonb not null,                            -- [{ id, text, section, result: pass|fail|na, comment, photos: [jpeg data URLs] }]
+  pass_count      integer not null default 0,
+  fail_count      integer not null default 0,
+  na_count        integer not null default 0,
+  score           numeric,
+  created_by      uuid not null references public.profiles (id),
+  created_by_name text,
+  client_key      text,
+  created_at      timestamptz not null default now()
+);
+create unique index if not exists audits_client_key_idx on public.audits (created_by, client_key) where client_key is not null;
+create index if not exists audits_created_idx on public.audits (created_at desc);
+alter table public.audits enable row level security;
+revoke all on public.audits from anon, authenticated;
+grant all on public.audits to service_role;

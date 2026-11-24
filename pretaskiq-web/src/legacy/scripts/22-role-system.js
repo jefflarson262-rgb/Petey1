@@ -12,6 +12,7 @@ var ROLE_MENUS = {
           { icon: '🎙️', label: 'Petey', sub: 'Procedure tracking, policy recall, escalation', action: "showScreen('petey'); closeNavDropdown();" },
           { icon: '📝', label: 'Report an Incident', sub: 'A quick report with Petey. Safety finishes the full report', action: "closeNavDropdown(); openIncidentReport();" },
           { icon: '✅', label: 'Safety Observation', sub: 'Check that the required controls are in place', action: "closeNavDropdown(); openProtectionObserve();" },
+          { icon: '🔎', label: 'Safety Audit', sub: 'Pass or fail each item, with comments and photos', action: "closeNavDropdown(); openAuditHome();" },
         ]
       }
     ]
@@ -37,6 +38,12 @@ var ROLE_MENUS = {
         label: 'Knowledge Base',
         items: [
           { icon: '🗂️', label: 'Knowledge Base Library', sub: 'Everything uploaded, in one searchable list', action: "closeNavDropdown(); openKbLibrary();" },
+        ]
+      },
+      {
+        label: 'Audits',
+        items: [
+          { icon: '🔎', label: 'Safety Audits', sub: 'Run an audit, review results, build custom templates', action: "closeNavDropdown(); openAuditHome();" },
         ]
       },
       {
