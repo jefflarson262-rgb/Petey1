@@ -1,0 +1,36 @@
+/* Dark theme (from the owner's mockups). Each screen opts in with a :has() rule on <body>, so screens not yet converted keep the light look.
+   Converted so far: foreman planning screen (#screen-intake). */
+html:has(#screen-intake.active), body:has(#screen-intake.active) { background-color: #08142B; }
+body:has(#screen-intake.active) { background: radial-gradient(900px 340px at 85% 0, rgba(244,121,32,.14), transparent 70%), linear-gradient(180deg, #071327 0%, #0A1B38 55%, #08142B 100%) no-repeat; background-attachment: scroll; min-height: 100vh; }
+#screen-intake { overflow-x: clip; }
+#screen-intake #intake-wrap { position: relative; max-width: 760px; overflow: visible; }
+#screen-intake .intake-sky { position: absolute; top: 0; right: calc(50% - 50vw); width: min(100vw, 880px); height: 170px; background: url('/skyline.jpg') right center / auto 100% no-repeat; opacity: .95; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 42%), linear-gradient(180deg, #000 68%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 42%), linear-gradient(180deg, #000 68%, transparent 100%); mask-composite: intersect; }
+#screen-intake .intake-eyebrow, #screen-intake .intake-hero, #screen-intake .intake-hero-sub { position: relative; }
+#screen-intake .intake-eyebrow span { color: #fff; }
+#screen-intake .intake-hero { color: #fff; }
+#screen-intake .intake-hero-sub { color: #C5D0E0; }
+#screen-intake .intake-card { position: relative; background: linear-gradient(180deg, rgba(20,46,88,.82), rgba(9,25,52,.9)); border: 1.5px solid rgba(244,121,32,.8);
+  box-shadow: 0 0 0 1px rgba(244,121,32,.22), 0 0 30px rgba(244,121,32,.28), 0 12px 32px rgba(0,0,0,.5); }
+#screen-intake .intake-card-title { color: #fff; font-style: italic; }
+#screen-intake .intake-card-sub { color: #B7C4D9; }
+#screen-intake .intake-card-divider { background: rgba(255,255,255,.22); }
+#screen-intake .intake-petey { box-shadow: 0 0 0 3px var(--orange), 0 0 18px rgba(244,121,32,.55); }
+#screen-intake .intake-card .intake-box { background: rgba(8,22,46,.8); border: 1.5px solid rgba(110,160,230,.5); }
+#screen-intake .intake-card #intake-textarea { background: transparent; color: #E8EEF7; }
+#screen-intake .intake-card #intake-textarea::placeholder { color: #AEBBD0; opacity: 1; }
+#screen-intake .intake-talk-btn { box-shadow: 0 0 20px rgba(244,121,32,.55), inset 0 1px 0 rgba(255,255,255,.3); }
+#screen-intake .intake-type-btn { background: rgba(10,30,64,.85); border: 1.5px solid rgba(110,160,230,.65); color: #fff; box-shadow: 0 0 14px rgba(90,150,230,.25); }
+#screen-intake .intake-review-note, #screen-intake .intake-review-note span { color: #C5D0E0; }
+#screen-intake .intake-review-note svg { stroke: #C5D0E0; }
+#screen-intake .intake-meet { background: linear-gradient(180deg, rgba(20,46,88,.82), rgba(9,25,52,.9)); border: 1.5px solid rgba(244,121,32,.7); box-shadow: 0 0 24px rgba(244,121,32,.25), 0 8px 22px rgba(0,0,0,.45); }
+#screen-intake .intake-steps b { color: #fff; }
+#screen-intake .intake-steps .intake-step-line { background: rgba(255,255,255,.28); }
+#screen-intake .intake-foot-line { background: #C5D0E0; opacity: .45; }
+#screen-intake .intake-foot-text { color: #C5D0E0; }
+#screen-intake .examples-label { color: #9FB0C8; }
+#screen-intake .example-btn { background: rgba(14,34,66,.75); border: 1px solid rgba(110,160,230,.35); color: #E1E8F3; }
+#screen-intake .example-btn:hover { border-color: var(--orange); }
+#screen-intake .voice-status { color: #C5D0E0; }
+@media (max-width: 560px) { #screen-intake .intake-sky { width: 100%; opacity: .5; height: 150px; } }
