@@ -555,3 +555,21 @@
 .ov-ask .talk-petey-btn { gap: 14px; }
 .ov-ask .talk-petey-text { display: flex; flex-direction: column; align-items: flex-start; }
 .ov-tile { background: linear-gradient(160deg, rgba(48,96,170,.6), rgba(12,32,68,.9)); border-color: rgba(120,175,245,.55); box-shadow: 0 0 0 1px rgba(244,121,32,.35), 0 0 18px rgba(244,121,32,.22), 0 6px 18px rgba(0,0,0,.35); }
+
+/* Action tiles with a photo that fades into the card (photos are stand-in crops until full-size ones are supplied) */
+.ov-tile { min-height: 172px; overflow: hidden; justify-content: flex-end; padding: 12px 14px 14px; }
+.ov-tile-photo { position: absolute; top: 0; right: 0; width: 78%; height: 66%; background-size: cover; background-position: center; opacity: .95; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 45%), linear-gradient(180deg, #000 40%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 45%), linear-gradient(180deg, #000 40%, transparent 100%); mask-composite: intersect; }
+.ov-t-incident .ov-tile-photo { background-image: url('/tile-incident.jpg'); }
+.ov-t-audits .ov-tile-photo { background-image: url('/tile-audits.jpg'); }
+.ov-t-observation .ov-tile-photo { background-image: url('/tile-observation.jpg'); }
+.ov-t-rca .ov-tile-photo { background-image: url('/tile-rca.jpg'); }
+.ov-tile-ico { position: absolute; top: 0; left: 0; padding: 12px 18px 12px 12px; border-radius: 14px 0 22px 0; background: linear-gradient(135deg, #D8661B, #A9450F); color: #fff; clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%); }
+.ov-t-audits .ov-tile-ico, .ov-t-rca .ov-tile-ico { background: linear-gradient(135deg, #2D5A94, #173560); }
+.ov-t-incident, .ov-t-observation { border-color: rgba(244,121,32,.8); box-shadow: 0 0 0 1px rgba(244,121,32,.35), 0 0 22px rgba(244,121,32,.3), 0 6px 18px rgba(0,0,0,.4); }
+.ov-t-audits, .ov-t-rca { border-color: rgba(120,175,245,.7); box-shadow: 0 0 0 1px rgba(120,175,245,.3), 0 0 22px rgba(90,150,230,.28), 0 6px 18px rgba(0,0,0,.4); }
+.ov-tile-text { position: relative; width: 100%; }
+.ov-tile-text b { font-size: 17px; }
+.ov-tile-text::after { content: ''; display: block; width: 56%; height: 2px; margin-top: 8px; background: linear-gradient(90deg, var(--orange), rgba(244,121,32,0)); }
+.ov-tile-text small { font-size: 12.5px; color: #D5DDEA; }
