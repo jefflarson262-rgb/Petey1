@@ -66,3 +66,38 @@ body:has(#screen-construction.active) { background: radial-gradient(900px 340px 
 #screen-construction .cadmin-connect-btn div div:first-child { color: #fff !important; }
 #screen-construction .cadmin-connect-btn div div:last-child { color: #AEBBD0 !important; }
 @media (max-width: 560px) { .co-photo { width: 100vw; opacity: .55; } .co-title { font-size: 28px; } }
+
+/* ── The remaining light screens: dark page, skyline strip, light headings; white content cards stay white (as in the mockups) ── */
+body:has(:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view, #screen-conversation, #screen-generating, #screen-error, #screen-offline, #screen-onboarding).active) {
+  background: radial-gradient(900px 340px at 85% 0, rgba(244,121,32,.14), transparent 70%), linear-gradient(180deg, #071327 0%, #0A1B38 55%, #08142B 100%); background-color: #08142B; min-height: 100vh; position: relative; }
+html:has(:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view, #screen-conversation, #screen-generating, #screen-error, #screen-offline, #screen-onboarding).active) { background-color: #08142B; }
+body:has(:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view, #screen-conversation, #screen-generating, #screen-error, #screen-offline, #screen-onboarding).active)::before {
+  content: ''; position: absolute; top: 52px; right: 0; width: min(100vw, 880px); height: 190px; background: url('/skyline.jpg') right top / auto 100% no-repeat; opacity: .8; pointer-events: none; z-index: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,.18) 22%, rgba(0,0,0,.55) 45%, #000 78%), linear-gradient(180deg, rgba(0,0,0,.9) 0, #000 18%, rgba(0,0,0,.55) 55%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,.18) 22%, rgba(0,0,0,.55) 45%, #000 78%), linear-gradient(180deg, rgba(0,0,0,.9) 0, #000 18%, rgba(0,0,0,.55) 55%, transparent 100%); mask-composite: intersect; }
+:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view, #screen-conversation, #screen-generating, #screen-error, #screen-offline, #screen-onboarding) { position: relative; z-index: 1; background: transparent; }
+/* page headings (these headers use inline colors, so !important is needed) */
+:is(#screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view) .doc-top > div:first-child > div:nth-child(1) { color: #fff !important; font-weight: 800 !important; letter-spacing: .12em !important; }
+:is(#screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view) .doc-top > div:first-child > div:nth-child(2) { color: #fff !important; font-size: 30px !important; font-style: italic; letter-spacing: -.01em; }
+:is(#screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view) .doc-top > div:first-child > div:nth-child(3) { color: #D5DDEA !important; font-size: 14.5px !important; }
+:is(#screen-incident, #screen-protection-observe, #screen-protection-results, #screen-audit-home, #screen-rca) .ir-types-label { color: #fff; }
+/* logos that are drawn dark need to turn white on the dark page */
+:is(#screen-document, #screen-conversation, #screen-generating, #screen-error, #screen-offline, #screen-onboarding) .logo-row { filter: brightness(0) invert(1); opacity: .9; }
+@media (max-width: 560px) { body:has(:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-full, #screen-protection-observe, #screen-protection-results, #screen-protection-setup, #screen-audit-home, #screen-audit-edit, #screen-audit-run, #screen-audit-view, #screen-conversation, #screen-generating, #screen-error, #screen-offline, #screen-onboarding).active)::before { opacity: .45; } }
+#screen-conversation .conv-status { color: #C5D0E0; }
+.doc-petey-bar { background: linear-gradient(to top, #08142B 70%, rgba(8,20,43,0)); }
+#screen-onboarding .onboarding-logo-row .logo-row { filter: brightness(0) invert(1); opacity: .9; }
+#screen-onboarding .onboarding-progress-bar { background: rgba(255,255,255,.18); }
+#screen-onboarding .onboarding-step-title { color: #fff; font-style: italic; }
+#screen-onboarding .onboarding-step-sub { color: #C5D0E0; }
+#screen-onboarding .onboarding-chip { background: rgba(14,34,66,.75); border-color: rgba(110,160,230,.45); color: #E1E8F3; }
+#screen-onboarding .onboarding-chip.selected { background: var(--orange); border-color: var(--orange); color: #fff; }
+#screen-onboarding .onboarding-skip-btn { color: #AEBBD0; }
+#screen-onboarding .onboarding-skip-btn:hover { color: #fff; }
+#screen-generating .gen-title { color: #fff; font-style: italic; }
+#screen-generating .gen-sub, #screen-error .err-sub { color: #C5D0E0; }
+#screen-error .err-title { color: #FCA5A5; }
+#screen-offline h2 { color: #fff !important; font-style: italic; }
+#screen-offline > div > p { color: #C5D0E0 !important; }
+#screen-offline span[style*="8A4B11"] { color: #FDBA74 !important; }
+#screen-onboarding .onboarding-input { background: #fff; }
