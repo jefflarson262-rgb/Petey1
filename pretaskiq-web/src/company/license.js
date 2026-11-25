@@ -6,6 +6,7 @@ const HIDE = {
   incidents: ['openIncidentReport('],
   protection: ['openProtectionObserve('],
   audits: ['openAuditHome('],
+  jobs: ['openJobs('],
   rca: ['openRCAAssistant('],
   knowledge_base: ['openSettingsToKb('],
   construction_admin: ["setRole('construction')"],

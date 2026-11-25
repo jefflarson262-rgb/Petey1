@@ -1,7 +1,7 @@
 /* ============================================================
    App state & screen switching
    ============================================================ */
-const screens = ["intake", "conversation", "generating", "error", "document", "petey", "offline", "onboarding", "admin", "construction", "intro", "rca", "incident", "incident-full", "protection-observe", "protection-results", "protection-setup", "audit-home", "audit-edit", "audit-run", "audit-view"];
+const screens = ["intake", "conversation", "generating", "error", "document", "petey", "offline", "onboarding", "admin", "construction", "intro", "rca", "incident", "incident-full", "protection-observe", "protection-results", "protection-setup", "audit-home", "audit-edit", "audit-run", "audit-view", "jobs", "job"];
 let activeJHA = null; // the most recently generated JHA, available to Petey for plan-aware answers
 
 // Active procedure tracking: when the crew starts a strict-sequence procedure (LOTO, energized work),

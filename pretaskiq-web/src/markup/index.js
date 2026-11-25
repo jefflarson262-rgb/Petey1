@@ -13,6 +13,7 @@ import p10 from './10-screen-incident.html?raw';
 import p11 from './11-screen-incident-full.html?raw';
 import p12 from './12-screen-protection.html?raw';
 import p13 from './13-screen-audits.html?raw';
+import p14 from './14-screen-jobs.html?raw';
 
 const PARTIALS = [
   p1,
@@ -28,6 +29,7 @@ const PARTIALS = [
   p11,
   p12,
   p13,
+  p14,
 ];
 
 export const APP_MARKUP = PARTIALS.map((html) => html.trim()).join('\n');

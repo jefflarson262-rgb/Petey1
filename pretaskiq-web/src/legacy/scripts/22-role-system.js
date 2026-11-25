@@ -13,6 +13,7 @@ var ROLE_MENUS = {
           { icon: '📝', label: 'Report an Incident', sub: 'A quick report with Petey. Safety finishes the full report', action: "closeNavDropdown(); openIncidentReport();" },
           { icon: '✅', label: 'Safety Observation', sub: 'Check that the required controls are in place', action: "closeNavDropdown(); openProtectionObserve();" },
           { icon: '🔎', label: 'Safety Audit', sub: 'Pass or fail each item, with comments and photos', action: "closeNavDropdown(); openAuditHome();" },
+          { icon: '📁', label: 'Job Folders', sub: 'Scope, RFIs, revisions, permits and 811 tickets', action: "closeNavDropdown(); openJobs();" },
         ]
       }
     ]
@@ -32,6 +33,12 @@ var ROLE_MENUS = {
         items: [
           { icon: '📊', label: 'Safety Dashboard', sub: 'Live JHA completion across all crews', action: "switchRole('admin'); closeNavDropdown();" },
           { icon: '🚨', label: 'Safety Alerts Inbox', sub: 'Hazards flagged by crews (needs sign-in)', action: "closeNavDropdown(); if (window.PreTaskIQAlerts && PreTaskIQAlerts.enabled()) PreTaskIQAlerts.openDialog(); else alert('The safety inbox works once sign-in is turned on.');" },
+        ]
+      },
+      {
+        label: 'Jobs',
+        items: [
+          { icon: '📁', label: 'Job Folders', sub: 'Scope, RFIs, revisions, permits and 811 tickets, with expiry flags', action: "closeNavDropdown(); openJobs();" },
         ]
       },
       {
@@ -86,6 +93,12 @@ var ROLE_MENUS = {
   construction: {
     header: { icon: '🏗️', title: 'Construction Administrator', desc: 'Keep Petey current on project documents so crews never execute on outdated information.' },
     sections: [
+      {
+        label: '📁 Jobs',
+        items: [
+          { icon: '📁', label: 'Job Folders', sub: 'Set up jobs; keep scope documents, RFIs, revisions, permits and 811 tickets', action: "closeNavDropdown(); openJobs();" },
+        ]
+      },
       {
         label: '📐 Drawing Revision Management',
         items: [

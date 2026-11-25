@@ -33,6 +33,18 @@ export function friendlyMessage(status, code, body) {
     case 'read_only': return 'You can read this plan but not change it, so your change was not saved.';
     case 'plan_not_found': return 'That plan could not be found.';
     case 'plan_too_large': return 'This plan is too large to save.';
+    case 'job_not_found': return 'That job could not be found. It may have been removed.';
+    case 'document_not_found': return 'That document could not be found. It may have been removed.';
+    case 'file_not_found': return 'The original file could not be found.';
+    case 'title_required': return 'Enter a title.';
+    case 'expiry_required': return 'Enter the expiry date shown on the document.';
+    case 'expiry_not_allowed': return 'Only permits and 811 tickets have an expiry date.';
+    case 'invalid_date': return 'That date does not look right.';
+    case 'invalid_file_type': return 'Only PDF, PNG or JPG files can be kept.';
+    case 'file_too_large': return 'That file is too large.';
+    case 'file_missing': return 'The file did not finish uploading. Try again.';
+    case 'invalid_file': return 'That file could not be attached. Try again.';
+    case 'storage_unavailable': return 'File storage is not ready. Ask your administrator to check the Supabase setup (the job-files bucket).';
     case 'supabase_misconfigured': return 'Sign-in is not set up correctly on the server. Open /api/health to see what is missing.';
     case 'database_error': return `The plan database is not ready${body && body.hint ? ` (${String(body.hint).replace(/_/g, ' ')})` : ''}. Open /api/health to see what to fix.`;
     case 'server_not_configured': return 'The server is missing a setting (the Anthropic key). Open /api/health to check.';

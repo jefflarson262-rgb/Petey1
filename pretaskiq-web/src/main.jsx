@@ -9,6 +9,7 @@ import * as kbStore from './kb/store.js';
 import * as incidentsStore from './incidents/store.js';
 import * as protectionStore from './protection/store.js';
 import * as auditsStore from './audits/store.js';
+import * as jobsStore from './jobs/store.js';
 import * as reenactRegister from './reenact/register.js';
 import * as reenactStore from './reenact/store.js';
 import { speech } from './api/speech.js';
@@ -31,6 +32,9 @@ window.PreTaskIQProtection = protectionStore;
 
 // The safety audit scripts (38) build templates and run audits through this.
 window.PreTaskIQAudits = auditsStore;
+
+// The job folder scripts (39) and the planning conversation read job folders and their documents through this.
+window.PreTaskIQJobs = jobsStore;
 
 // Approved reenactment storyboards are made playable (and drafts previewed) through this.
 window.PreTaskIQReenact = reenactRegister;
