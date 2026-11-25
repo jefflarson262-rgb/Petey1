@@ -33,6 +33,11 @@ export function friendlyMessage(status, code, body) {
     case 'read_only': return 'You can read this plan but not change it, so your change was not saved.';
     case 'plan_not_found': return 'That plan could not be found.';
     case 'plan_too_large': return 'This plan is too large to save.';
+    case 'scope_code_required': return 'Enter a scope code (its identifier).';
+    case 'scope_name_required': return 'Enter a scope name.';
+    case 'scope_code_in_use': return 'That scope code is already used on this job.';
+    case 'scope_not_found': return 'That scope could not be found.';
+    case 'invalid_scope': return 'Pick a scope that belongs to this job.';
     case 'job_not_found': return 'That job could not be found. It may have been removed.';
     case 'document_not_found': return 'That document could not be found. It may have been removed.';
     case 'file_not_found': return 'The original file could not be found.';

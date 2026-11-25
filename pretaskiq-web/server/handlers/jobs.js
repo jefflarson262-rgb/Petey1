@@ -7,6 +7,7 @@
 //   POST /api/jobs { action: 'create_job', name, jobNumber, location }
 //   POST /api/jobs { action: 'update_job', id, name?, jobNumber?, location?, status? }       status: active | closed
 //   POST /api/jobs { action: 'archive_job', id }
+//   POST /api/jobs { action: 'add_scope', jobId, code, name } | { action: 'update_scope', id, code?, name? } | { action: 'archive_scope', id }
 //   POST /api/jobs { action: 'upload_url', jobId, fileName, fileType, fileSize }            -> { path, token, signedUrl } to upload one file
 //   POST /api/jobs { action: 'add_document', jobId, category, title, ..., file?: { path, name, type, size } }
 //   POST /api/jobs { action: 'update_document', id, ...fields }
@@ -21,13 +22,15 @@ export const BUCKET = 'job-files';
 const WRITERS = ['construction', 'safety'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const JOB_COLS = 'id,name,job_number,location,status,created_at';
-const DOC_COLS = 'id,job_id,category,title,doc_number,revision,summary,details,issued_on,expires_on,status,file_path,file_name,file_type,file_size,created_by_name,created_at';
+const SCOPE_COLS = 'id,job_id,code,name,created_at';
+const shapeScope = (x) => ({ id: x.id, jobId: x.job_id, code: x.code, name: x.name });
+const DOC_COLS = 'id,job_id,scope_id,category,title,doc_number,revision,summary,details,issued_on,expires_on,status,file_path,file_name,file_type,file_size,created_by_name,created_at';
 const clean = (v, max) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
 const cleanLong = (v, max) => (typeof v === 'string' ? v.replace(/\r/g, '').trim().slice(0, max) : '');
 
 const shapeJob = (j) => ({ id: j.id, name: j.name, jobNumber: j.job_number || '', location: j.location || '', status: j.status, createdAt: j.created_at });
 const shapeDoc = (d, today) => ({
-  id: d.id, jobId: d.job_id, category: d.category, title: d.title, docNumber: d.doc_number || '', revision: d.revision || '', summary: d.summary || '',
+  id: d.id, jobId: d.job_id, scopeId: d.scope_id || null, category: d.category, title: d.title, docNumber: d.doc_number || '', revision: d.revision || '', summary: d.summary || '',
   details: d.details || {}, issuedOn: d.issued_on || null, expiresOn: d.expires_on || null, status: d.status,
   expiry: d.status === 'active' ? expiryStatus(d.expires_on, today) : null,
   file: d.file_path ? { name: d.file_name || 'file', type: d.file_type || '', size: d.file_size || 0 } : null,
@@ -72,6 +75,27 @@ async function loadDoc(db, id) {
   if (error) throw dbError(error);
   if (!data || data.archived_at) throw new HttpError(404, 'document_not_found');
   return data;
+}
+
+async function liveScopes(db, jobId) {
+  const { data, error } = await db.from('job_scopes').select(SCOPE_COLS).eq('job_id', jobId).is('archived_at', null).order('created_at', { ascending: true }).limit(500);
+  if (error) throw dbError(error);
+  return data || [];
+}
+// The scope a document is filed under: null (the whole job) or a live scope of THIS job.
+async function resolveScope(db, jobId, scopeId) {
+  if (scopeId === null || scopeId === undefined || scopeId === '') return null;
+  if (typeof scopeId !== 'string' || !UUID.test(scopeId)) throw new HttpError(400, 'invalid_scope');
+  const found = (await liveScopes(db, jobId)).find((x) => x.id === scopeId);
+  if (!found) throw new HttpError(400, 'invalid_scope');
+  return found.id;
+}
+function scopeFields(body, existing, others) {
+  const out = {};
+  if (!existing || body.code !== undefined) { const c = clean(body.code, 30); if (!c) throw new HttpError(400, 'scope_code_required'); out.code = c; }
+  if (!existing || body.name !== undefined) { const n = clean(body.name, 120); if (!n) throw new HttpError(400, 'scope_name_required'); out.name = n; }
+  if (out.code && others.some((x) => x.code.toLowerCase() === out.code.toLowerCase())) throw new HttpError(409, 'scope_code_in_use');
+  return out;
 }
 
 // Checks the file a document points at: it must live under THIS company's THIS job, be an allowed type and size, and really be uploaded.
@@ -139,7 +163,8 @@ export default handle(async (req, res) => {
     }
     const { data: docs, error } = await db.from('job_documents').select(DOC_COLS).eq('job_id', job.id).is('archived_at', null).order('created_at', { ascending: false }).limit(2000);
     if (error) throw dbError(error);
-    return send(res, 200, { canEdit: WRITERS.includes(me.profile.role), job: shapeJob(job), documents: (docs || []).map((d) => shapeDoc(d, today)) });
+    const scopes = await liveScopes(db, job.id);
+    return send(res, 200, { canEdit: WRITERS.includes(me.profile.role), job: shapeJob(job), scopes: scopes.map(shapeScope), documents: (docs || []).map((d) => shapeDoc(d, today)) });
   }
 
   if (!WRITERS.includes(me.profile.role)) throw new HttpError(403, 'wrong_role');
@@ -169,6 +194,33 @@ export default handle(async (req, res) => {
     if (error) throw dbError(error);
     return send(res, 200, { job: shapeJob(data) });
   }
+  if (body.action === 'add_scope') {
+    const job = await loadJob(db, body.jobId);
+    const fields = scopeFields(body, null, await liveScopes(db, job.id));
+    const { data, error } = await db.from('job_scopes').insert({ job_id: job.id, created_by: me.user.id, ...fields }).select(SCOPE_COLS).single();
+    if (error) throw dbError(error);
+    return send(res, 201, { scope: shapeScope(data) });
+  }
+  if (body.action === 'update_scope' || body.action === 'archive_scope') {
+    if (typeof body.id !== 'string' || !UUID.test(body.id)) throw new HttpError(404, 'scope_not_found');
+    const { data: sc, error: le } = await db.from('job_scopes').select(SCOPE_COLS + ',archived_at').eq('id', body.id).maybeSingle();
+    if (le) throw dbError(le);
+    if (!sc || sc.archived_at) throw new HttpError(404, 'scope_not_found');
+    await loadJob(db, sc.job_id);
+    let patch;
+    if (body.action === 'archive_scope') {
+      patch = { archived_at: new Date().toISOString() };
+      // its documents stay in the job and go back to "whole job", so no crew loses sight of them
+      const { error: de } = await db.from('job_documents').update({ scope_id: null }).eq('scope_id', sc.id);
+      if (de) throw dbError(de);
+    } else {
+      patch = scopeFields(body, sc, (await liveScopes(db, sc.job_id)).filter((x) => x.id !== sc.id));
+      if (!Object.keys(patch).length) throw new HttpError(400, 'nothing_to_update');
+    }
+    const { data, error } = await db.from('job_scopes').update(patch).eq('id', sc.id).select(SCOPE_COLS).single();
+    if (error) throw dbError(error);
+    return send(res, 200, { scope: shapeScope(data) });
+  }
   if (body.action === 'upload_url') {
     const job = await loadJob(db, body.jobId);
     if (!FILE_TYPES[body.fileType]) throw new HttpError(400, 'invalid_file_type');
@@ -184,7 +236,7 @@ export default handle(async (req, res) => {
     const job = await loadJob(db, body.jobId);
     if (!CATEGORY_KEYS.includes(body.category)) throw new HttpError(400, 'invalid_category');
     const fields = docFields(body, body.category, { partial: false });
-    const row = { job_id: job.id, category: body.category, status: fields.status || defaultStatus(body.category), created_by: me.user.id, created_by_name: me.profile.display_name || me.user.email || null, ...fields };
+    const row = { job_id: job.id, category: body.category, status: fields.status || defaultStatus(body.category), created_by: me.user.id, created_by_name: me.profile.display_name || me.user.email || null, scope_id: await resolveScope(db, job.id, body.scopeId), ...fields };
     if (body.file) Object.assign(row, await checkFile(me, job.id, body.file));
     const { data, error } = await db.from('job_documents').insert(row).select(DOC_COLS).single();
     if (error) throw dbError(error);
@@ -201,6 +253,7 @@ export default handle(async (req, res) => {
     if (body.action === 'archive_document') patch = { archived_at: new Date().toISOString() };
     else {
       patch = docFields(body, doc.category, { partial: true });
+      if (body.scopeId !== undefined) patch.scope_id = await resolveScope(db, doc.job_id, body.scopeId);
       if (!Object.keys(patch).length) throw new HttpError(400, 'nothing_to_update');
       patch.updated_at = new Date().toISOString();
     }

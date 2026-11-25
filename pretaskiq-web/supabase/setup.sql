@@ -325,10 +325,29 @@ alter table public.jobs enable row level security;
 revoke all on public.jobs from anon, authenticated;
 grant all on public.jobs to service_role;
 
+-- Scopes: a job can be broken into scopes of work, each with its own identifier (code). A document belongs to one scope or to the whole job;
+-- a plan records the scope the crew is working in, so revisions reach the right crew.
+create table if not exists public.job_scopes (
+  id          uuid primary key default gen_random_uuid(),
+  company_id  uuid references public.companies (id),
+  job_id      uuid not null references public.jobs (id),
+  code        text not null,                             -- the identifier, unique within the job
+  name        text not null,
+  created_by  uuid references auth.users (id),
+  created_at  timestamptz not null default now(),
+  archived_at timestamptz
+);
+create index if not exists job_scopes_company_idx on public.job_scopes (company_id);
+create unique index if not exists job_scopes_code_idx on public.job_scopes (job_id, lower(code)) where archived_at is null;
+alter table public.job_scopes enable row level security;
+revoke all on public.job_scopes from anon, authenticated;
+grant all on public.job_scopes to service_role;
+
 create table if not exists public.job_documents (
   id              uuid primary key default gen_random_uuid(),
   company_id      uuid references public.companies (id),
   job_id          uuid not null references public.jobs (id),
+  scope_id        uuid references public.job_scopes (id),  -- null = applies to the whole job
   category        text not null check (category in ('scope', 'rfi', 'revision', 'permit', 'ticket811')),
   title           text not null,
   doc_number      text,                                  -- RFI number, sheet number, permit number, ticket number

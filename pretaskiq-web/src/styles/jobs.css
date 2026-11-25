@@ -21,3 +21,7 @@
 .jb-pick label { display: block; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
 .jb-pick select { width: 100%; padding: 12px; border: 2px solid var(--line); border-radius: 10px; font: inherit; font-size: 16px; }
 .jb-pick .inf-hint { margin: 6px 0 0; }
+.jb-code { display: inline-block; padding: 2px 8px; border-radius: 6px; background: var(--navy); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .03em; margin-right: 6px; }
+.jb-scope-new { margin-top: 10px; }
+@media (min-width: 560px) { .jb-scope-new { grid-template-columns: 1fr 2fr auto; } }
+.jb-filter select, .jb-pick select { width: 100%; padding: 12px; border: 2px solid var(--line); border-radius: 10px; font: inherit; font-size: 16px; background: #fff; color: var(--navy); }

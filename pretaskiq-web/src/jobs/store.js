@@ -26,13 +26,16 @@ export async function refresh() {
   catch (e) { set({ loaded: true, error: e.message || 'Could not load the jobs.' }); }
 }
 export async function getJob(id) {
-  try { const out = await apiJson('/api/jobs?' + q({ id })); return { ok: true, job: out.job, documents: out.documents || [], canEdit: !!out.canEdit }; }
+  try { const out = await apiJson('/api/jobs?' + q({ id })); return { ok: true, job: out.job, scopes: out.scopes || [], documents: out.documents || [], canEdit: !!out.canEdit }; }
   catch (e) { return fail(e, 'Could not open that job.'); }
 }
 const act = async (body, fallback) => { try { const out = await apiJson('/api/jobs', { method: 'POST', body }); return { ok: true, ...out }; } catch (e) { return fail(e, fallback); } };
 export const createJob = async (f) => { const r = await act({ action: 'create_job', ...f }, 'Could not create the job.'); if (r.ok) await refresh(); return r; };
 export const updateJob = async (id, f) => { const r = await act({ action: 'update_job', id, ...f }, 'Could not save the job.'); if (r.ok) await refresh(); return r; };
 export const archiveJob = async (id) => { const r = await act({ action: 'archive_job', id }, 'Could not remove the job.'); if (r.ok) await refresh(); return r; };
+export const addScope = (jobId, f) => act({ action: 'add_scope', jobId, ...f }, 'Could not add the scope.');
+export const updateScope = (id, f) => act({ action: 'update_scope', id, ...f }, 'Could not save the scope.');
+export const archiveScope = (id) => act({ action: 'archive_scope', id }, 'Could not remove the scope.');
 export const addDocument = (jobId, f) => act({ action: 'add_document', jobId, ...f }, 'Could not add the document.');
 export const updateDocument = (id, f) => act({ action: 'update_document', id, ...f }, 'Could not save the document.');
 export const archiveDocument = (id) => act({ action: 'archive_document', id }, 'Could not remove the document.');
@@ -64,15 +67,19 @@ export async function fileLink(jobId, docId) {
 // What Petey is told about a job when a plan is started for it: the job, its current documents, and any permit or ticket that has run out
 // or is about to. Resolves { ok, text, warnings: [...], name }. Never invents dates: it only repeats what the administrator entered.
 const one = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
-export async function briefing(jobId) {
+export async function briefing(jobId, scopeId) {
   const r = await getJob(jobId); if (!r.ok) return r;
   const t = today(), warnings = [], lines = [];
-  const live = r.documents.filter((d) => d.status !== 'superseded' && d.status !== 'closed');
+  const scope = (scopeId && r.scopes.find((x) => x.id === scopeId)) || null;
+  const codeOf = (id) => { const x = id && r.scopes.find((y) => y.id === id); return x ? x.code : ''; };
+  // With a scope chosen: that scope's documents plus the whole-job ones. Without: everything, each marked with its scope.
+  const live = r.documents.filter((d) => d.status !== 'superseded' && d.status !== 'closed' && (!scope || !d.scopeId || d.scopeId === scope.id));
   for (const key of CATEGORY_KEYS) {
     const docs = live.filter((d) => d.category === key); if (!docs.length) continue;
     lines.push(CATEGORIES[key].label.toUpperCase() + ':');
     for (const d of docs.slice(0, 25)) {
       const bits = [one(d.title, 120)];
+      if (r.scopes.length) bits.push(d.scopeId ? 'scope ' + codeOf(d.scopeId) : 'whole job');
       if (d.docNumber) bits.push('no. ' + one(d.docNumber, 40));
       if (d.revision) bits.push('rev ' + one(d.revision, 20));
       if (key === 'rfi') bits.push('status: ' + d.status);
@@ -83,7 +90,9 @@ export async function briefing(jobId) {
       lines.push(line);
     }
   }
-  let text = 'JOB: ' + one(r.job.name, 120) + (r.job.jobNumber ? ' (job no. ' + one(r.job.jobNumber, 40) + ')' : '') + (r.job.location ? ', ' + one(r.job.location, 120) : '') + '\n' + (lines.join('\n') || 'No documents have been added to this job yet.');
+  let text = 'JOB: ' + one(r.job.name, 120) + (r.job.jobNumber ? ' (job no. ' + one(r.job.jobNumber, 40) + ')' : '') + (r.job.location ? ', ' + one(r.job.location, 120) : '') + '\n'
+    + (scope ? 'SCOPE THIS CREW IS WORKING IN: ' + one(scope.code, 30) + ' (' + one(scope.name, 120) + '). The documents below are this scope\'s plus the ones filed for the whole job.\n' : r.scopes.length ? 'No scope was chosen, so every scope\'s documents are listed, each marked with its scope code.\n' : '')
+    + (lines.join('\n') || 'No documents have been added to this job yet.');
   if (text.length > 9000) text = text.slice(0, 9000) + '\n(more documents are in the job folder)';
-  return { ok: true, text, warnings, name: r.job.name };
+  return { ok: true, text, warnings, name: r.job.name, scopes: r.scopes, scope };
 }

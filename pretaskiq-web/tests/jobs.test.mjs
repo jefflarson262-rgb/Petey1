@@ -153,3 +153,45 @@ test('a plan can say which job it is for: kept for this company\'s job, dropped 
   const none = await saveVia(U.aForeman, {});
   assert.ok(none.plan.data.jobId === undefined && none.plan.title === 'Conduit');
 });
+
+test('scopes: each has its own code, unique in the job; documents are filed under a scope of the same job; plans record the scope', async () => {
+  const job = (await post(U.aCons, { action: 'create_job', name: 'Hospital' })).json.job;
+  const other = (await post(U.aCons, { action: 'create_job', name: 'School' })).json.job;
+  const addScope = (u, b) => post(u, { action: 'add_scope', ...b });
+  const el = await addScope(U.aCons, { jobId: job.id, code: '26-ELEC', name: 'Electrical' });
+  assert.equal(el.status, 201); assert.equal(el.json.scope.code, '26-ELEC');
+  const me = (await addScope(U.aSafety, { jobId: job.id, code: '23-MECH', name: 'Mechanical' })).json.scope;
+  assert.equal((await addScope(U.aCons, { jobId: job.id, code: '26-elec', name: 'Dup' })).json.error, 'scope_code_in_use');
+  assert.equal((await addScope(U.aCons, { jobId: job.id, code: '', name: 'x' })).json.error, 'scope_code_required');
+  assert.equal((await addScope(U.aCons, { jobId: job.id, code: 'X', name: '' })).json.error, 'scope_name_required');
+  assert.equal((await addScope(U.aForeman, { jobId: job.id, code: 'F', name: 'F' })).status, 403);
+  assert.equal((await addScope(U.bCons, { jobId: job.id, code: 'B', name: 'B' })).status, 404);
+  const otherScope = (await addScope(U.aCons, { jobId: other.id, code: '26-ELEC', name: 'Electrical' })).json.scope;   // same code on another job is fine
+  assert.ok(otherScope.id);
+  const add = (b) => post(U.aCons, { action: 'add_document', jobId: job.id, category: 'revision', ...b });
+  const d1 = await add({ title: 'E-201', docNumber: 'E-201', revision: '4', scopeId: el.json.scope.id });
+  assert.equal(d1.json.document.scopeId, el.json.scope.id);
+  assert.equal((await add({ title: 'G-001', docNumber: 'G-001', revision: '1' })).json.document.scopeId, null);
+  assert.equal((await add({ title: 'x', scopeId: otherScope.id })).json.error, 'invalid_scope');            // a scope of a different job
+  assert.equal((await add({ title: 'x', scopeId: 'nope' })).json.error, 'invalid_scope');
+  assert.equal((await post(U.aCons, { action: 'update_document', id: d1.json.document.id, scopeId: me.id })).json.document.scopeId, me.id);
+  assert.equal((await post(U.aCons, { action: 'update_scope', id: me.id, code: '26-ELEC' })).json.error, 'scope_code_in_use');
+  assert.equal((await post(U.aCons, { action: 'update_scope', id: me.id, name: 'HVAC' })).json.scope.name, 'HVAC');
+  assert.equal((await post(U.bCons, { action: 'archive_scope', id: me.id })).status, 404);
+  const seen = await get(U.aForeman, { id: job.id });
+  assert.deepEqual(seen.json.scopes.map((x) => x.code), ['26-ELEC', '23-MECH']);
+  // plans
+  const savePlan = async (data) => { const res = fakeRes(); await plansApi({ method: 'POST', url: '/api/plans', query: {}, headers: as(U.aForeman), body: { data: { jobTitle: 'Feeders', revision: 1, taskSteps: [], ...data } } }, res); return fake.state.tables.plans.find((r) => r.id === JSON.parse(res.body).plan.id).data; };
+  const ok = await savePlan({ jobId: job.id, scopeId: el.json.scope.id, scopeCode: 'forged', scopeName: 'forged' });
+  assert.equal(ok.scopeId, el.json.scope.id); assert.equal(ok.scopeCode, '26-ELEC'); assert.equal(ok.scopeName, 'Electrical');
+  const wrong = await savePlan({ jobId: job.id, scopeId: otherScope.id, scopeCode: 'x' });
+  assert.ok(wrong.jobId === job.id && wrong.scopeId === undefined && wrong.scopeCode === undefined);        // scope of another job: dropped
+  const noJob = await savePlan({ scopeId: el.json.scope.id });
+  assert.ok(noJob.scopeId === undefined);
+  // removing a scope returns its documents to the whole job
+  assert.equal((await post(U.aCons, { action: 'archive_scope', id: me.id })).status, 200);
+  const after = await get(U.aCons, { id: job.id });
+  assert.deepEqual(after.json.scopes.map((x) => x.code), ['26-ELEC']);
+  assert.equal(after.json.documents.find((d) => d.id === d1.json.document.id).scopeId, null);
+  assert.equal((await addScope(U.aCons, { jobId: job.id, code: '23-MECH', name: 'Mechanical again' })).status, 201);   // the code is free again
+});

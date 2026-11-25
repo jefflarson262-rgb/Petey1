@@ -19,13 +19,20 @@ const MAX_PLAN_CHARS = 400_000;
 // A plan may say which job it is for. The job must belong to this company; otherwise the field is dropped (the plan still saves).
 // The job's current name is stored beside the id so the plan reads right even if the job is later renamed or removed.
 async function checkJobOnPlan(admin, content) {
-  if (content.jobId === undefined && content.jobName === undefined) return;
+  if (content.jobId === undefined && content.jobName === undefined && content.scopeId === undefined) return;
   let found = null;
   if (typeof content.jobId === 'string' && UUID.test(content.jobId)) {
     try { const { data } = await admin.from('jobs').select('id,name').eq('id', content.jobId).maybeSingle(); found = data || null; } catch { found = null; }
   }
   if (found) content.jobName = String(found.name || '').slice(0, 120);
   else { delete content.jobId; delete content.jobName; }
+  // The scope the crew is working in must be a live scope of that job. Its code and name are copied from the record, not trusted from the browser.
+  let scope = null;
+  if (found && typeof content.scopeId === 'string' && UUID.test(content.scopeId)) {
+    try { const { data } = await admin.from('job_scopes').select('id,code,name,job_id,archived_at').eq('id', content.scopeId).maybeSingle(); if (data && data.job_id === found.id && !data.archived_at) scope = data; } catch { scope = null; }
+  }
+  if (scope) { content.scopeCode = String(scope.code).slice(0, 30); content.scopeName = String(scope.name).slice(0, 120); }
+  else { delete content.scopeId; delete content.scopeCode; delete content.scopeName; }
 }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
