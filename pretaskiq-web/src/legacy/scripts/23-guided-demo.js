@@ -172,18 +172,32 @@ function renderDemoStep(step) {
   }).join('');
 
   // Speak narration
-  demoSpeak(s.narration);
+  demoSpeak(s.narration, step);
 }
 
-function demoSpeak(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
+// Narration is a recording (the same voice as the promo video), one file per step in public/demo/audio/.
+// If a recording cannot play (offline, file missing) the browser's own voice reads the text instead.
+var demoAudio = null;
+var demoSpeakToken = 0;
+
+function demoSpeakingUI(on) {
   var orb = document.getElementById('demo-orb');
   var badge = document.getElementById('demo-speaking-badge');
-  if (orb) orb.style.background = '#2A1000';
-  if (badge) badge.style.display = 'inline-block';
-  demoSpeaking = true;
+  if (orb) orb.style.background = on ? '#2A1000' : '#1A3050';
+  if (badge) badge.style.display = on ? 'inline-block' : 'none';
+  demoSpeaking = on;
+}
 
+function demoStopSpeaking() {
+  demoSpeakToken++;
+  if (demoAudio) { try { demoAudio.pause(); } catch (e) {} demoAudio = null; }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  demoSpeakingUI(false);
+}
+
+function demoSpeakFallback(text, token) {
+  if (!window.speechSynthesis || token !== demoSpeakToken) return;
+  window.speechSynthesis.cancel();
   var utter = new SpeechSynthesisUtterance(text);
   utter.rate = 1.0;
   var voices = window.speechSynthesis.getVoices();
@@ -192,18 +206,25 @@ function demoSpeak(text) {
     || voices.find(function(v) { return /en-US/i.test(v.lang); })
     || voices[0];
   if (voice) utter.voice = voice;
-
-  utter.onend = function() {
-    demoSpeaking = false;
-    if (orb) orb.style.background = '#1A3050';
-    if (badge) badge.style.display = 'none';
-  };
-  utter.onerror = function() {
-    demoSpeaking = false;
-    if (orb) orb.style.background = '#1A3050';
-    if (badge) badge.style.display = 'none';
-  };
+  utter.onend = utter.onerror = function() { if (token === demoSpeakToken) demoSpeakingUI(false); };
+  demoSpeakingUI(true);
   window.speechSynthesis.speak(utter);
+}
+
+function demoSpeak(text, step) {
+  demoStopSpeaking();
+  var token = demoSpeakToken;
+  var audio = new Audio('/demo/audio/step-' + (step + 1) + '.mp3');
+  demoAudio = audio;
+  audio.onplaying = function() { if (token === demoSpeakToken) demoSpeakingUI(true); };
+  audio.onended = function() { if (token === demoSpeakToken) demoSpeakingUI(false); };
+  audio.onerror = function() { if (token === demoSpeakToken) demoSpeakFallback(text, token); };
+  var started = audio.play();
+  if (started && started.catch) started.catch(function(err) {
+    if (token !== demoSpeakToken) return;
+    if (err && err.name === 'NotAllowedError') { demoSpeakingUI(false); return; }   // the browser wants a tap first; stay silent
+    demoSpeakFallback(text, token);
+  });
 }
 
 function demoNext() {
@@ -223,9 +244,18 @@ function demoPrev() {
 }
 
 function exitDemo() {
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  demoStopSpeaking();
   showScreen('intake');
 }
 
 // (Vite port) The demo no longer starts by itself on load. The app opens on the planning screen;
 // the demo starts from the account menu or with ?demo in the address. See 29-persistence-bridge.js.
+
+// Leaving the demo any other way (the menu, switching role) must also silence the narration.
+if (typeof showScreen === 'function') {
+  var demoOrigShowScreen = showScreen;
+  showScreen = function(name) {
+    if (name !== 'intro' && demoSpeaking) demoStopSpeaking();
+    return demoOrigShowScreen.apply(this, arguments);
+  };
+}
