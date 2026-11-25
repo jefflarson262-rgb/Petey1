@@ -15,6 +15,31 @@ import { summarizePlan } from '../src/shared/siteOverview.js';
 const LIST_COLUMNS = 'id,title,current_revision,created_by,owner_name,created_at,updated_at';
 const SOURCES = ['planning', 'petey_update', 'edit'];
 const MAX_PLAN_CHARS = 400_000;
+
+// A plan may say which job it is for. The job must belong to this company; otherwise the field is dropped (the plan still saves).
+// The job's current name is stored beside the id so the plan reads right even if the job is later renamed or removed.
+async function checkJobOnPlan(admin, content) {
+  if (content.jobId === undefined && content.jobName === undefined && content.scopeId === undefined && content.jobRevsSeen === undefined && content.revisionAcks === undefined) return;
+  let found = null;
+  if (typeof content.jobId === 'string' && UUID.test(content.jobId)) {
+    try { const { data } = await admin.from('jobs').select('id,name').eq('id', content.jobId).maybeSingle(); found = data || null; } catch { found = null; }
+  }
+  if (found) content.jobName = String(found.name || '').slice(0, 120);
+  else { delete content.jobId; delete content.jobName; }
+  // The scope the crew is working in must be a live scope of that job. Its code and name are copied from the record, not trusted from the browser.
+  let scope = null;
+  if (found && typeof content.scopeId === 'string' && UUID.test(content.scopeId)) {
+    try { const { data } = await admin.from('job_scopes').select('id,code,name,job_id,archived_at').eq('id', content.scopeId).maybeSingle(); if (data && data.job_id === found.id && !data.archived_at) scope = data; } catch { scope = null; }
+  }
+  if (scope) { content.scopeCode = String(scope.code).slice(0, 30); content.scopeName = String(scope.name).slice(0, 120); }
+  else { delete content.scopeId; delete content.scopeCode; delete content.scopeName; }
+  // Drawing revisions the crew was shown at planning, and the newer ones they confirmed since. Kept only for a plan tied to a job.
+  if (!found) { delete content.jobRevsSeen; delete content.revisionAcks; return; }
+  const str = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
+  content.jobRevsSeen = Array.isArray(content.jobRevsSeen) ? content.jobRevsSeen.filter((x) => typeof x === 'string' && UUID.test(x)).slice(0, 400) : [];
+  content.revisionAcks = Array.isArray(content.revisionAcks) ? content.revisionAcks.filter((a) => a && typeof a === 'object' && typeof a.id === 'string' && UUID.test(a.id)).slice(0, 200)
+    .map((a) => ({ id: a.id, docNumber: str(a.docNumber, 80), revision: str(a.revision, 40), title: str(a.title, 200), at: str(a.at, 40) })) : [];
+}
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const canRead = (plan, me) => plan.created_by === me.user.id || me.profile.role === 'safety' || me.profile.role === 'construction';
@@ -30,8 +55,8 @@ async function loadPlan(admin, id) {
 export default handle(async (req, res) => {
   const method = req.method;
   if (method !== 'GET' && method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
-  const me = await requireUser(req);
-  const { admin } = me;
+  const me = await requireUser(req, { feature: 'planning' });
+  const admin = me.db;   // this company's data only
   const url = new URL(req.url || '/', 'http://x');
   const id = url.searchParams.get('id');
 
@@ -70,6 +95,7 @@ export default handle(async (req, res) => {
   const { data: content } = body;
   if (!content || typeof content !== 'object' || Array.isArray(content)) throw new HttpError(400, 'invalid_plan');
   if (JSON.stringify(content).length > MAX_PLAN_CHARS) throw new HttpError(413, 'plan_too_large');
+  await checkJobOnPlan(admin, content);
   const source = SOURCES.includes(body.source) ? body.source : 'planning';
   const note = typeof body.note === 'string' ? body.note.slice(0, 500) : null;
   const revision = Number.isInteger(content.revision) && content.revision >= 1 && content.revision < 100000 ? content.revision : 1;

@@ -19,8 +19,8 @@ const text = (v, max) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().
 export default handle(async (req, res) => {
   const method = req.method;
   if (method !== 'GET' && method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
-  const me = await requireUser(req);
-  const { admin } = me;
+  const me = await requireUser(req, { feature: 'audits' });
+  const admin = me.db;   // this company's data only
   const isSafety = me.profile.role === 'safety';
 
   if (method === 'GET') {
@@ -70,8 +70,9 @@ export default handle(async (req, res) => {
     }
     if (typeof body.id !== 'string' || !UUID.test(body.id)) throw new HttpError(404, 'template_not_found');
     if (body.action !== 'archive') throw new HttpError(400, 'invalid_action');
-    const { error } = await admin.from('audit_templates').update({ archived_at: new Date().toISOString() }).eq('id', body.id);
+    const { data: done, error } = await admin.from('audit_templates').update({ archived_at: new Date().toISOString() }).eq('id', body.id).select('id');
     if (error) throw dbError(error);
+    if (!done || !done.length) throw new HttpError(404, 'template_not_found');
     return send(res, 200, { ok: true });
   }
 

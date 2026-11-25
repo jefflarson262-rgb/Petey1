@@ -1,0 +1,29 @@
+<!-- ═══════════════════════════════════════════════════════
+     JOBS: a folder per job (scope documents, RFIs, drawing revisions, permits, 811 tickets)
+══════════════════════════════════════════════════════════ -->
+<div id="screen-jobs" class="screen anim-fade" style="display:none;">
+  <div class="rca-wrap ir-wrap">
+    <div class="doc-top" style="margin-bottom:16px;">
+      <div>
+        <div id="jb-role" style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;">Jobs</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">Jobs</div>
+        <div style="font-size:13px;color:#777;margin-top:2px;">One folder per job: scope documents, RFIs, drawing revisions, permits and 811 tickets.</div>
+      </div>
+      <div style="display:flex;gap:10px;"><button id="jb-back" class="btn-secondary" type="button">&#8592; Back</button></div>
+    </div>
+    <div id="jb-body"></div>
+  </div>
+</div>
+<div id="screen-job" class="screen anim-fade" style="display:none;">
+  <div class="rca-wrap ir-wrap">
+    <div class="doc-top" style="margin-bottom:16px;">
+      <div>
+        <div id="jb-job-sub" style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#999;text-transform:uppercase;">Job folder</div>
+        <div id="jb-job-name" style="font-size:22px;font-weight:800;color:var(--navy);">Job</div>
+        <div id="jb-job-meta" style="font-size:13px;color:#777;margin-top:2px;"></div>
+      </div>
+      <div style="display:flex;gap:10px;"><button class="btn-secondary" type="button" onclick="openJobs()">&#8592; Jobs</button></div>
+    </div>
+    <div id="jb-job-body"></div>
+  </div>
+</div>

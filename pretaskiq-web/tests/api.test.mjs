@@ -8,7 +8,7 @@ import { startFakeSupabase, makeJwt } from './helpers/fakeSupabase.mjs';
 import { readConfig, publicConfig, SIGN_IN_DEFAULT } from '../server/config.js';
 import configApi from '../api/config.js';
 import healthApi from '../api/health.js';
-import meApi from '../api/me.js';
+import meApi from '../server/handlers/me.js';
 import plansApi from '../api/plans.js';
 import claudeApi from '../api/claude.js';
 

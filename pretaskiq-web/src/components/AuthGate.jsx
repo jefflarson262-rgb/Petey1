@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from 'react';
-import { getSnapshot, retryAuth, signIn, subscribe } from '../auth/session.js';
+import { getSnapshot, retryAuth, signIn, signOut, subscribe } from '../auth/session.js';
 import '../styles/auth.css';
 
 function SignInForm({ notice }) {
@@ -35,6 +35,16 @@ function SignInForm({ notice }) {
 
 export default function AuthGate() {
   const auth = useSyncExternalStore(subscribe, getSnapshot);
+  if (auth.phase === 'signed_in' && auth.company && auth.company.status !== 'active') {
+    return (
+      <div className="auth-overlay"><div className="auth-card" role="alert">
+        <div className="auth-brand">PreTaskIQ</div>
+        <h1 className="display auth-title">License not active</h1>
+        <p className="auth-text">The license for {auth.company.name} is not active right now. Contact your company administrator or PreTaskIQ.</p>
+        <button className="auth-submit" type="button" onClick={signOut}>Sign out</button>
+      </div></div>
+    );
+  }
   if (auth.phase === 'signed_in' || auth.phase === 'code') return null;
 
   let body;

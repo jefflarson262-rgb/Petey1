@@ -19,8 +19,8 @@ const slug = (v) => text(v, 40).toLowerCase().replace(/[^a-z0-9_]+/g, '_').repla
 export default handle(async (req, res) => {
   const method = req.method;
   if (method !== 'GET' && method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
-  const me = await requireUser(req);
-  const { admin } = me;
+  const me = await requireUser(req, { feature: 'protection' });
+  const admin = me.db;   // this company's data only
   const isSafety = me.profile.role === 'safety';
 
   if (method === 'GET') {

@@ -1,0 +1,32 @@
+/* Job folders */
+.jb-new { display: grid; gap: 10px; grid-template-columns: 1fr; }
+.jb-new input, .jb-form input, .jb-form select, .jb-form textarea { width: 100%; box-sizing: border-box; padding: 12px; border: 2px solid var(--line); border-radius: 10px; font: inherit; font-size: 16px; background: #fff; color: var(--navy); }
+.jb-job { width: 100%; margin-bottom: 10px; }
+.jb-flags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.jb-sec-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.jb-sec-head h3 { margin: 0; }
+.jb-doc { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid var(--line); }
+.jb-doc-main { flex: 1 1 240px; min-width: 0; }
+.jb-doc-main b { display: block; color: var(--navy); font-size: 16px; }
+.jb-doc-main em { display: block; font-style: normal; color: var(--slate); font-size: 13px; margin-top: 2px; }
+.jb-doc-main p { margin: 6px 0 0; font-size: 14px; color: var(--slate); }
+.jb-doc-side { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.jb-form { border: 2px solid var(--orange); border-radius: 14px; padding: 14px; margin: 8px 0 12px; background: #fff; }
+.jb-form h4 { margin: 0 0 10px; color: var(--navy); }
+.jb-two { display: grid; gap: 10px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .jb-two { grid-template-columns: 1fr 1fr; } .jb-new { grid-template-columns: 2fr 1fr 2fr auto; } }
+.jb-alert { margin-bottom: 12px; }
+.jb-soon { background: #FEF3C7; }
+.jb-pick { margin: 12px 0; padding: 12px; border: 2px solid var(--line); border-radius: 12px; background: #fff; }
+.jb-pick label { display: block; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.jb-pick select { width: 100%; padding: 12px; border: 2px solid var(--line); border-radius: 10px; font: inherit; font-size: 16px; }
+.jb-pick .inf-hint { margin: 6px 0 0; }
+.jb-code { display: inline-block; padding: 2px 8px; border-radius: 6px; background: var(--navy); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .03em; margin-right: 6px; }
+.jb-scope-new { margin-top: 10px; }
+@media (min-width: 560px) { .jb-scope-new { grid-template-columns: 1fr 2fr auto; } }
+.jb-filter select, .jb-pick select { width: 100%; padding: 12px; border: 2px solid var(--line); border-radius: 10px; font: inherit; font-size: 16px; background: #fff; color: var(--navy); }
+.jb-crews { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+#jb-rev-banner { margin-bottom: 14px; }
+#jb-rev-banner .btn-secondary { margin-left: 6px; padding: 4px 10px; font-size: 13px; }
+.jb-scope-link { margin: 0 0 12px; }
+.jb-linkbtn { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 14px; color: var(--slate); text-decoration: underline; cursor: pointer; }

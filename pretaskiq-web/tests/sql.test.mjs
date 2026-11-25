@@ -13,6 +13,8 @@ const standIn = `
   create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;   -- as in Supabase: this role skips row-level security
   grant usage on schema public to anon, authenticated, service_role;
   grant usage on schema auth to service_role;
+  create schema if not exists storage;
+  create table storage.buckets (id text primary key, name text, public boolean default false);   -- stand-in for Supabase Storage's bucket list
 `;
 
 test('setup.sql: valid, repeatable, creates profiles correctly, and locks the browser key out', async () => {
@@ -86,11 +88,25 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   // The browser keys (anon, and signed-in users going straight to the database) can read and write nothing
   for (const role of ['anon', 'authenticated']) {
     await db.exec(`set role ${role}`);
-    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits']) {
+    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits', 'jobs', 'job_scopes', 'job_documents']) {
       await assert.rejects(db.query(`select * from public.${t}`), /permission denied/, `${role} must not read ${t}`);
     }
     await assert.rejects(db.query(`insert into public.ai_usage (user_id) values (gen_random_uuid())`), /permission denied/);
     await db.exec('reset role');
   }
   await db.close();
+});
+
+test('setup.sql section 12: first person becomes owner of a starting company, later people have no company, existing data is moved in', async () => {
+  const db = new PGlite();
+  await db.exec(standIn);
+  await db.exec(setup);
+  await db.exec(`insert into auth.users (email) values ('first@example.com'), ('second@example.com');`);
+  const r = await db.query(`select p.email, p.is_owner, c.name, c.tier from public.profiles p left join public.companies c on c.id = p.company_id order by p.email`);
+  assert.deepEqual(r.rows, [{ email: 'first@example.com', is_owner: true, name: 'My company', tier: 'full' }, { email: 'second@example.com', is_owner: false, name: null, tier: null }]);
+  await db.exec(setup);                                                       // running again changes nothing
+  assert.equal((await db.query(`select count(*)::int n from public.companies`)).rows[0].n, 1);
+  await assert.rejects(db.query(`insert into public.companies (name, tier) values ('X', 'gold')`), /check constraint/);
+  await db.exec('set role anon');
+  await assert.rejects(db.query(`select * from public.companies`), /permission denied/);
 });

@@ -50,6 +50,7 @@ ${getScopeProfileContext()}
 CITATION GUIDANCE: Records with "baseline": true are OSHA/NFPA/ANSI baseline policies. Records without it are company-specific and take priority. Never cite standard numbers or policy IDs. Say "our policy requires" or "you'll want to make sure" — not "per OSHA 1926.501."
 PROJECT KNOWLEDGE BASE:
 ${projectKBSection}
+${typeof getJobPromptSection === 'function' ? getJobPromptSection() : ''}
 
 THE CONVERSATION HAS THREE PHASES.
 
@@ -187,6 +188,7 @@ ${getScopeProfileContext()}
 CITATION GUIDANCE: The safety knowledge base contains two types of policy records. Records with "baseline": true are OSHA/NFPA/ANSI-grounded baseline policies pre-loaded by PreTaskIQ — cite these naturally but do not say "per OSHA" or reference the standard number; say "per our fall protection policy" or "our policy requires." Records without "baseline": true are company-specific — treat these identically but with equal or higher priority when both cover the same topic. When a company-specific policy and a baseline policy both address the same topic, the company-specific policy takes precedence.
 PROJECT KNOWLEDGE BASE (drawing revisions, RFIs, scope changes — use to enrich hazard controls and add hold points where a matched project document warrants it):
 ${getProjectKBText()}
+${typeof getJobPromptSection === 'function' ? getJobPromptSection() : ''}
 
 PLAN CONTENT — the plan must carry what was said in the conversation. List the hazards the crew named in their own words, and the hazards the assistant raised (mark nothing as crew-named that the crew did not say). Include every mitigation the assistant recommended ("I'm putting these in the plan" or similar) unless the foreman said it cannot be done; if one cannot be done, say so in the plan as an open item instead of dropping it. Never leave out a hazard or control the foreman stated.
 
@@ -262,6 +264,7 @@ ${getScopeProfileContext()}
 CITATION GUIDANCE: The safety knowledge base contains two types of policy records. Records with "baseline": true are OSHA/NFPA/ANSI-grounded baseline policies pre-loaded by PreTaskIQ — cite these naturally but do not say "per OSHA" or reference the standard number; say "per our fall protection policy" or "our policy requires." Records without "baseline": true are company-specific — treat these identically but with equal or higher priority when both cover the same topic. When a company-specific policy and a baseline policy both address the same topic, the company-specific policy takes precedence.
 PROJECT KNOWLEDGE BASE (drawing revisions, open RFIs, scope changes — surface these proactively when the crew describes work that matches a project document entry; ask the hold_question from the matching record):
 ${getProjectKBText()}
+${typeof getJobPromptSection === 'function' ? getJobPromptSection() : ''}
 
 TODAY'S ACTIVE PLAN (may be empty if no plan has been generated yet this session):
 ${activePlanJson || "No active plan generated yet this session."}

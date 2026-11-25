@@ -38,6 +38,8 @@
       // from the document it was given (the AI never sees the signatures), so a later change is seen as a change.
       if (before && before.submitted) activeJHA.submitted = before.submitted; else delete activeJHA.submitted;
       if (before && before.crew) activeJHA.crew = before.crew; else delete activeJHA.crew;
+      // ... and which job and scope the plan is for, and the drawing revisions the crew has been shown or has confirmed
+      ['jobId', 'jobName', 'scopeId', 'scopeCode', 'scopeName', 'jobRevsSeen', 'revisionAcks'].forEach(function (k) { if (before && before[k] !== undefined) activeJHA[k] = before[k]; else delete activeJHA[k]; });
       lastSource = 'petey_update'; lastNote = String(report || '');
       if (saving()) store().savePlan(activeJHA, { source: 'petey_update', note: lastNote });
     }
@@ -64,6 +66,12 @@
     crewTimer = setTimeout(function () {
       if (activeJHA && saving()) store().savePlan(activeJHA, { source: lastSource, note: 'Crew sign-off', continues: true });
     }, 800);
+  };
+
+  // Something small was recorded on the plan (for example the crew confirmed a new drawing revision): save it now, same revision, with a note.
+  PT.saveNote = function (note) {
+    if (!saving() || !activeJHA) return Promise.resolve(undefined);
+    return store().savePlan(activeJHA, { source: lastSource, note: String(note || '').slice(0, 500), continues: true });
   };
 
   PT.saveSubmitted = function () {
