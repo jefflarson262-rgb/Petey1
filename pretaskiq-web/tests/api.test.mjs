@@ -61,10 +61,11 @@ test('config: none set is the shared-code mode; some set is flagged, not guessed
   assert.equal(readConfig({ ...ON, SUPABASE_URL: 'http://evil.example.com', SUPABASE_PUBLISHABLE_KEY: 'k', SUPABASE_SECRET_KEY: 's' }).mode, 'misconfigured');
   assert.equal(readConfig({ ...ON, SUPABASE_URL: 'https://x.supabase.co/', SUPABASE_ANON_KEY: 'k', SUPABASE_SERVICE_ROLE_KEY: 's' }).mode, 'supabase');   // older key names still work
 });
-test('sign-in switch: off (the repository default) uses the shared code even when all three Supabase settings are set', async () => {
+test('sign-in switch: on by default; switched off it uses the shared code even when all three Supabase settings are set', async () => {
   const three = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_PUBLISHABLE_KEY: 'pk', SUPABASE_SECRET_KEY: 'sk' };
-  assert.equal(SIGN_IN_DEFAULT, 'off', 'the repository ships with sign-in switched off while the pilot is open to a tester');
-  for (const env of [three, { ...three, PRETASKIQ_SIGN_IN: 'off' }, { ...three, PRETASKIQ_SIGN_IN: 'nonsense' }, { ...three, PRETASKIQ_SIGN_IN: ' OFF ' }]) {
+  assert.equal(SIGN_IN_DEFAULT, 'on', 'the repository ships with sign-in switched on');
+  assert.equal(readConfig(three).mode, 'supabase'); assert.equal(readConfig({ ...three, PRETASKIQ_SIGN_IN: 'nonsense' }).mode, 'supabase');
+  for (const env of [{ ...three, PRETASKIQ_SIGN_IN: 'off' }, { ...three, PRETASKIQ_SIGN_IN: ' OFF ' }]) {
     const cfg = readConfig(env);
     assert.equal(cfg.mode, 'code'); assert.equal(cfg.ignored, true); assert.equal(cfg.signInOff, true);
     assert.deepEqual(publicConfig(cfg), { auth: 'code' });                         // the browser is told "shared code", and is not given the Supabase address or key

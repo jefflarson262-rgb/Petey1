@@ -12,10 +12,10 @@
 
 const clean = (v) => String(v ?? '').trim();
 
-// THE SIGN-IN SWITCH. 'off' = use the shared access code (ACCESS_CODE) and ignore the Supabase settings. 'on' = people sign in with an email
+// THE SIGN-IN SWITCH (turned on 2026-11-25). 'off' = use the shared access code (ACCESS_CODE) and ignore the Supabase settings. 'on' = people sign in with an email
 // and password whenever all three Supabase settings are present. To turn sign-in back on, change this to 'on' (and redeploy), or set
 // PRETASKIQ_SIGN_IN=on on the host, which overrides this.
-export const SIGN_IN_DEFAULT = 'off';
+export const SIGN_IN_DEFAULT = 'on';
 
 export function readConfig(env = process.env) {
   const url = clean(env.SUPABASE_URL).replace(/\/+$/, '');
