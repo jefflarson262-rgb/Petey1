@@ -60,12 +60,17 @@ function jbRenderJobs() {
 }
 
 /* ---------- one job folder ---------- */
-async function openJob(id) {
+async function openJob(id, addCategory) {
   var J = jbJ(); if (!J) return;
   jbState = { id: id, job: null, scopes: [], filter: '', docs: [], canEdit: false, form: null, file: null, busy: false, note: '' };
   showScreen('job'); try { window.scrollTo(0, 0); } catch (e) {}
   jbEl('jb-job-body').innerHTML = '<p class="inf-hint">Opening the job…</p>';
   await jbReload();
+  // Arriving from Project Overview's "Add" buttons: open the form for that kind of document straight away.
+  if (addCategory && jbState.canEdit && jbState.job && jbJ().categories()[addCategory]) {
+    jbState.form = { id: null, scopeId: '', category: addCategory, title: '', docNumber: '', revision: '', issuedOn: '', expiresOn: '', status: jbJ().categories()[addCategory].statuses[0], summary: '', affected: '', details: {} };
+    jbRenderJob(); var f = document.querySelector('.jb-form'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'center' });
+  }
 }
 async function jbReload() {
   var r = await jbJ().getJob(jbState.id);
@@ -335,3 +340,92 @@ function jbShowRevBanner(list) {
     }
   };
 }
+
+/* ---------- Project Overview (Construction Admin): a live roll-up of the job folders ----------
+   Replaces the old sample screen. Nothing here is made up: every row comes from a job folder, and tapping it opens that folder.
+   During the guided tour (and only then) it shows sample data, labelled as a sample. */
+var JB_ICO = {
+  rev: '<svg class="co-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
+  rfi: '<svg class="co-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M10 9a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6 1M12 14v.01"/></svg>',
+  job: '<svg class="co-ico" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  warn: '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.01"/></svg>'
+};
+function jbSampleOverview() {
+  var d = function (n) { return new Date(Date.now() + n * 86400000).toISOString().slice(0, 10); };
+  return { sample: true, canEdit: true, counts: { jobs: 2, openRfis: 2, unconfirmed: 1, expired: 1, soon: 1 },
+    attention: [
+      { kind: 'unconfirmed', jobId: '', jobName: 'Tower 2 (sample)', title: 'Bldg 2 Electrical', docNumber: 'E-201', revision: '5', scopeCode: '26-ELEC', crews: ['Alex Rivera (sample)'] },
+      { kind: 'expired', jobId: '', jobName: 'Main St Utilities (sample)', title: 'Street opening permit', docNumber: 'P-118', revision: '', scopeCode: '', expiresOn: d(-1) },
+      { kind: 'soon', jobId: '', jobName: 'Main St Utilities (sample)', title: '811 ticket', docNumber: '2611-0457', revision: '', scopeCode: '', expiresOn: d(3) }],
+    jobs: [{ id: '', name: 'Tower 2 (sample)', jobNumber: '24-117', location: '5th & Main', documents: 14, expired: 0, soon: 0, openRfis: 2, unconfirmed: 1 },
+      { id: '', name: 'Main St Utilities (sample)', jobNumber: '24-203', location: 'Main St', documents: 6, expired: 1, soon: 1, openRfis: 0, unconfirmed: 0 }],
+    revisions: [{ jobId: '', jobName: 'Tower 2 (sample)', title: 'Bldg 2 Electrical', docNumber: 'E-201', revision: '5', scopeCode: '26-ELEC', summary: 'Feeders F-9 and F-11 rerouted from tray 14-B to 14-C.', pending: 1, confirmed: 0, planned: 0 },
+      { jobId: '', jobName: 'Tower 2 (sample)', title: 'Roof Mechanical', docNumber: 'M-104', revision: '2', scopeCode: '23-MECH', summary: 'Equipment pad relocated 4 ft north.', pending: 0, confirmed: 1, planned: 0 }],
+    rfis: [{ jobId: '', jobName: 'Tower 2 (sample)', title: 'Fire protection routing conflict', docNumber: 'RFI-041', scopeCode: '26-ELEC', summary: 'Sprinkler main conflicts with cable tray run 14-C.', days: 3 },
+      { jobId: '', jobName: 'Tower 2 (sample)', title: 'PDC clearance confirmation', docNumber: 'RFI-038', scopeCode: '', summary: 'Minimum working clearance in front of PDC-2B.', days: 6 }] };
+}
+var jbOvSeq = 0;
+async function jbLoadOverview() {
+  var box = jbEl('co-live'), J = jbJ(), PT = window.PreTaskIQ || {}; if (!box) return;
+  if (PT.tourRunning && PT.tourRunning()) { jbRenderOverview(jbSampleOverview()); return; }
+  if (!J || !J.enabled()) { box.innerHTML = '<div class="cadmin-card co-empty"><b>Job folders need sign-in</b><p>Project Overview shows your job folders: revisions, RFIs, permits and 811 tickets. Sign-in is not turned on, so there is nothing to show yet.</p></div>'; return; }
+  var seq = ++jbOvSeq;
+  if (!box.innerHTML || box.querySelector('.co-sample')) box.innerHTML = '<p class="co-loading">Loading your jobs…</p>';
+  var r = await J.overview(); if (seq !== jbOvSeq) return;
+  if (PT.tourRunning && PT.tourRunning()) return;
+  if (!r.ok) { box.innerHTML = '<div class="cadmin-card co-empty"><b>Could not load the project overview</b><p>' + jbEsc(r.message) + '</p><button type="button" class="btn-primary" onclick="jbLoadOverview()">Try again</button></div>'; return; }
+  jbRenderOverview(r);
+}
+var jbOvLast = null, jbOvPick = '';
+function jbAddBtn(o, cat, label) {
+  if (!o.canEdit || o.sample) return '';
+  var h = '<button type="button" class="co-all co-add" data-co-add="' + cat + '">+ ' + label + '</button>';
+  if (jbOvPick === cat) h += '<div class="co-pick"><span>Which job is it for?</span>' + o.jobs.map(function (j) { return '<button type="button" class="btn-secondary" data-co-add-job="' + jbEsc(j.id) + '" data-co-cat="' + cat + '">' + jbEsc(j.name) + '</button>'; }).join('') + '</div>';
+  return h;
+}
+function jbRenderOverview(o) {
+  jbOvLast = o;
+  var box = jbEl('co-live'); if (!box) return; var h = '', c = o.counts;
+  var ref = function (x) { return jbEsc((x.docNumber || x.title) + (x.revision ? ' Rev ' + x.revision : '')); };
+  var where = function (x) { return jbEsc(x.jobName) + (x.scopeCode ? ' · <span class="jb-code">' + jbEsc(x.scopeCode) + '</span>' : ''); };
+  var open = function (x) { return x.jobId ? ' data-co-job="' + jbEsc(x.jobId) + '"' : ''; };
+  if (o.sample) h += '<div class="co-sample">Sample data, shown for the tour</div>';
+  if (!o.jobs.length) {
+    box.innerHTML = h + '<div class="cadmin-card co-empty"><b>No jobs yet</b><p>' + (o.canEdit ? 'Create a job folder to keep its scope documents, RFIs, drawing revisions, permits and 811 tickets in one place. Petey uses them when a crew plans work on that job.' : 'A Construction Admin sets up the job folders.') + '</p>' + (o.canEdit ? '<button type="button" class="btn-primary" onclick="openJobs()">Create the first job</button>' : '') + '</div>';
+    return;
+  }
+  if (o.attention.length) {
+    h += '<div class="cadmin-alert co-attn"><div class="cadmin-alert-icon">' + JB_ICO.warn + '</div><div class="co-attn-body"><div class="cadmin-alert-title">Needs attention</div>' + o.attention.map(function (a) {
+      var line = a.kind === 'unconfirmed' ? '<b>' + ref(a) + '</b> is not confirmed by ' + jbEsc(a.crews.join(', '))
+        : '<b>' + jbEsc(a.title) + '</b> ' + (a.kind === 'expired' ? 'expired ' : 'expires ') + jbEsc(jbDate(a.expiresOn));
+      return '<button type="button" class="co-attn-row"' + open(a) + '><span>' + line + '</span><em>' + where(a) + '</em></button>';
+    }).join('') + '</div></div>';
+  }
+  h += '<div class="co-counts">' + [[c.jobs, 'Active job' + (c.jobs === 1 ? '' : 's'), ''], [c.unconfirmed, 'Revision' + (c.unconfirmed === 1 ? '' : 's') + ' not confirmed', c.unconfirmed ? 'warn' : ''], [c.openRfis, 'Open RFI' + (c.openRfis === 1 ? '' : 's'), ''], [c.expired + c.soon, 'Expired or expiring', c.expired ? 'warn' : '']]
+    .map(function (x) { return '<div class="co-count ' + x[2] + '"><b>' + x[0] + '</b><small>' + x[1] + '</small></div>'; }).join('') + '</div>';
+  h += '<div class="cadmin-section-title">' + JB_ICO.job + 'Jobs<button type="button" class="co-all" onclick="openJobs()">' + (o.canEdit ? 'All jobs and new job' : 'All jobs') + ' &rarr;</button></div><div class="co-jobs">' + o.jobs.map(function (j) {
+    var flags = (j.unconfirmed ? '<span class="cadmin-badge revised">' + j.unconfirmed + ' not confirmed</span>' : '') + (j.expired ? '<span class="cadmin-badge revised">' + j.expired + ' expired</span>' : '') + (j.soon ? '<span class="cadmin-badge open">' + j.soon + ' expiring</span>' : '') + (j.openRfis ? '<span class="cadmin-badge pending">' + j.openRfis + ' open RFI' + (j.openRfis > 1 ? 's' : '') + '</span>' : '');
+    return '<button type="button" class="co-job"' + open(j) + '><b>' + jbEsc(j.name) + '</b><small>' + jbEsc([j.jobNumber ? 'No. ' + j.jobNumber : '', j.location].filter(Boolean).join(' · ') || ' ') + '</small><small>' + j.documents + ' document' + (j.documents === 1 ? '' : 's') + '</small><span class="jb-flags">' + (flags || '<span class="cadmin-badge closed">All clear</span>') + '</span></button>';
+  }).join('') + '</div>';
+  var row = function (x, icoBg, ico, badge) { return '<button type="button" class="cadmin-row co-row"' + open(x) + '><div class="cadmin-row-icon" style="background:' + icoBg + ';">' + ico + '</div><div class="cadmin-row-body"><div class="cadmin-row-title">' + ref(x) + (x.docNumber && x.title && x.title !== x.docNumber ? ' · ' + jbEsc(x.title) : '') + '</div><div class="cadmin-row-sub">' + where(x) + (x.summary ? ' · ' + jbEsc(x.summary) : '') + '</div></div>' + badge + '</button>'; };
+  h += '<div class="cadmin-section-title">' + JB_ICO.rev + 'Current drawing revisions' + jbAddBtn(o, 'revision', 'Add a drawing revision') + '</div><div class="cadmin-card">' + (o.revisions.length ? o.revisions.map(function (r) {
+    var b = r.pending ? '<span class="cadmin-badge revised">' + r.pending + ' crew' + (r.pending > 1 ? 's' : '') + ' not confirmed</span>' : (r.confirmed || r.planned) ? '<span class="cadmin-badge closed">' + (r.confirmed ? 'Confirmed' : 'Crews planned with it') + '</span>' : '<span class="cadmin-badge updated">No crew on it today</span>';
+    return row(r, r.pending ? '#FDE8E8' : '#DBEAFE', '&#128208;', b);
+  }).join('') : '<p class="co-none">No drawing revisions have been filed yet.' + (o.canEdit && !o.sample ? ' Use Add a drawing revision to file the first one.' : '') + '</p>') + '</div>';
+  h += '<div class="cadmin-section-title">' + JB_ICO.rfi + 'Open RFIs' + jbAddBtn(o, 'rfi', 'Add an RFI') + '</div><div class="cadmin-card">' + (o.rfis.length ? o.rfis.map(function (r) {
+    return row(r, '#FEF3C7', '&#128236;', '<span class="cadmin-badge ' + (r.days >= 5 ? 'pending' : 'open') + '">Open ' + (r.days === 0 ? 'today' : r.days + ' day' + (r.days > 1 ? 's' : '')) + '</span>');
+  }).join('') : '<p class="co-none">No open RFIs.' + (o.canEdit && !o.sample ? ' Use Add an RFI to file one.' : '') + '</p>') + '</div>';
+  box.innerHTML = h;
+  box.onclick = function (ev) {
+    var a = ev.target.closest('[data-co-add]');
+    if (a) { var cat = a.getAttribute('data-co-add'); if (o.jobs.length === 1) { jbOvPick = ''; openJob(o.jobs[0].id, cat); } else { jbOvPick = jbOvPick === cat ? '' : cat; jbRenderOverview(o); } return; }
+    var pj = ev.target.closest('[data-co-add-job]');
+    if (pj) { jbOvPick = ''; openJob(pj.getAttribute('data-co-add-job'), pj.getAttribute('data-co-cat')); return; }
+    var t = ev.target.closest('[data-co-job]'); if (t) openJob(t.getAttribute('data-co-job'));
+  };
+}
+(function () {
+  var prev = showScreen;
+  showScreen = function (name) { var r = prev.apply(this, arguments); if (name === 'construction') { try { jbLoadOverview(); } catch (e) {} } return r; };
+  try { var s = jbEl('screen-construction'); if (s && s.classList.contains('active')) jbLoadOverview(); } catch (e) {}
+})();

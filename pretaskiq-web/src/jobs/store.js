@@ -25,6 +25,10 @@ export async function refresh() {
   try { const out = await apiJson('/api/jobs?' + q({})); set({ jobs: out.jobs || [], canEdit: !!out.canEdit, loaded: true, error: '' }); }
   catch (e) { set({ loaded: true, error: e.message || 'Could not load the jobs.' }); }
 }
+export async function overview() {
+  try { return { ok: true, ...(await apiJson('/api/jobs?' + q({ overview: 1 }))) }; }
+  catch (e) { return fail(e, 'Could not load the project overview.'); }
+}
 export async function getJob(id) {
   try { const out = await apiJson('/api/jobs?' + q({ id })); return { ok: true, job: out.job, crews: out.crews || {}, scopes: out.scopes || [], documents: out.documents || [], canEdit: !!out.canEdit }; }
   catch (e) { return fail(e, 'Could not open that job.'); }
