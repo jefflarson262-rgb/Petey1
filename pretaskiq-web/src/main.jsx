@@ -10,6 +10,7 @@ import * as incidentsStore from './incidents/store.js';
 import * as protectionStore from './protection/store.js';
 import * as auditsStore from './audits/store.js';
 import * as jobsStore from './jobs/store.js';
+import * as metricsStore from './metrics/store.js';
 import * as reenactRegister from './reenact/register.js';
 import * as reenactStore from './reenact/store.js';
 import { speech } from './api/speech.js';
@@ -35,6 +36,9 @@ window.PreTaskIQAudits = auditsStore;
 
 // The job folder scripts (39) and the planning conversation read job folders and their documents through this.
 window.PreTaskIQJobs = jobsStore;
+
+// The safety metrics screen (40) loads its numbers and saves hours and injury classifications through this.
+window.PreTaskIQMetrics = metricsStore;
 
 // Approved reenactment storyboards are made playable (and drafts previewed) through this.
 window.PreTaskIQReenact = reenactRegister;
