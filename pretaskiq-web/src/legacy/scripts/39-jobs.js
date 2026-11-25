@@ -60,12 +60,17 @@ function jbRenderJobs() {
 }
 
 /* ---------- one job folder ---------- */
-async function openJob(id) {
+async function openJob(id, addCategory) {
   var J = jbJ(); if (!J) return;
   jbState = { id: id, job: null, scopes: [], filter: '', docs: [], canEdit: false, form: null, file: null, busy: false, note: '' };
   showScreen('job'); try { window.scrollTo(0, 0); } catch (e) {}
   jbEl('jb-job-body').innerHTML = '<p class="inf-hint">Opening the job…</p>';
   await jbReload();
+  // Arriving from Project Overview's "Add" buttons: open the form for that kind of document straight away.
+  if (addCategory && jbState.canEdit && jbState.job && jbJ().categories()[addCategory]) {
+    jbState.form = { id: null, scopeId: '', category: addCategory, title: '', docNumber: '', revision: '', issuedOn: '', expiresOn: '', status: jbJ().categories()[addCategory].statuses[0], summary: '', affected: '', details: {} };
+    jbRenderJob(); var f = document.querySelector('.jb-form'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'center' });
+  }
 }
 async function jbReload() {
   var r = await jbJ().getJob(jbState.id);
@@ -371,7 +376,15 @@ async function jbLoadOverview() {
   if (!r.ok) { box.innerHTML = '<div class="cadmin-card co-empty"><b>Could not load the project overview</b><p>' + jbEsc(r.message) + '</p><button type="button" class="btn-primary" onclick="jbLoadOverview()">Try again</button></div>'; return; }
   jbRenderOverview(r);
 }
+var jbOvLast = null, jbOvPick = '';
+function jbAddBtn(o, cat, label) {
+  if (!o.canEdit || o.sample) return '';
+  var h = '<button type="button" class="co-all co-add" data-co-add="' + cat + '">+ ' + label + '</button>';
+  if (jbOvPick === cat) h += '<div class="co-pick"><span>Which job is it for?</span>' + o.jobs.map(function (j) { return '<button type="button" class="btn-secondary" data-co-add-job="' + jbEsc(j.id) + '" data-co-cat="' + cat + '">' + jbEsc(j.name) + '</button>'; }).join('') + '</div>';
+  return h;
+}
 function jbRenderOverview(o) {
+  jbOvLast = o;
   var box = jbEl('co-live'); if (!box) return; var h = '', c = o.counts;
   var ref = function (x) { return jbEsc((x.docNumber || x.title) + (x.revision ? ' Rev ' + x.revision : '')); };
   var where = function (x) { return jbEsc(x.jobName) + (x.scopeCode ? ' · <span class="jb-code">' + jbEsc(x.scopeCode) + '</span>' : ''); };
@@ -395,15 +408,21 @@ function jbRenderOverview(o) {
     return '<button type="button" class="co-job"' + open(j) + '><b>' + jbEsc(j.name) + '</b><small>' + jbEsc([j.jobNumber ? 'No. ' + j.jobNumber : '', j.location].filter(Boolean).join(' · ') || ' ') + '</small><small>' + j.documents + ' document' + (j.documents === 1 ? '' : 's') + '</small><span class="jb-flags">' + (flags || '<span class="cadmin-badge closed">All clear</span>') + '</span></button>';
   }).join('') + '</div>';
   var row = function (x, icoBg, ico, badge) { return '<button type="button" class="cadmin-row co-row"' + open(x) + '><div class="cadmin-row-icon" style="background:' + icoBg + ';">' + ico + '</div><div class="cadmin-row-body"><div class="cadmin-row-title">' + ref(x) + (x.docNumber && x.title && x.title !== x.docNumber ? ' · ' + jbEsc(x.title) : '') + '</div><div class="cadmin-row-sub">' + where(x) + (x.summary ? ' · ' + jbEsc(x.summary) : '') + '</div></div>' + badge + '</button>'; };
-  h += '<div class="cadmin-section-title">' + JB_ICO.rev + 'Current drawing revisions</div><div class="cadmin-card">' + (o.revisions.length ? o.revisions.map(function (r) {
+  h += '<div class="cadmin-section-title">' + JB_ICO.rev + 'Current drawing revisions' + jbAddBtn(o, 'revision', 'Add a drawing revision') + '</div><div class="cadmin-card">' + (o.revisions.length ? o.revisions.map(function (r) {
     var b = r.pending ? '<span class="cadmin-badge revised">' + r.pending + ' crew' + (r.pending > 1 ? 's' : '') + ' not confirmed</span>' : (r.confirmed || r.planned) ? '<span class="cadmin-badge closed">' + (r.confirmed ? 'Confirmed' : 'Crews planned with it') + '</span>' : '<span class="cadmin-badge updated">No crew on it today</span>';
     return row(r, r.pending ? '#FDE8E8' : '#DBEAFE', '&#128208;', b);
-  }).join('') : '<p class="co-none">No drawing revisions have been filed yet.</p>') + '</div>';
-  h += '<div class="cadmin-section-title">' + JB_ICO.rfi + 'Open RFIs</div><div class="cadmin-card">' + (o.rfis.length ? o.rfis.map(function (r) {
+  }).join('') : '<p class="co-none">No drawing revisions have been filed yet.' + (o.canEdit && !o.sample ? ' Use Add a drawing revision to file the first one.' : '') + '</p>') + '</div>';
+  h += '<div class="cadmin-section-title">' + JB_ICO.rfi + 'Open RFIs' + jbAddBtn(o, 'rfi', 'Add an RFI') + '</div><div class="cadmin-card">' + (o.rfis.length ? o.rfis.map(function (r) {
     return row(r, '#FEF3C7', '&#128236;', '<span class="cadmin-badge ' + (r.days >= 5 ? 'pending' : 'open') + '">Open ' + (r.days === 0 ? 'today' : r.days + ' day' + (r.days > 1 ? 's' : '')) + '</span>');
-  }).join('') : '<p class="co-none">No open RFIs.</p>') + '</div>';
+  }).join('') : '<p class="co-none">No open RFIs.' + (o.canEdit && !o.sample ? ' Use Add an RFI to file one.' : '') + '</p>') + '</div>';
   box.innerHTML = h;
-  box.onclick = function (ev) { var t = ev.target.closest('[data-co-job]'); if (t) openJob(t.getAttribute('data-co-job')); };
+  box.onclick = function (ev) {
+    var a = ev.target.closest('[data-co-add]');
+    if (a) { var cat = a.getAttribute('data-co-add'); if (o.jobs.length === 1) { jbOvPick = ''; openJob(o.jobs[0].id, cat); } else { jbOvPick = jbOvPick === cat ? '' : cat; jbRenderOverview(o); } return; }
+    var pj = ev.target.closest('[data-co-add-job]');
+    if (pj) { jbOvPick = ''; openJob(pj.getAttribute('data-co-add-job'), pj.getAttribute('data-co-cat')); return; }
+    var t = ev.target.closest('[data-co-job]'); if (t) openJob(t.getAttribute('data-co-job'));
+  };
 }
 (function () {
   var prev = showScreen;

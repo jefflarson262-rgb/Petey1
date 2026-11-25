@@ -54,3 +54,6 @@
 #screen-construction .co-row .cadmin-badge { margin-left: auto; flex-shrink: 0; } .co-row .jb-code { font-size: 11px; padding: 1px 6px; margin: 0; }
 #screen-construction .co-row:hover { box-shadow: 0 0 0 2px var(--orange), 0 2px 8px rgba(0,0,0,.25); }
 @media (max-width: 560px) { .co-counts { grid-template-columns: repeat(2, 1fr); } #screen-construction .co-row { flex-wrap: wrap; } #screen-construction .co-row .cadmin-row-body { flex: 1 1 calc(100% - 60px); } #screen-construction .co-row .cadmin-badge { margin-left: 52px; } }
+#screen-construction .cadmin-section-title { flex-wrap: wrap; }
+#screen-construction .cadmin-section-title .co-add { border-color: var(--orange); background: rgba(244,121,32,.14); }
+.co-pick { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; font-size: 14px; font-weight: 600; color: #C5D0E0; }
