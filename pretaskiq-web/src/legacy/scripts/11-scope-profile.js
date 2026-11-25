@@ -220,6 +220,22 @@ function finishOnboarding(skipped = false) {
   showScreen("intake");
 }
 
+// Leaving the setup questions another way (for example by tapping a role at the top) counts as skipping them, so they do not come back on
+// every visit. The answers can still be filled in under Settings.
+(function () {
+  var orig = showScreen;
+  showScreen = function (name) {
+    try {
+      var ob = document.getElementById('screen-onboarding');
+      if (name !== 'onboarding' && ob && ob.classList.contains('active') && !localStorage.getItem(ONBOARDING_DONE_KEY)) {
+        localStorage.setItem(ONBOARDING_DONE_KEY, '1');
+        var idx = screens.lastIndexOf('onboarding'); if (idx !== -1 && screens.indexOf('onboarding') !== idx) screens.splice(idx, 1);
+      }
+    } catch (e) {}
+    return orig.apply(this, arguments);
+  };
+})();
+
 // Wire scope profile fields in settings modal
 function populateScopeProfileInSettings() {
   document.getElementById("sp-trade").value = scopeProfile.trade || "";
