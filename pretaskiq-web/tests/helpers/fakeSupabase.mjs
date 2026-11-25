@@ -9,7 +9,7 @@ const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
 export const makeJwt = (sub, email, ttl = 3600) => `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub, email, aud: 'authenticated', role: 'authenticated', exp: Math.floor(Date.now() / 1000) + ttl })}.fakesig`;
 
 export async function startFakeSupabase({ publishableKey = 'sb_publishable_test', secretKey = 'sb_secret_test' } = {}) {
-  const state = { users: [], tables: { jobs: [], job_scopes: [], job_documents: [], companies: [], profiles: [], plans: [], plan_revisions: [], ai_usage: [], alerts: [], kb_entries: [], incident_reports: [], protection_checklists: [], protection_observations: [], audit_templates: [], audits: [] }, requests: [], failTable: null };
+  const state = { users: [], tables: { safety_hours: [], jobs: [], job_scopes: [], job_documents: [], companies: [], profiles: [], plans: [], plan_revisions: [], ai_usage: [], alerts: [], kb_entries: [], incident_reports: [], protection_checklists: [], protection_observations: [], audit_templates: [], audits: [] }, requests: [], failTable: null };
   state.objects = new Set();            // storage: paths that have really been uploaded
   let identity = 1;
   const defaults = {
@@ -17,13 +17,14 @@ export async function startFakeSupabase({ publishableKey = 'sb_publishable_test'
     plan_revisions: () => ({ id: randomUUID(), created_at: new Date().toISOString() }),
     ai_usage: () => ({ id: identity++, used_at: new Date().toISOString() }),
     kb_entries: () => ({ id: randomUUID(), created_at: new Date().toISOString(), updated_at: new Date().toISOString(), archived_at: null, client_key: null }),
-    incident_reports: () => ({ id: randomUUID(), status: 'preliminary', full_report: null, client_key: null, completed_at: null, kb_entry_id: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
+    incident_reports: () => ({ id: randomUUID(), osha_class: null, job_id: null, status: 'preliminary', full_report: null, client_key: null, completed_at: null, kb_entry_id: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
     protection_checklists: () => ({ id: randomUUID(), status: 'draft', approved_at: null, archived_at: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
     protection_observations: () => ({ id: randomUUID(), created_at: new Date().toISOString(), client_key: null }),
     audit_templates: () => ({ id: randomUUID(), archived_at: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
     audits: () => ({ id: randomUUID(), client_key: null, created_at: new Date().toISOString() }),
     alerts: () => ({ id: randomUUID(), status: 'open', created_at: new Date().toISOString(), acknowledged_at: null }),
     profiles: () => ({ created_at: new Date().toISOString(), company_id: null, is_owner: false }),
+    safety_hours: () => ({ id: randomUUID(), job_id: null }),
     jobs: () => ({ id: randomUUID(), status: 'active', archived_at: null, created_at: new Date().toISOString() }),
     job_scopes: () => ({ id: randomUUID(), archived_at: null, created_at: new Date().toISOString() }),
     job_documents: () => ({ id: randomUUID(), scope_id: null, status: 'current', details: {}, archived_at: null, created_at: new Date().toISOString(), updated_at: null }),
