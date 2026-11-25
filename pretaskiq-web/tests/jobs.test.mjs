@@ -220,3 +220,32 @@ test('new revision after planning: the plan records what the crew saw and confir
   const noJob = await save(U.aForeman, undefined, { jobRevsSeen: [e4.id], revisionAcks: [] });
   assert.ok(noJob.data.jobRevsSeen === undefined && noJob.data.revisionAcks === undefined);
 });
+
+test('project overview: rolls up the active jobs for this company only, with what needs attention first', async () => {
+  const fresh = fake.addUser('solo@d.com', 'pw', { role: 'construction', approved: true, company: (() => { const c = { id: crypto.randomUUID(), name: 'Delta', tier: 'full', seat_limit: null, status: 'active', created_at: new Date().toISOString() }; fake.state.tables.companies.push(c); return c; })() });
+  const crew = fake.addUser('crew@d.com', 'pw', { role: 'foreman', approved: true, company: fake.state.tables.companies.at(-1), displayName: 'Dana' });
+  let ov = await get(fresh, { overview: '1' });
+  assert.equal(ov.status, 200); assert.deepEqual(ov.json.counts, { jobs: 0, openRfis: 0, unconfirmed: 0, expired: 0, soon: 0 }); assert.deepEqual(ov.json.jobs, []);
+  const job = (await post(fresh, { action: 'create_job', name: 'Depot' })).json.job;
+  const closed = (await post(fresh, { action: 'create_job', name: 'Old job' })).json.job;
+  const sc = (await post(fresh, { action: 'add_scope', jobId: job.id, code: 'UG', name: 'Underground' })).json.scope;
+  const add = (jobId, b) => post(fresh, { action: 'add_document', jobId, ...b }).then((r) => r.json.document);
+  const r1 = await add(job.id, { category: 'revision', title: 'C-100', docNumber: 'C-100', revision: '1', scopeId: sc.id });
+  await add(job.id, { category: 'rfi', title: 'Depth of main', docNumber: 'RFI-1', summary: 'How deep?' });
+  await add(job.id, { category: 'permit', title: 'Street permit', expiresOn: day(-1) });
+  await add(job.id, { category: 'ticket811', title: 'Ticket 9', expiresOn: day(2) });
+  await add(closed.id, { category: 'rfi', title: 'Ignored', docNumber: 'RFI-9' });
+  await post(fresh, { action: 'update_job', id: closed.id, status: 'closed' });
+  const res = fakeRes(); await plansApi({ method: 'POST', url: '/api/plans', query: {}, headers: as(crew), body: { data: { jobTitle: 'Trench', revision: 1, taskSteps: [], jobId: job.id, scopeId: sc.id, jobRevsSeen: [r1.id] } } }, res);
+  const r2 = await add(job.id, { category: 'revision', title: 'C-100', docNumber: 'C-100', revision: '2', scopeId: sc.id });
+  ov = await get(fresh, { overview: '1', today: day(0) });
+  assert.deepEqual(ov.json.counts, { jobs: 1, openRfis: 1, unconfirmed: 1, expired: 1, soon: 1 });
+  assert.deepEqual(ov.json.attention.map((a) => a.kind), ['unconfirmed', 'expired', 'soon']);
+  assert.deepEqual(ov.json.attention[0].crews, ['Dana']); assert.equal(ov.json.attention[0].scopeCode, 'UG'); assert.equal(ov.json.attention[0].revision, '2');
+  assert.deepEqual(ov.json.revisions.map((r) => [r.id, r.pending]), [[r2.id, 1]]);            // the superseded revision is not listed
+  assert.deepEqual(ov.json.rfis.map((r) => r.docNumber), ['RFI-1']);                            // the closed job's RFI is left out
+  assert.equal(ov.json.jobs.length, 1); assert.equal(ov.json.jobs[0].unconfirmed, 1); assert.equal(ov.json.jobs[0].documents, 5);
+  const mine = await get(crew, { overview: '1', today: day(0) });                                // a foreman gets the roll-up without other crews' status
+  assert.equal(mine.json.counts.unconfirmed, 0); assert.equal(mine.json.canEdit, false);
+  assert.equal((await get(U.bCons, { overview: '1' })).json.jobs.some((j) => j.name === 'Depot'), false);
+});

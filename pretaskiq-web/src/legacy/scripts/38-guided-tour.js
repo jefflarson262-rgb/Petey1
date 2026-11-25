@@ -68,9 +68,10 @@
       { screen: 'admin', target: '.ov-ask', title: 'Ask Petey', text: 'Ask Petey about policies, past incidents or a procedure any time. That\'s the tour. You can replay it from the menu.' }
     ] },
     construction: { label: 'Construction Admin', role: 'construction', steps: [
-      { screen: 'construction', target: '.co-head', title: 'Project Overview', text: 'This is the project\'s document state: drawing revisions, requests for information, and scope changes. The data on this screen is a sample for now.' },
-      { screen: 'construction', target: '.cadmin-alert', title: 'What needs attention first', text: 'When a crew may be working from an out-of-date drawing, it shows here first, with what changed.' },
-      { screen: 'construction', target: '.cadmin-card', title: 'Drawing revisions', text: 'Each revision shows whether the crews have confirmed that they received it.' },
+      { screen: 'construction', target: '.co-head', title: 'Project Overview', text: 'This is the live state of your job folders: what needs attention, each job, the latest drawing revisions, and open requests for information. During this tour it shows sample data.' },
+      { screen: 'construction', target: '.cadmin-alert', title: 'What needs attention first', text: 'When a crew has not confirmed a new drawing revision, or a permit or 811 ticket has expired, it shows here first.' },
+      { screen: 'construction', target: '.co-jobs', title: 'Job folders', text: 'Each job has its own folder for scope documents, requests for information, revisions, permits and 811 tickets. Tap a job to open it.' },
+      { screen: 'construction', target: '.cadmin-card', title: 'Drawing revisions', text: 'Each revision shows whether the crews working on it have confirmed that they have the current drawing.' },
       { screen: 'construction', target: '.co-ask', title: 'Ask Petey', text: 'Ask Petey about a revision or a scope change any time. That\'s the tour. You can replay it from the menu.' }
     ] }
   };
@@ -239,6 +240,7 @@
     restore(sv);
   }
 
+  PT.tourRunning = function () { return tour ? tour.key : null; };
   PT.startTour = function (which) {
     if (tour) return;
     var intro = $('screen-intro'); if (intro && intro.classList.contains('active')) return;
@@ -251,6 +253,7 @@
     markOffered();
     build();
     if (tour.role !== currentRole) setRole(tour.role);
+    if (tour.role === 'construction' && typeof jbLoadOverview === 'function') jbLoadOverview();      // sample job data while the tour runs
     if (def.steps.some(function (st) { return st.sample; })) {
       editModeActive = false;
       renderDocument(samplePlan());                                // (the app only saves on edits, crew changes and submit, which the tour blocks)

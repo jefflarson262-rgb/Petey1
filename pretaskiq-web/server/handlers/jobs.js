@@ -2,6 +2,7 @@
 // Everyone approved in the company can read them; construction and safety administrators add, change and remove them. The original
 // files (PDF or photo) are kept in private storage and opened through short-lived links, after the company is checked.
 //   GET  /api/jobs?today=YYYY-MM-DD                      the jobs, with document counts and what is expired or expiring
+//   GET  /api/jobs?overview=1&today=...                 Project Overview: what needs attention, counts, jobs, latest revisions, open RFIs
 //   GET  /api/jobs?id=JOB&today=...                      one job and its documents
 //   GET  /api/jobs?id=JOB&doc=DOC&file=1                 { url }: a link to the original file that works for one minute
 //   POST /api/jobs { action: 'create_job', name, jobNumber, location }
@@ -129,6 +130,68 @@ function docFields(body, category, { partial }) {
   return out;
 }
 
+// Where each crew with a recent plan on a job stands on one current drawing revision:
+// 'planned' = Petey showed it to them at planning, 'confirmed' = filed later and the crew confirmed it, 'pending' = filed later, not confirmed yet.
+function crewStates(d, plans) {
+  const list = [];
+  for (const p of plans) {
+    if (!p.data || p.data.jobId !== d.job_id) continue;
+    if (d.scope_id && p.data.scopeId && p.data.scopeId !== d.scope_id) continue;        // a different scope's crew
+    const acked = Array.isArray(p.data.revisionAcks) && p.data.revisionAcks.some((a) => a && a.id === d.id);
+    const seen = Array.isArray(p.data.jobRevsSeen) && p.data.jobRevsSeen.includes(d.id);
+    list.push({ crew: p.owner_name || 'A crew', scopeCode: p.data.scopeCode || '', state: acked ? 'confirmed' : seen ? 'planned' : 'pending' });
+  }
+  return list;
+}
+async function recentPlans(db) {
+  const since = new Date(Date.now() - 16 * 3600 * 1000).toISOString();
+  const { data, error } = await db.from('plans').select('id,owner_name,updated_at,data').gte('updated_at', since).order('updated_at', { ascending: false }).limit(200);
+  if (error) throw dbError(error);
+  return data || [];
+}
+
+// Project Overview: one roll-up across the active jobs. What needs attention first (revisions a crew has not confirmed, expired and expiring
+// permits and tickets), the counts, each job with its flags, the latest current revisions and the open RFIs.
+async function overview(me, db, today) {
+  const admin = WRITERS.includes(me.profile.role);
+  const { data: jobs, error } = await db.from('jobs').select(JOB_COLS).is('archived_at', null).order('created_at', { ascending: false }).limit(500);
+  if (error) throw dbError(error);
+  const active = (jobs || []).filter((j) => j.status === 'active');
+  const jobOf = Object.fromEntries(active.map((j) => [j.id, j]));
+  const { data: docs, error: de } = await db.from('job_documents').select('id,job_id,scope_id,category,title,doc_number,revision,summary,status,expires_on,created_at').is('archived_at', null).order('created_at', { ascending: false }).limit(20000);
+  if (de) throw dbError(de);
+  const { data: scopes, error: se } = await db.from('job_scopes').select('id,code').is('archived_at', null).limit(5000);
+  if (se) throw dbError(se);
+  const codeOf = Object.fromEntries((scopes || []).map((x) => [x.id, x.code]));
+  const plans = admin ? await recentPlans(db) : [];
+  const per = {}; const attention = []; const revisions = []; const rfis = [];
+  const flag = (id) => (per[id] = per[id] || { documents: 0, expired: 0, soon: 0, openRfis: 0, unconfirmed: 0 });
+  const base = (d) => ({ id: d.id, jobId: d.job_id, jobName: jobOf[d.job_id].name, title: d.title, docNumber: d.doc_number || '', revision: d.revision || '', scopeCode: codeOf[d.scope_id] || '', category: d.category });
+  for (const d of docs || []) {
+    if (!jobOf[d.job_id]) continue;
+    const f = flag(d.job_id); f.documents++;
+    if (d.category === 'rfi' && d.status === 'open') { f.openRfis++; rfis.push({ ...base(d), summary: (d.summary || '').slice(0, 240), createdAt: d.created_at, days: Math.max(0, Math.floor((Date.now() - new Date(d.created_at).getTime()) / 86400000)) }); }
+    if (d.category === 'revision' && d.status === 'current') {
+      const crews = crewStates(d, plans);
+      const pending = crews.filter((c) => c.state === 'pending');
+      if (pending.length) { f.unconfirmed++; attention.push({ kind: 'unconfirmed', ...base(d), crews: pending.map((c) => c.crew).slice(0, 10) }); }
+      revisions.push({ ...base(d), summary: (d.summary || '').slice(0, 240), createdAt: d.created_at, pending: pending.length, confirmed: crews.filter((c) => c.state === 'confirmed').length, planned: crews.filter((c) => c.state === 'planned').length });
+    }
+    const e = d.status === 'active' ? expiryStatus(d.expires_on, today) : null;
+    if (e) { f[e]++; attention.push({ kind: e, ...base(d), expiresOn: d.expires_on }); }
+  }
+  const rank = { unconfirmed: 0, expired: 1, soon: 2 };
+  attention.sort((a, b) => rank[a.kind] - rank[b.kind]);
+  const sum = (k) => Object.values(per).reduce((n, f) => n + f[k], 0);
+  return {
+    canEdit: admin,
+    counts: { jobs: active.length, openRfis: sum('openRfis'), unconfirmed: sum('unconfirmed'), expired: sum('expired'), soon: sum('soon') },
+    attention: attention.slice(0, 20),
+    jobs: active.slice(0, 50).map((j) => ({ ...shapeJob(j), ...(per[j.id] || { documents: 0, expired: 0, soon: 0, openRfis: 0, unconfirmed: 0 }) })),
+    revisions: revisions.slice(0, 8), rfis: rfis.slice(0, 8),
+  };
+}
+
 export default handle(async (req, res) => {
   const method = req.method;
   if (method !== 'GET' && method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
@@ -138,6 +201,7 @@ export default handle(async (req, res) => {
 
   if (method === 'GET') {
     const today = todayOf(q);
+    if (q.overview) return send(res, 200, await overview(me, db, today));
     if (!q.id) {
       const { data: jobs, error } = await db.from('jobs').select(JOB_COLS).is('archived_at', null).order('created_at', { ascending: false }).limit(500);
       if (error) throw dbError(error);
@@ -168,19 +232,10 @@ export default handle(async (req, res) => {
     // ('planned' = Petey showed it to them at planning, 'confirmed' = filed later and the crew confirmed it, 'pending' = filed later, not confirmed yet).
     const crews = {};
     if (WRITERS.includes(me.profile.role)) {
-      const since = new Date(Date.now() - 16 * 3600 * 1000).toISOString();
-      const { data: plans, error: pe } = await db.from('plans').select('id,owner_name,updated_at,data').gte('updated_at', since).order('updated_at', { ascending: false }).limit(200);
-      if (pe) throw dbError(pe);
-      const mine = (plans || []).filter((p) => p.data && p.data.jobId === job.id);
+      const plans = await recentPlans(db);
       for (const d of docs || []) {
         if (d.category !== 'revision' || d.status !== 'current') continue;
-        const list = [];
-        for (const p of mine) {
-          if (d.scope_id && p.data.scopeId && p.data.scopeId !== d.scope_id) continue;        // a different scope's crew
-          const acked = Array.isArray(p.data.revisionAcks) && p.data.revisionAcks.some((a) => a && a.id === d.id);
-          const seen = Array.isArray(p.data.jobRevsSeen) && p.data.jobRevsSeen.includes(d.id);
-          list.push({ crew: p.owner_name || 'A crew', scopeCode: p.data.scopeCode || '', state: acked ? 'confirmed' : seen ? 'planned' : 'pending' });
-        }
+        const list = crewStates(d, plans);
         if (list.length) crews[d.id] = list.slice(0, 30);
       }
     }
