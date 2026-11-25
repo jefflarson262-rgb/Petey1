@@ -57,7 +57,7 @@ var DEMO_STEPS = [
   },
   {
     label: 'Plan the work',
-    narration: "A foreman starts the shift by describing what the crew is about to do, by voice or by typing, in plain language, the way they'd explain it to a new apprentice. Petey asks one question at a time, the follow-ups a seasoned safety lead would ask, and calls out the hazards that can kill you, the sticky ones, before the work begins.",
+    narration: "A foreman starts the shift by describing what the crew is about to do, by voice or by typing, in plain language, the way they'd explain it to a new apprentice. Petey asks one question at a time, the follow-ups a seasoned safety lead would ask, and calls out the high-risk activities before the work begins.",
     visual: function() { return phones(['intake_typed', 'conversation'], ['Say it or type it', 'One question at a time']); }
   },
   {

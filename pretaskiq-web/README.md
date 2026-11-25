@@ -11,7 +11,7 @@ PreTaskIQ (Petey, the pre-task hazard analysis companion) as a Vite + React proj
 - **Talking with Petey.** The morning planning conversation can be spoken: Petey reads each question aloud, listens for the answer, shows what he heard, and sends it after a short pause. The mid-shift companion screen has a "Tap and talk" button. Optional: a natural-sounding voice and more reliable iPhone listening, through an ElevenLabs account you set up yourself (section 3; it costs money and sends voice to ElevenLabs).
 - **A per-person limit on AI requests** (150 per hour by default), so one lost password cannot quietly run up your Anthropic bill.
 
-Everything else (screens, Petey's planning interview, STKY, the knowledge base, RCA assistant, reenactments) is the prototype, moved over, not rewritten.
+Everything else (screens, Petey's planning interview, high-risk activity screening, the knowledge base, RCA assistant, reenactments) is the prototype, moved over, not rewritten.
 
 **Not tested against the real services.** All testing was done against stand-ins for Supabase, Anthropic and Vercel. Expect one round of fixing small things on the first real setup. Details are under "What was and wasn't checked".
 
