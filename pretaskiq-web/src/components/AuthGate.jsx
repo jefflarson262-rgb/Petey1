@@ -1,8 +1,9 @@
 import { useState, useSyncExternalStore } from 'react';
 import { getSnapshot, retryAuth, signIn, signOut, subscribe } from '../auth/session.js';
+import Landing from './Landing.jsx';
 import '../styles/auth.css';
 
-function SignInForm({ notice }) {
+function SignInForm({ notice, onBack }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -29,12 +30,16 @@ function SignInForm({ notice }) {
       <input id="signin-password" className="auth-input" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
       {error && <p className="auth-error" role="alert">{error}</p>}
       <button id="signin-submit" className="auth-submit" type="submit" disabled={busy || !email.trim() || !password}>{busy ? 'Signing in…' : 'Sign in'}</button>
+      {onBack && <button type="button" className="auth-back" id="signin-back" onClick={onBack}>← Back to the home page</button>}
     </form>
   );
 }
 
 export default function AuthGate() {
   const auth = useSyncExternalStore(subscribe, getSnapshot);
+  // Visitors who are not signed in see the public home page first. "Log in" (or a link ending in ?login) shows the sign-in form;
+  // so does a notice, such as "your session ended", so the person is not sent back to the start.
+  const [wantsLogin, setWantsLogin] = useState(() => { try { return new URLSearchParams(window.location.search).has('login'); } catch { return false; } });
   if (auth.phase === 'signed_in' && auth.company && auth.company.status !== 'active') {
     return (
       <div className="auth-overlay"><div className="auth-card" role="alert">
@@ -71,7 +76,8 @@ export default function AuthGate() {
       </div>
     );
   } else {
-    body = <SignInForm notice={auth.notice} />;
+    if (!wantsLogin && !auth.notice) return <Landing onLogin={() => setWantsLogin(true)} />;
+    body = <SignInForm notice={auth.notice} onBack={() => setWantsLogin(false)} />;
   }
   return <div className="auth-overlay">{body}</div>;
 }
