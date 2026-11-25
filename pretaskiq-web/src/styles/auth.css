@@ -96,3 +96,5 @@
 .team-pw { display: block; margin: 8px 0 12px; padding: 10px 12px; font-size: 18px; letter-spacing: 0.04em; background: #fff; border-radius: 8px; user-select: all; }
 .co-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: center; }
 .co-small { width: auto; min-width: 110px; max-width: 160px; padding: 8px 10px; font-size: 14px; }
+
+.auth-back { display: block; width: 100%; margin-top: 12px; padding: 8px; background: none; border: 0; color: var(--slate); font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
