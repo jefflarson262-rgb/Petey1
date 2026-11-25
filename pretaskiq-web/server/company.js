@@ -2,7 +2,7 @@
 // adds "this company only" to every read and update, and stamps the company on every insert, so a handler cannot forget it.
 import { randomInt } from 'node:crypto';
 
-export const COMPANY_TABLES = ['plans', 'plan_revisions', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits'];
+export const COMPANY_TABLES = ['plans', 'plan_revisions', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits', 'jobs', 'job_documents'];
 
 export function companyDb(admin, companyId) {
   if (!companyId) throw new Error('companyDb needs a company id');

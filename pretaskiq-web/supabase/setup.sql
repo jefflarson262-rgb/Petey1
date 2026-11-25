@@ -305,3 +305,53 @@ begin
   return new;
 end $$;
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
+
+-- 13. Jobs. A job is a folder of documents for one project: scope documents, RFIs, drawing revisions, permits and 811 tickets.
+-- Everyone in the company can read; construction and safety administrators add and change (enforced by the server).
+-- The original files live in a PRIVATE storage bucket and are opened only through short-lived links the server issues after checking the company.
+create table if not exists public.jobs (
+  id          uuid primary key default gen_random_uuid(),
+  company_id  uuid references public.companies (id),
+  name        text not null,
+  job_number  text,
+  location    text,
+  status      text not null default 'active' check (status in ('active', 'closed')),
+  created_by  uuid references auth.users (id),
+  created_at  timestamptz not null default now(),
+  archived_at timestamptz
+);
+create index if not exists jobs_company_idx on public.jobs (company_id);
+alter table public.jobs enable row level security;
+revoke all on public.jobs from anon, authenticated;
+grant all on public.jobs to service_role;
+
+create table if not exists public.job_documents (
+  id              uuid primary key default gen_random_uuid(),
+  company_id      uuid references public.companies (id),
+  job_id          uuid not null references public.jobs (id),
+  category        text not null check (category in ('scope', 'rfi', 'revision', 'permit', 'ticket811')),
+  title           text not null,
+  doc_number      text,                                  -- RFI number, sheet number, permit number, ticket number
+  revision        text,
+  summary         text,                                  -- what Petey reads
+  details         jsonb not null default '{}'::jsonb,    -- { keywords, affected_work, hold_question }
+  issued_on       date,
+  expires_on      date,                                  -- permits and 811 tickets: entered from the document, never assumed
+  status          text not null default 'current',
+  file_path       text,
+  file_name       text,
+  file_type       text,
+  file_size       integer,
+  created_by      uuid references auth.users (id),
+  created_by_name text,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz,
+  archived_at     timestamptz
+);
+create index if not exists job_documents_company_idx on public.job_documents (company_id);
+create index if not exists job_documents_job_idx on public.job_documents (job_id) where archived_at is null;
+alter table public.job_documents enable row level security;
+revoke all on public.job_documents from anon, authenticated;
+grant all on public.job_documents to service_role;
+
+insert into storage.buckets (id, name, public) values ('job-files', 'job-files', false) on conflict (id) do nothing;

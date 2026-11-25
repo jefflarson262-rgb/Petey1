@@ -37,6 +37,10 @@
     {
       "source": "/api/owner",
       "destination": "/api/account?area=owner"
+    },
+    {
+      "source": "/api/jobs",
+      "destination": "/api/account?area=jobs"
     }
   ]
 }

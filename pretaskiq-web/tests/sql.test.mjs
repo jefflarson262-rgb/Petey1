@@ -13,6 +13,8 @@ const standIn = `
   create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;   -- as in Supabase: this role skips row-level security
   grant usage on schema public to anon, authenticated, service_role;
   grant usage on schema auth to service_role;
+  create schema if not exists storage;
+  create table storage.buckets (id text primary key, name text, public boolean default false);   -- stand-in for Supabase Storage's bucket list
 `;
 
 test('setup.sql: valid, repeatable, creates profiles correctly, and locks the browser key out', async () => {
@@ -86,7 +88,7 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   // The browser keys (anon, and signed-in users going straight to the database) can read and write nothing
   for (const role of ['anon', 'authenticated']) {
     await db.exec(`set role ${role}`);
-    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits']) {
+    for (const t of ['profiles', 'plans', 'plan_revisions', 'ai_usage', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits', 'jobs', 'job_documents']) {
       await assert.rejects(db.query(`select * from public.${t}`), /permission denied/, `${role} must not read ${t}`);
     }
     await assert.rejects(db.query(`insert into public.ai_usage (user_id) values (gen_random_uuid())`), /permission denied/);

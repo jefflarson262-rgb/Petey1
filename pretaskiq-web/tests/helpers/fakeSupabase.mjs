@@ -9,7 +9,8 @@ const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
 export const makeJwt = (sub, email, ttl = 3600) => `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub, email, aud: 'authenticated', role: 'authenticated', exp: Math.floor(Date.now() / 1000) + ttl })}.fakesig`;
 
 export async function startFakeSupabase({ publishableKey = 'sb_publishable_test', secretKey = 'sb_secret_test' } = {}) {
-  const state = { users: [], tables: { companies: [], profiles: [], plans: [], plan_revisions: [], ai_usage: [], alerts: [], kb_entries: [], incident_reports: [], protection_checklists: [], protection_observations: [], audit_templates: [], audits: [] }, requests: [], failTable: null };
+  const state = { users: [], tables: { jobs: [], job_documents: [], companies: [], profiles: [], plans: [], plan_revisions: [], ai_usage: [], alerts: [], kb_entries: [], incident_reports: [], protection_checklists: [], protection_observations: [], audit_templates: [], audits: [] }, requests: [], failTable: null };
+  state.objects = new Set();            // storage: paths that have really been uploaded
   let identity = 1;
   const defaults = {
     plans: () => ({ id: randomUUID(), current_revision: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), title: 'Untitled plan' }),
@@ -23,6 +24,8 @@ export async function startFakeSupabase({ publishableKey = 'sb_publishable_test'
     audits: () => ({ id: randomUUID(), client_key: null, created_at: new Date().toISOString() }),
     alerts: () => ({ id: randomUUID(), status: 'open', created_at: new Date().toISOString(), acknowledged_at: null }),
     profiles: () => ({ created_at: new Date().toISOString(), company_id: null, is_owner: false }),
+    jobs: () => ({ id: randomUUID(), status: 'active', archived_at: null, created_at: new Date().toISOString() }),
+    job_documents: () => ({ id: randomUUID(), status: 'current', details: {}, archived_at: null, created_at: new Date().toISOString(), updated_at: null }),
     companies: () => ({ id: randomUUID(), tier: 'basic', seat_limit: null, status: 'active', created_at: new Date().toISOString() }),
   };
 
@@ -52,6 +55,7 @@ export async function startFakeSupabase({ publishableKey = 'sb_publishable_test'
       case 'is': return raw === 'null' ? v === null || v === undefined : String(v) === raw;
       case 'gte': return v >= num(raw);
       case 'gt': return v > num(raw);
+      case 'neq': return String(v) !== raw;
       case 'in': return raw.replace(/^\(|\)$/g, '').split(',').includes(String(v));
       default: throw new Error('fake supabase: unsupported filter ' + op);
     }
@@ -149,6 +153,18 @@ export async function startFakeSupabase({ publishableKey = 'sb_publishable_test'
         return res.end(JSON.stringify({ id: user.id, aud: 'authenticated', role: 'authenticated', email, user_metadata: user_metadata || {}, app_metadata: {}, created_at: new Date().toISOString() }));
       }
       if (url.pathname === '/auth/v1/logout') { res.writeHead(204); return res.end(); }
+      if (url.pathname.startsWith('/storage/v1/')) {     // just enough of Supabase Storage: signed upload links, the upload itself, signed download links
+        if (req.headers.apikey !== secretKey && req.method !== 'PUT') { res.writeHead(401, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ message: 'not allowed' })); }
+        const sub = url.pathname.slice('/storage/v1'.length);
+        const json = (status, o) => { res.writeHead(status, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
+        let m;
+        if (req.method === 'POST' && (m = /^\/object\/upload\/sign\/(.+)$/.exec(sub))) return json(200, { url: `/object/upload/sign/${m[1]}?token=up_${randomUUID()}` });
+        if (req.method === 'PUT' && (m = /^\/object\/upload\/sign\/(.+)$/.exec(sub))) { state.objects.add(decodeURIComponent(m[1])); return json(200, { Key: m[1] }); }
+        if (req.method === 'POST' && (m = /^\/object\/sign\/(.+)$/.exec(sub))) {
+          if (!state.objects.has(decodeURIComponent(m[1]))) return json(400, { statusCode: '404', error: 'not_found', message: 'Object not found' });
+          return json(200, { signedURL: `/object/sign/${m[1]}?token=dl_${randomUUID()}` });
+        }
+      }
       if (url.pathname.startsWith('/rest/v1/')) return rest(req, res, url, body);
       res.writeHead(404, { 'content-type': 'application/json' }); res.end(JSON.stringify({ message: 'fake: no route ' + url.pathname }));
     });
