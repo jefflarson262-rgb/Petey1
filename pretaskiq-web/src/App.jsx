@@ -55,7 +55,7 @@ export default function App() {
     } else if (auth.phase === 'signed_in' && startedFor.current !== auth.user.id) {
       startedFor.current = auth.user.id;
       const allowed = allowedViews(auth.profile.role);
-      whenLegacyReady(() => window.PreTaskIQ.startApp({ allowed }));
+      whenLegacyReady(() => window.PreTaskIQ.startApp({ allowed, userId: auth.user.id }));
     }
   }, [auth.phase, auth.user, auth.profile]);
 
