@@ -15,7 +15,7 @@
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { readConfig } from '../server/config.js';
 import { requireUser } from '../server/auth.js';
-import { checkAndRecordAiUse } from '../server/usage.js';
+import { checkAndRecordAiUse, recordUsage } from '../server/usage.js';
 import { HttpError } from '../server/http.js';
 
 const DEFAULT_MODEL = 'claude-sonnet-5-5';
@@ -70,9 +70,10 @@ export default async function handler(req, res) {
   if (!apiKey) return send(res, 503, { error: 'server_not_configured', message: 'Set ANTHROPIC_API_KEY on the server.' });   // fail closed
   if (cfg.mode === 'misconfigured') return send(res, 503, { error: 'supabase_misconfigured', missing: cfg.missing, problem: cfg.urlProblem });
 
+  let me = null;
   if (cfg.mode === 'supabase') {
     try {
-      const me = await requireUser(req);                              // signed in and approved?
+      me = await requireUser(req);                              // signed in and approved?
       await checkAndRecordAiUse(me.admin, me.user.id);                // within this person's hourly limit?
     } catch (e) {
       if (e instanceof HttpError) return send(res, e.status, { error: e.error, ...e.extra });
@@ -125,6 +126,9 @@ export default async function handler(req, res) {
   } catch {
     return send(res, 502, { error: 'upstream_unreachable' });
   }
+
+  // Note what this request used (Anthropic reports the token counts in its answer), so each company's cost can be worked out later.
+  if (me && upstream.ok) { let u = null; try { u = JSON.parse(text).usage; } catch { u = null; } await recordUsage(me, 'ai', { inputTokens: u && u.input_tokens, outputTokens: u && u.output_tokens }); }
 
   // pass Anthropic's answer (or its error message) straight through
   res.statusCode = upstream.status;

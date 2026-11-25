@@ -9,7 +9,7 @@ const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
 export const makeJwt = (sub, email, ttl = 3600) => `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub, email, aud: 'authenticated', role: 'authenticated', exp: Math.floor(Date.now() / 1000) + ttl })}.fakesig`;
 
 export async function startFakeSupabase({ publishableKey = 'sb_publishable_test', secretKey = 'sb_secret_test' } = {}) {
-  const state = { users: [], tables: { audit_failed_items: [], safety_hours: [], jobs: [], job_scopes: [], job_documents: [], companies: [], profiles: [], plans: [], plan_revisions: [], ai_usage: [], alerts: [], kb_entries: [], incident_reports: [], protection_checklists: [], protection_observations: [], audit_templates: [], audits: [] }, requests: [], failTable: null };
+  const state = { users: [], tables: { usage_log: [], audit_failed_items: [], safety_hours: [], jobs: [], job_scopes: [], job_documents: [], companies: [], profiles: [], plans: [], plan_revisions: [], ai_usage: [], alerts: [], kb_entries: [], incident_reports: [], protection_checklists: [], protection_observations: [], audit_templates: [], audits: [] }, requests: [], failTable: null };
   state.objects = new Set();            // storage: paths that have really been uploaded
   let identity = 1;
   const defaults = {
@@ -24,6 +24,7 @@ export async function startFakeSupabase({ publishableKey = 'sb_publishable_test'
     audits: () => ({ id: randomUUID(), client_key: null, created_at: new Date().toISOString() }),
     alerts: () => ({ id: randomUUID(), status: 'open', created_at: new Date().toISOString(), acknowledged_at: null }),
     profiles: () => ({ created_at: new Date().toISOString(), company_id: null, is_owner: false }),
+    usage_log: () => ({ id: identity++, used_at: new Date().toISOString() }),
     safety_hours: () => ({ id: randomUUID(), job_id: null }),
     jobs: () => ({ id: randomUUID(), status: 'active', archived_at: null, created_at: new Date().toISOString() }),
     job_scopes: () => ({ id: randomUUID(), archived_at: null, created_at: new Date().toISOString() }),

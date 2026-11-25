@@ -13,6 +13,7 @@
 // Request format used here (ElevenLabs "Speech to text" API reference): POST {base}/v1/speech-to-text, header `xi-api-key`,
 // multipart form fields model_id, file, language_code, tag_audio_events; the reply is JSON with the transcript in `text`.
 import { requireVoiceAccess } from '../server/gate.js';
+import { recordUsage } from '../server/usage.js';
 import { HttpError, send, readJson, handle } from '../server/http.js';
 
 const UPSTREAM_BASE = (process.env.ELEVENLABS_API_URL || 'https://api.elevenlabs.io').replace(/\/+$/, '');   // override is for tests
@@ -34,7 +35,7 @@ export default handle(async (req, res) => {
   if (req.method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
 
   if (!key) throw new HttpError(503, 'transcription_not_configured');   // fail closed
-  await requireVoiceAccess(req);
+  const me = await requireVoiceAccess(req);
 
   const body = await readJson(req);
   const b64 = body && typeof body === 'object' && !Array.isArray(body) && typeof body.audio === 'string' ? body.audio : '';
@@ -78,5 +79,8 @@ export default handle(async (req, res) => {
 
   let json;
   try { json = await upstream.json(); } catch { throw new HttpError(502, 'speech_provider_error', { providerStatus: upstream.status }); }
+  // seconds of audio, from the WAV header (bytes per second is stored at byte 28)
+  const byteRate = wav.length >= 32 ? wav.readUInt32LE(28) : 0;
+  await recordUsage(me, 'transcribe', { units: byteRate > 0 ? Math.round(((wav.length - 44) / byteRate) * 10) / 10 : null });
   return send(res, 200, { ok: true, text: cleanTranscript(json && json.text) });
 });

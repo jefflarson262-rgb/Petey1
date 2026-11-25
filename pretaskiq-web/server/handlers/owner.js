@@ -30,7 +30,18 @@ export default handle(async (req, res) => {
     const { data: ps, error: pe } = await admin.from('profiles').select('company_id,approved').eq('approved', true).limit(100000);
     if (pe) throw dbError(pe);
     const used = {}; for (const p of ps || []) used[p.company_id] = (used[p.company_id] || 0) + 1;
-    return send(res, 200, { companies: (cs || []).map((c) => shape(c, used[c.id] || 0)) });
+    // What each company has used in the last 30 days (requests to Petey with their token counts, characters spoken, seconds transcribed).
+    const since = new Date(Date.now() - 30 * 86400000).toISOString();
+    const { data: us, error: ue } = await admin.from('usage_log').select('company_id,kind,input_tokens,output_tokens,units').gte('used_at', since).limit(200000);
+    const usage = {};
+    if (!ue) for (const u of us || []) {
+      const a = (usage[u.company_id] = usage[u.company_id] || { aiRequests: 0, inputTokens: 0, outputTokens: 0, speechChars: 0, transcribeSeconds: 0 });
+      if (u.kind === 'ai') { a.aiRequests++; a.inputTokens += Number(u.input_tokens) || 0; a.outputTokens += Number(u.output_tokens) || 0; }
+      else if (u.kind === 'speech') a.speechChars += Number(u.units) || 0;
+      else if (u.kind === 'transcribe') a.transcribeSeconds += Number(u.units) || 0;
+    }
+    const none = { aiRequests: 0, inputTokens: 0, outputTokens: 0, speechChars: 0, transcribeSeconds: 0 };
+    return send(res, 200, { usageDays: 30, usageReady: !ue, companies: (cs || []).map((c) => ({ ...shape(c, used[c.id] || 0), usage: usage[c.id] ? { ...usage[c.id], transcribeSeconds: Math.round(usage[c.id].transcribeSeconds) } : none })) });
   }
 
   const body = await readJson(req);
