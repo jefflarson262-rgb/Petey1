@@ -26,7 +26,7 @@ export async function refresh() {
   catch (e) { set({ loaded: true, error: e.message || 'Could not load the jobs.' }); }
 }
 export async function getJob(id) {
-  try { const out = await apiJson('/api/jobs?' + q({ id })); return { ok: true, job: out.job, scopes: out.scopes || [], documents: out.documents || [], canEdit: !!out.canEdit }; }
+  try { const out = await apiJson('/api/jobs?' + q({ id })); return { ok: true, job: out.job, crews: out.crews || {}, scopes: out.scopes || [], documents: out.documents || [], canEdit: !!out.canEdit }; }
   catch (e) { return fail(e, 'Could not open that job.'); }
 }
 const act = async (body, fallback) => { try { const out = await apiJson('/api/jobs', { method: 'POST', body }); return { ok: true, ...out }; } catch (e) { return fail(e, fallback); } };
@@ -94,5 +94,6 @@ export async function briefing(jobId, scopeId) {
     + (scope ? 'SCOPE THIS CREW IS WORKING IN: ' + one(scope.code, 30) + ' (' + one(scope.name, 120) + '). The documents below are this scope\'s plus the ones filed for the whole job.\n' : r.scopes.length ? 'No scope was chosen, so every scope\'s documents are listed, each marked with its scope code.\n' : '')
     + (lines.join('\n') || 'No documents have been added to this job yet.');
   if (text.length > 9000) text = text.slice(0, 9000) + '\n(more documents are in the job folder)';
-  return { ok: true, text, warnings, name: r.job.name, scopes: r.scopes, scope };
+  const revisions = live.filter((d) => d.category === 'revision').map((d) => ({ id: d.id, title: d.title, docNumber: d.docNumber, revision: d.revision, scopeCode: codeOf(d.scopeId), hasFile: !!d.file }));
+  return { ok: true, text, warnings, name: r.job.name, scopes: r.scopes, scope, revisions };
 }

@@ -195,3 +195,28 @@ test('scopes: each has its own code, unique in the job; documents are filed unde
   assert.equal(after.json.documents.find((d) => d.id === d1.json.document.id).scopeId, null);
   assert.equal((await addScope(U.aCons, { jobId: job.id, code: '23-MECH', name: 'Mechanical again' })).status, 201);   // the code is free again
 });
+
+test('new revision after planning: the plan records what the crew saw and confirmed, and administrators see where each crew stands', async () => {
+  const job = (await post(U.aCons, { action: 'create_job', name: 'Clinic' })).json.job;
+  const el = (await post(U.aCons, { action: 'add_scope', jobId: job.id, code: 'ELEC', name: 'Electrical' })).json.scope;
+  const me = (await post(U.aCons, { action: 'add_scope', jobId: job.id, code: 'MECH', name: 'Mechanical' })).json.scope;
+  const rev = async (num, r, scopeId) => (await post(U.aCons, { action: 'add_document', jobId: job.id, category: 'revision', title: num, docNumber: num, revision: r, scopeId })).json.document;
+  const e4 = await rev('E-201', '4', el.id);
+  const save = async (u, id, data) => { const res = fakeRes(); await plansApi({ method: 'POST', url: '/api/plans', query: {}, headers: as(u), body: { id, data: { jobTitle: 'Feeders', revision: 1, taskSteps: [], ...data } } }, res); const out = JSON.parse(res.body); return out.plan ? fake.state.tables.plans.find((r) => r.id === out.plan.id) : out; };
+  const plan = await save(U.aForeman, undefined, { jobId: job.id, scopeId: el.id, jobRevsSeen: [e4.id, 'junk', 7], revisionAcks: 'nope' });
+  assert.deepEqual(plan.data.jobRevsSeen, [e4.id]); assert.deepEqual(plan.data.revisionAcks, []);
+  const e5 = await rev('E-201', '5', el.id);                      // filed after the plan was made; rev 4 becomes superseded
+  const m2 = await rev('M-104', '2', me.id);                      // another scope: not this crew's
+  let seen = await get(U.aCons, { id: job.id });
+  assert.deepEqual(seen.json.crews[e5.id].map((c) => [c.scopeCode, c.state]), [['ELEC', 'pending']]);
+  assert.equal(seen.json.crews[m2.id], undefined);
+  assert.equal(seen.json.crews[e4.id], undefined);                // superseded revisions are not tracked
+  assert.deepEqual((await get(U.aForeman, { id: job.id })).json.crews, {});            // foremen do not see other crews
+  await save(U.aForeman, plan.id, { jobId: job.id, scopeId: el.id, jobRevsSeen: [e4.id], revisionAcks: [{ id: e5.id, docNumber: 'E-201', revision: '5', title: 'E-201', at: new Date().toISOString(), extra: 'dropped' }, { id: 'bad' }] });
+  const stored = fake.state.tables.plans.find((r) => r.id === plan.id).data.revisionAcks;
+  assert.equal(stored.length, 1); assert.equal(stored[0].extra, undefined);
+  seen = await get(U.aCons, { id: job.id });
+  assert.equal(seen.json.crews[e5.id][0].state, 'confirmed');
+  const noJob = await save(U.aForeman, undefined, { jobRevsSeen: [e4.id], revisionAcks: [] });
+  assert.ok(noJob.data.jobRevsSeen === undefined && noJob.data.revisionAcks === undefined);
+});

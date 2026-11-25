@@ -25,3 +25,6 @@
 .jb-scope-new { margin-top: 10px; }
 @media (min-width: 560px) { .jb-scope-new { grid-template-columns: 1fr 2fr auto; } }
 .jb-filter select, .jb-pick select { width: 100%; padding: 12px; border: 2px solid var(--line); border-radius: 10px; font: inherit; font-size: 16px; background: #fff; color: var(--navy); }
+.jb-crews { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+#jb-rev-banner { margin-bottom: 14px; }
+#jb-rev-banner .btn-secondary { margin-left: 6px; padding: 4px 10px; font-size: 13px; }

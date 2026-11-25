@@ -19,7 +19,7 @@ const MAX_PLAN_CHARS = 400_000;
 // A plan may say which job it is for. The job must belong to this company; otherwise the field is dropped (the plan still saves).
 // The job's current name is stored beside the id so the plan reads right even if the job is later renamed or removed.
 async function checkJobOnPlan(admin, content) {
-  if (content.jobId === undefined && content.jobName === undefined && content.scopeId === undefined) return;
+  if (content.jobId === undefined && content.jobName === undefined && content.scopeId === undefined && content.jobRevsSeen === undefined && content.revisionAcks === undefined) return;
   let found = null;
   if (typeof content.jobId === 'string' && UUID.test(content.jobId)) {
     try { const { data } = await admin.from('jobs').select('id,name').eq('id', content.jobId).maybeSingle(); found = data || null; } catch { found = null; }
@@ -33,6 +33,12 @@ async function checkJobOnPlan(admin, content) {
   }
   if (scope) { content.scopeCode = String(scope.code).slice(0, 30); content.scopeName = String(scope.name).slice(0, 120); }
   else { delete content.scopeId; delete content.scopeCode; delete content.scopeName; }
+  // Drawing revisions the crew was shown at planning, and the newer ones they confirmed since. Kept only for a plan tied to a job.
+  if (!found) { delete content.jobRevsSeen; delete content.revisionAcks; return; }
+  const str = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
+  content.jobRevsSeen = Array.isArray(content.jobRevsSeen) ? content.jobRevsSeen.filter((x) => typeof x === 'string' && UUID.test(x)).slice(0, 400) : [];
+  content.revisionAcks = Array.isArray(content.revisionAcks) ? content.revisionAcks.filter((a) => a && typeof a === 'object' && typeof a.id === 'string' && UUID.test(a.id)).slice(0, 200)
+    .map((a) => ({ id: a.id, docNumber: str(a.docNumber, 80), revision: str(a.revision, 40), title: str(a.title, 200), at: str(a.at, 40) })) : [];
 }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

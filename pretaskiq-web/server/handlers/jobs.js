@@ -161,10 +161,30 @@ export default handle(async (req, res) => {
       if (error || !data || !data.signedUrl) throw new HttpError(404, 'file_not_found');
       return send(res, 200, { url: data.signedUrl, name: doc.file_name || 'file' });
     }
+    const scopes = await liveScopes(db, job.id);
     const { data: docs, error } = await db.from('job_documents').select(DOC_COLS).eq('job_id', job.id).is('archived_at', null).order('created_at', { ascending: false }).limit(2000);
     if (error) throw dbError(error);
-    const scopes = await liveScopes(db, job.id);
-    return send(res, 200, { canEdit: WRITERS.includes(me.profile.role), job: shapeJob(job), scopes: scopes.map(shapeScope), documents: (docs || []).map((d) => shapeDoc(d, today)) });
+    // For administrators: which crews have a plan on this job from the last 16 hours, and where each stands on every current drawing revision
+    // ('planned' = Petey showed it to them at planning, 'confirmed' = filed later and the crew confirmed it, 'pending' = filed later, not confirmed yet).
+    const crews = {};
+    if (WRITERS.includes(me.profile.role)) {
+      const since = new Date(Date.now() - 16 * 3600 * 1000).toISOString();
+      const { data: plans, error: pe } = await db.from('plans').select('id,owner_name,updated_at,data').gte('updated_at', since).order('updated_at', { ascending: false }).limit(200);
+      if (pe) throw dbError(pe);
+      const mine = (plans || []).filter((p) => p.data && p.data.jobId === job.id);
+      for (const d of docs || []) {
+        if (d.category !== 'revision' || d.status !== 'current') continue;
+        const list = [];
+        for (const p of mine) {
+          if (d.scope_id && p.data.scopeId && p.data.scopeId !== d.scope_id) continue;        // a different scope's crew
+          const acked = Array.isArray(p.data.revisionAcks) && p.data.revisionAcks.some((a) => a && a.id === d.id);
+          const seen = Array.isArray(p.data.jobRevsSeen) && p.data.jobRevsSeen.includes(d.id);
+          list.push({ crew: p.owner_name || 'A crew', scopeCode: p.data.scopeCode || '', state: acked ? 'confirmed' : seen ? 'planned' : 'pending' });
+        }
+        if (list.length) crews[d.id] = list.slice(0, 30);
+      }
+    }
+    return send(res, 200, { canEdit: WRITERS.includes(me.profile.role), job: shapeJob(job), crews, scopes: scopes.map(shapeScope), documents: (docs || []).map((d) => shapeDoc(d, today)) });
   }
 
   if (!WRITERS.includes(me.profile.role)) throw new HttpError(403, 'wrong_role');
