@@ -13,8 +13,8 @@ var KB_TYPE_CONFIG = {
       + '<div><div class="settings-field-label">Date</div><input id="kb-revision" type="text" class="settings-input" placeholder="e.g. Aug 2025"></div>'
       + '</div>'
       + '<div style="margin-top:8px;"><div class="settings-field-label">Trade / scope affected</div><input id="kb-scope" type="text" class="settings-input" placeholder="e.g. Electrical -- LOTO"></div>'
-      + '<div style="margin-top:8px;"><div class="settings-field-label">STKY category (optional)</div><select id="kb-stky" class="settings-input"></select></div>'
-      + '<details class="stky-ref" style="margin-top:10px;"><summary>The 8 STKY categories Petey uses</summary><div id="kb-stky-ref"></div></details>'
+      + '<div style="margin-top:8px;"><div class="settings-field-label">High-risk category (optional)</div><select id="kb-stky" class="settings-input"></select></div>'
+      + '<details class="stky-ref" style="margin-top:10px;"><summary>The 8 high-risk categories Petey uses</summary><div id="kb-stky-ref"></div></details>'
   },
   rca: {
     desc: 'Upload completed RCA documents. Petey will surface corrective actions when crews describe similar conditions. You can also upload example RCAs to set your preferred methodology — the RCA assistant will replicate that structure.',

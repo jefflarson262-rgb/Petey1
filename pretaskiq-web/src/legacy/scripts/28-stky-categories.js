@@ -9,7 +9,7 @@ const STKY_CATEGORIES = [
   { id: 'STKY-CONFINED', energy: 'Chemical',         name: 'Confined space, toxic atmosphere',   trigger: null }
 ];
 const STKY_NO_CONTROL = 'None recorded in the conversation. Confirm one before work starts.';
-const STKY_FOOTNOTE = 'STKY thresholds are recognition triggers. Company policy and regulation set the required controls.';
+const STKY_FOOTNOTE = 'High-risk thresholds are recognition triggers. Company policy and regulation set the required controls.';
 function stkyById(id) { for (var i = 0; i < STKY_CATEGORIES.length; i++) if (STKY_CATEGORIES[i].id === id) return STKY_CATEGORIES[i]; return null; }
 function stkyEsc(s) { return (typeof escapeHtml === 'function') ? escapeHtml(String(s == null ? '' : s)) : String(s == null ? '' : s).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function stkyLabel(c) { return c.name + (c.trigger ? ' (' + c.trigger + ')' : ''); }
@@ -21,11 +21,11 @@ function stkyReferenceHtml() {
 }
 function stkyBadgeHtml(id) {
   var c = stkyById(id); if (!c) return '';
-  return '<span class="stky-pill" title="Stuff That Can Kill You: ' + stkyEsc(c.energy) + '">STKY · ' + stkyEsc(c.name) + '</span>';
+  return '<span class="stky-pill" title="High-risk activity: ' + stkyEsc(c.energy) + '">High risk · ' + stkyEsc(c.name) + '</span>';
 }
 function stkyEntryMetaHtml(e) {
   var ids = (e && e.stkyCategoryIds) || []; var names = ids.map(function(id) { var c = stkyById(id); return c ? c.name : null; }).filter(Boolean);
-  return names.length ? '<div class="kb-entry-meta">STKY: ' + stkyEsc(names.join(', ')) + (e.stkyManual ? '' : ' (suggested)') + '</div>' : '';
+  return names.length ? '<div class="kb-entry-meta">High risk: ' + stkyEsc(names.join(', ')) + (e.stkyManual ? '' : ' (suggested)') + '</div>' : '';
 }
 function stkyPromptField(entry) {
   if (!entry || entry.kbType !== 'incident') return '';
@@ -50,10 +50,10 @@ function stkyBoxHtml(jha) {
       + '</div>');
   });
   if (!rows.length) {
-    return '<div class="stky-box stky-none"><div class="stky-head"><span class="stky-flag">STKY</span><div><div class="stky-title">Stuff That Can Kill You</div>'
-      + '<div class="stky-sub">No STKY exposure came up in this planning conversation. If the work changes, tell Petey.</div></div></div></div>';
+    return '<div class="stky-box stky-none"><div class="stky-head"><span class="stky-flag">HIGH RISK</span><div><div class="stky-title">High Risk Activities</div>'
+      + '<div class="stky-sub">No high-risk activity came up in this planning conversation. If the work changes, tell Petey.</div></div></div></div>';
   }
-  return '<div class="stky-box"><div class="stky-head"><span class="stky-flag">STKY</span><div><div class="stky-title">Stuff That Can Kill You</div>'
+  return '<div class="stky-box"><div class="stky-head"><span class="stky-flag">HIGH RISK</span><div><div class="stky-title">High Risk Activities</div>'
     + '<div class="stky-sub">' + rows.length + (rows.length === 1 ? ' exposure' : ' exposures') + ' in this plan. Cover these with the crew first.</div></div></div>'
     + rows.join('') + '<div class="stky-foot">' + stkyEsc(STKY_FOOTNOTE) + '</div></div>';
 }

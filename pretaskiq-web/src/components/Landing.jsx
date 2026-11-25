@@ -13,7 +13,7 @@ const FEATURES = [
 ];
 const BENEFITS = [
   { t: 'Build Safer Plans', d: 'Talk through the day’s work. Petey asks the questions a safety pro would and writes the pre-task plan.' },
-  { t: 'Identify Hazards', d: 'Petey flags the stuff that can kill you, checks the controls, and draws on your own incidents and policies.' },
+  { t: 'Identify Hazards', d: 'Petey flags high-risk activities, checks the controls, and draws on your own incidents and policies.' },
   { t: 'Work From Current Documents', d: 'Job folders hold drawings, RFIs, permits and 811 tickets. Petey confirms the crew is on the latest revision.' },
   { t: 'Empower Your Crew', d: 'Every crew member signs the plan on the phone, and Petey stays on through the shift for questions.' },
 ];

@@ -177,5 +177,5 @@
   window.rx2RenderAt = function (t) { if (!$('rx2-c1')) build($('rx-svg')); return render(t); };
 })();
 
-/* STKY = "Stuff That Can Kill You". Category names and thresholds follow the category chart supplied by the PreTaskIQ founder.
+/* High-risk activity categories (kept under the internal name "stky"). Category names and thresholds follow the category chart supplied by the PreTaskIQ founder.
    Thresholds are recognition triggers only: company policy and regulation still set the required controls. */
