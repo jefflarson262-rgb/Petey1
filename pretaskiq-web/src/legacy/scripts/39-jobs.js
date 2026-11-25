@@ -80,7 +80,9 @@ function jbRenderJob() {
   if (bad.length) h += '<div class="cadmin-alert jb-alert"><div><div class="cadmin-alert-title">Expired: ' + bad.map(function (d) { return jbEsc(d.title); }).join(', ') + '</div><div class="cadmin-alert-sub">Check these before work that depends on them. Petey will mention them when a plan is made for this job.</div></div></div>';
   if (soon.length) h += '<div class="cadmin-alert jb-alert jb-soon"><div><div class="cadmin-alert-title">Expiring soon: ' + soon.map(function (d) { return jbEsc(d.title) + ' (' + jbEsc(jbDate(d.expiresOn)) + ')'; }).join(', ') + '</div></div></div>';
   var scopeOf = function (id) { return st.scopes.filter(function (x) { return x.id === id; })[0]; };
-  if (st.canEdit || st.scopes.length) {
+  // Scopes stay out of the way until a job needs them: with none set up, an administrator sees only a small link.
+  if (st.canEdit && !st.scopes.length && !st.showScopes) h += '<p class="jb-scope-link"><button type="button" class="jb-linkbtn" data-jb-scope-show>Big job? Break it into scopes</button></p>';
+  else if (st.canEdit || st.scopes.length) {
     h += '<section class="inf-sec"><h3>Scopes</h3><p class="inf-hint">Break the job into scopes of work, each with its own code. File a document under one scope or the whole job. A foreman picks their scope when planning, so its revisions reach that crew. Leave this empty if the job is one scope.</p>'
       + st.scopes.map(function (x) { return '<div class="jb-doc"><div class="jb-doc-main"><b><span class="jb-code">' + jbEsc(x.code) + '</span> ' + jbEsc(x.name) + '</b></div>' + (st.canEdit ? '<div class="jb-doc-side"><button type="button" class="btn-secondary" data-jb-scope-del="' + jbEsc(x.id) + '">Remove</button></div>' : '') + '</div>'; }).join('')
       + (st.canEdit ? '<div class="jb-new jb-scope-new"><input id="jb-s-code" maxlength="30" placeholder="Code, for example 26-ELEC" aria-label="Scope code"><input id="jb-s-name" maxlength="120" placeholder="Name, for example Electrical" aria-label="Scope name"><button type="button" class="btn-secondary" data-jb-scope-add>+ Add scope</button></div><div id="jb-s-status" class="voice-status" role="status" aria-live="polite"></div>' : '') + '</section>';
@@ -152,6 +154,7 @@ async function jbClick(ev) {
     return;
   }
   if (t.hasAttribute('data-jb-del')) { if (!confirm('Remove this document from the job? The file is kept on record but no longer shown.')) return; var rr = await J.archiveDocument(t.getAttribute('data-jb-del')); if (!rr.ok) { alert(rr.message); return; } await jbReload(); return; }
+  if (t.hasAttribute('data-jb-scope-show')) { jbReadForm(); st.showScopes = true; jbRenderJob(); var sc = jbEl('jb-s-code'); if (sc) sc.focus(); return; }
   if (t.hasAttribute('data-jb-scope-add')) {
     var ss = jbEl('jb-s-status'), code = jbEl('jb-s-code').value.trim(), nm = jbEl('jb-s-name').value.trim();
     if (!code || !nm) { ss.textContent = 'Enter a code and a name for the scope.'; return; }

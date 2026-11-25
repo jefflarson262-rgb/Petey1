@@ -28,3 +28,5 @@
 .jb-crews { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 #jb-rev-banner { margin-bottom: 14px; }
 #jb-rev-banner .btn-secondary { margin-left: 6px; padding: 4px 10px; font-size: 13px; }
+.jb-scope-link { margin: 0 0 12px; }
+.jb-linkbtn { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 14px; color: var(--slate); text-decoration: underline; cursor: pointer; }
