@@ -33,8 +33,11 @@ before(async () => {
   plan(thisMonth, { crew: [{ signature: sig }, { signature: null }] });
   plan(lastMonth, { jobId: T.job.id, crew: [] });
   plan(thisMonth, { submitted: { at: at(thisMonth) } }, B);                                    // another company's plan
-  add('audits', { company_id: A.id, created_at: at(thisMonth), score: 90 }); add('audits', { company_id: A.id, created_at: at(thisMonth), score: 70 });
-  add('protection_observations', { company_id: A.id, created_at: at(thisMonth), controls: [{ id: 1, kind: 'prevention', applies: true, present: true, works: true }, { id: 2, kind: 'prevention', applies: true, present: false }, { id: 3, kind: 'mitigation', applies: false }] });
+  add('audits', { company_id: A.id, created_at: at(thisMonth), score: 100, template_title: 'Ladders', fail_count: 0 }); add('audits', { company_id: A.id, created_at: at(thisMonth), score: 60, template_title: 'Ladders', fail_count: 2 });
+  add('audit_failed_items', { company_id: A.id, created_at: at(thisMonth), template_title: 'Ladders', item_text: 'Feet secured' }); add('audit_failed_items', { company_id: A.id, created_at: at(thisMonth), template_title: 'Ladders', item_text: 'Three points of contact' });
+  add('audit_failed_items', { company_id: A.id, created_at: at(lastMonth), template_title: 'Ladders', item_text: 'Feet secured' }); add('audit_failed_items', { company_id: B.id, created_at: at(thisMonth), template_title: 'Ladders', item_text: 'Bravo only' });
+  add('protection_checklists', { company_id: A.id, category: 'fall_elevation', label: 'Falls', status: 'approved', archived_at: null, updated_at: at(lastMonth), controls: [{ id: 1, kind: 'prevention', text: 'Guardrails in place' }, { id: 2, kind: 'prevention', text: 'Hole covers secured' }, { id: 3, kind: 'mitigation', text: 'Rescue plan' }] });
+  add('protection_observations', { company_id: A.id, created_at: at(thisMonth), category: 'fall_elevation', month: thisMonth, controls: [{ id: 1, kind: 'prevention', applies: true, present: true, works: true }, { id: 2, kind: 'prevention', applies: true, present: false }, { id: 3, kind: 'mitigation', applies: false }] });
   T.inj1 = add('incident_reports', { company_id: A.id, kind: 'injury', title: 'Cut hand', created_at: at(thisMonth), osha_class: null, job_id: null });
   T.inj2 = add('incident_reports', { company_id: A.id, kind: 'injury', title: 'Twisted ankle', created_at: at(thisMonth, 12), osha_class: null, job_id: null });
   T.nm = add('incident_reports', { company_id: A.id, kind: 'near_miss', title: 'Dropped wrench', created_at: at(thisMonth), osha_class: null, job_id: null });
@@ -67,7 +70,12 @@ test('leading indicators are counted from what the app recorded, this company on
   assert.deepEqual(r.months.map((m) => m.month), [lastMonth, thisMonth]);
   const m = r.months[1];
   assert.equal(m.plans, 2); assert.equal(m.submitted, 1); assert.equal(m.submitRate, 50); assert.equal(m.signRate, 75);       // 3 of 4 signed
-  assert.equal(m.audits, 2); assert.equal(m.auditScore, 80);
+  assert.equal(m.audits, 2); assert.equal(m.auditScore, 80); assert.equal(m.auditClean, 50); assert.equal(m.auditFails, 2);
+  assert.deepEqual(r.audits.byTemplate, [{ title: 'Ladders', audits: 2, avgScore: 80, cleanRate: 50, failedItems: 2 }]);
+  assert.deepEqual(r.audits.topFails, [{ text: 'Feet secured', template: 'Ladders', fails: 2 }, { text: 'Three points of contact', template: 'Ladders', fails: 1 }]);   // both months, this company only
+  assert.equal(m.prevention, 50); assert.equal(m.mitigation, null);                                                           // the mitigation control did not apply
+  assert.deepEqual(r.observations.byCategory.map((c) => [c.label, c.n, c.protection]), [['Falls', 1, 50]]);
+  assert.deepEqual(r.observations.gaps.map((g) => [g.text, g.notInPlace, g.gapRate]), [['Hole covers secured', 1, 100]]);
   assert.equal(m.observations, 1); assert.equal(m.protection, 50);                                                            // 1 of 2 required controls in place
   assert.equal(m.nearMisses, 1); assert.equal(m.injuries, 2); assert.equal(m.unclassified, 2);
   assert.equal(m.alerts, 2); assert.equal(m.alertHours, 2);
@@ -114,7 +122,27 @@ test('the spreadsheet has one row per month and per job, with empty cells for wh
   const head = rows.findIndex((l) => l.startsWith('Period,'));
   assert.equal(rows[head].split(',').length, COLUMNS.length + 1);
   assert.equal(rows[head + 1].split(',').length, COLUMNS.length + 1); assert.ok(rows[head + 3].startsWith('Total (2 months),3,'));
+  assert.ok(csv.includes('Most-failed audit items') && csv.includes('Feet secured,Ladders,2') && csv.includes('Hole covers secured,Falls,prevention,1,1,100'));
   assert.ok(csv.includes('Job (same period)') && /\r\nTower,2,1,50,/.test(csv));
   assert.ok(/,,\r\n/.test(csv), 'TRIR and DART are empty when there are no hours');
   assert.equal(toCsv({ months: [], total: null, byJob: [{ name: 'A "big", job', ...Object.fromEntries(COLUMNS.map((c) => [c.key, 1])) }] }).includes('"A ""big"", job"'), true);
+});
+
+test('one job: only what is tied to that job is counted; the rest is left empty', async () => {
+  const r = (await get(U.safety, { months: 2, job: T.job.id })).json;
+  assert.equal(r.scope, 'Tower');
+  assert.deepEqual(r.months.map((m) => m.plans), [1, 1]); assert.equal(r.months[1].submitRate, 100);
+  assert.equal(r.months[1].audits, null); assert.equal(r.months[1].protection, null); assert.equal(r.months[1].alerts, null);
+  assert.equal(r.months[1].injuries, 1);                       // the injury assigned to Tower earlier
+  assert.equal((await get(U.safety, { job: T.bJob.id })).status, 404);
+  assert.equal((await get(U.safety, { job: 'nope' })).status, 404);
+});
+
+test('report toggles: sections and the lagging columns can be switched off', async () => {
+  const r = (await get(U.safety, { months: 2 })).json;
+  const lean = toCsv(r, { lagging: false, byJob: false, auditFails: false });
+  assert.ok(!/TRIR|DART|Injuries reported|Hours worked/.test(lean.split('\r\n').find((l) => l.startsWith('Period,'))));
+  assert.ok(!lean.includes('Job (same period)') && !lean.includes('Most-failed audit items') && lean.includes('Audit template (same period)') && lean.includes('Controls most often not in place'));
+  const none = toCsv(r, { months: false, byJob: false, auditTemplates: false, auditFails: false, obsCategories: false, obsGaps: false });
+  assert.ok(!none.includes('Period,') && !none.includes('Total ('));
 });

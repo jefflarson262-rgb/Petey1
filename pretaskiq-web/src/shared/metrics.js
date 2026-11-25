@@ -30,29 +30,53 @@ export const monthLabel = (m) => { const [y, mo] = m.split('-').map(Number); ret
 export const COLUMNS = [
   { key: 'plans', label: 'Plans made' },
   { key: 'submitted', label: 'Plans submitted' },
-  { key: 'submitRate', label: 'Submitted %', unit: '%' },
+  { key: 'submitRate', label: 'Plans submitted %', unit: '%' },
   { key: 'signRate', label: 'Crew sign-off %', unit: '%' },
   { key: 'audits', label: 'Audits' },
   { key: 'auditScore', label: 'Audit score %', unit: '%' },
+  { key: 'auditClean', label: 'Audits with no failed items %', unit: '%' },
+  { key: 'auditFails', label: 'Failed audit items', lower: true },
   { key: 'observations', label: 'Observations' },
   { key: 'protection', label: 'Controls in place %', unit: '%' },
+  { key: 'prevention', label: 'Prevention controls in place %', unit: '%' },
+  { key: 'mitigation', label: 'Mitigation controls in place %', unit: '%' },
   { key: 'nearMisses', label: 'Near misses reported' },
-  { key: 'injuries', label: 'Injuries reported', lower: true },
-  { key: 'damage', label: 'Damage reported', lower: true },
+  { key: 'injuries', label: 'Injuries reported', lagging: true, lower: true },
+  { key: 'damage', label: 'Damage reported', lagging: true, lower: true },
   { key: 'alerts', label: 'Hazard alerts raised' },
   { key: 'alertHours', label: 'Alert response (median hours)', lower: true },
-  { key: 'hours', label: 'Hours worked' },
-  { key: 'recordables', label: 'Recordable cases', lower: true },
-  { key: 'dartCases', label: 'DART cases', lower: true },
-  { key: 'trir', label: 'TRIR', lower: true },
-  { key: 'dart', label: 'DART rate', lower: true },
+  { key: 'hours', label: 'Hours worked', lagging: true },
+  { key: 'recordables', label: 'Recordable cases', lagging: true, lower: true },
+  { key: 'dartCases', label: 'DART cases', lagging: true, lower: true },
+  { key: 'trir', label: 'TRIR', lagging: true, lower: true },
+  { key: 'dart', label: 'DART rate', lagging: true, lower: true },
 ];
 const cell = (v) => { if (v === null || v === undefined) return ''; const s = String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
 // The spreadsheet: one row per month, then one row per job. Empty cell = not available (for example, no hours entered).
-export function toCsv({ months, total, byJob, company }) {
+// What a report can include. Each can be switched off before downloading.
+export const REPORT_SECTIONS = [
+  { key: 'months', label: 'Month by month' },
+  { key: 'lagging', label: 'OSHA rates and injury counts (lagging indicators)' },
+  { key: 'byJob', label: 'By job' },
+  { key: 'auditTemplates', label: 'Audits by template' },
+  { key: 'auditFails', label: 'Most-failed audit items' },
+  { key: 'obsCategories', label: 'Observations by category' },
+  { key: 'obsGaps', label: 'Controls most often not in place' },
+];
+export function toCsv({ months, total, byJob, company, audits, observations, scope }, include) {
+  const on = (k) => !include || include[k] !== false;
+  const COLS = COLUMNS.filter((c) => on('lagging') || !c.lagging);
+  months = on('months') ? months : []; total = on('months') ? total : null; byJob = on('byJob') ? byJob : [];
+  audits = audits ? { byTemplate: on('auditTemplates') ? audits.byTemplate : [], topFails: on('auditFails') ? audits.topFails : [] } : null;
+  observations = observations ? { byCategory: on('obsCategories') ? observations.byCategory : [], gaps: on('obsGaps') ? observations.gaps : [] } : null;
+  company = [company, scope].filter(Boolean).join(' - ');
   const lines = [[`PreTaskIQ safety metrics${company ? ' - ' + company : ''}`], ['TRIR and DART rate = cases x 200,000 / hours worked. An empty cell means the number is not available.'], [],
-    ['Period', ...COLUMNS.map((c) => c.label)], ...months.map((m) => [monthLabel(m.month), ...COLUMNS.map((c) => m[c.key])])];
-  if (total) lines.push([`Total (${months.length} months)`, ...COLUMNS.map((c) => total[c.key])]);
-  if (byJob && byJob.length) lines.push([], ['Job (same period)', ...COLUMNS.map((c) => c.label)], ...byJob.map((j) => [j.name, ...COLUMNS.map((c) => j[c.key])]));
+    ...(months.length ? [['Period', ...COLS.map((c) => c.label)], ...months.map((m) => [monthLabel(m.month), ...COLS.map((c) => m[c.key])])] : [])];
+  if (total) lines.push([`Total (${months.length} months)`, ...COLS.map((c) => total[c.key])]);
+  if (byJob && byJob.length) lines.push([], ['Job (same period)', ...COLS.map((c) => c.label)], ...byJob.map((j) => [j.name, ...COLS.map((c) => j[c.key])]));
+  if (audits && audits.byTemplate.length) lines.push([], ['Audit template (same period)', 'Audits', 'Average score %', 'Audits with no failed items %', 'Failed items'], ...audits.byTemplate.map((t) => [t.title, t.audits, t.avgScore, t.cleanRate, t.failedItems]));
+  if (audits && audits.topFails.length) lines.push([], ['Most-failed audit items', 'Template', 'Times failed'], ...audits.topFails.map((f) => [f.text, f.template, f.fails]));
+  if (observations && observations.byCategory.length) lines.push([], ['Observation category (same period)', 'Observations', 'Controls in place %', 'Prevention %', 'Mitigation %'], ...observations.byCategory.map((c) => [c.label, c.n, c.protection, c.prevention, c.mitigation]));
+  if (observations && observations.gaps.length) lines.push([], ['Controls most often not in place', 'Category', 'Kind', 'Times required', 'Times not in place', 'Gap %'], ...observations.gaps.map((g) => [g.text, g.label, g.kind, g.required, g.notInPlace, g.gapRate]));
   return lines.map((l) => l.map(cell).join(',')).join('\r\n') + '\r\n';
 }

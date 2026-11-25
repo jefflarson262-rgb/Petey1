@@ -395,3 +395,12 @@ alter table public.incident_reports add column if not exists osha_class text che
 alter table public.incident_reports add column if not exists job_id uuid references public.jobs (id);
 alter table public.incident_reports add column if not exists classified_by uuid references auth.users (id);
 alter table public.incident_reports add column if not exists classified_at timestamptz;
+
+-- The failed items of every audit, without the photos (which can be large), so the metrics can show which items fail most often.
+-- It reads public.audits with the caller's own rights, so the same lock applies: only the server (service_role) can read it.
+create or replace view public.audit_failed_items with (security_invoker = true) as
+  select a.id as audit_id, a.company_id, a.created_at, a.template_title, left(i ->> 'text', 300) as item_text, i ->> 'section' as section
+  from public.audits a cross join lateral jsonb_array_elements(a.answers) as i
+  where i ->> 'result' = 'fail';
+revoke all on public.audit_failed_items from anon, authenticated;
+grant select on public.audit_failed_items to service_role;

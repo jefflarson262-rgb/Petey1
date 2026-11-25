@@ -27,3 +27,13 @@
 #screen-metrics .inf-sec { min-width: 0; overflow: hidden; }
 .mx-inj .jb-doc-side { min-width: 0; max-width: 100%; }
 @media (max-width: 760px) { .mx-inj .jb-doc-side { flex: 1 1 100%; } .mx-inj select { width: 100%; } .mx-bar .btn-primary { width: 100%; } }
+
+.mx-bar-l, .mx-bar-r { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.mx-card.mx-lag { border-color: rgba(160,170,190,.45); }
+.mx-panel { border: 2px solid var(--orange); }
+.mx-panel h4, #screen-metrics .inf-sec h4 { margin: 16px 0 8px; font-size: 14px; color: var(--navy); text-transform: uppercase; letter-spacing: .05em; }
+.mx-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; } .mx-checks-1 { grid-template-columns: 1fr; }
+.mx-check { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 15px; color: var(--navy); cursor: pointer; } .mx-check input { width: 20px; height: 20px; accent-color: var(--orange); flex-shrink: 0; }
+.mx-off { color: #98a2b3; cursor: default; }
+.mx-table td { max-width: 320px; overflow: hidden; text-overflow: ellipsis; } .mx-table th:first-child { max-width: 300px; white-space: normal; }
+@media (max-width: 760px) { .mx-bar-l label, .mx-bar-l select { width: 100%; margin-left: 0; } .mx-bar-r, .mx-bar-r button { width: 100%; } }
