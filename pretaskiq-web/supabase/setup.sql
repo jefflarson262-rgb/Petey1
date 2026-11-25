@@ -374,3 +374,33 @@ revoke all on public.job_documents from anon, authenticated;
 grant all on public.job_documents to service_role;
 
 insert into storage.buckets (id, name, public) values ('job-files', 'job-files', false) on conflict (id) do nothing;
+
+-- 14. Safety metrics. Two things the app cannot know by itself: the hours worked each month (for the whole company, or job by job), and whether
+-- each reported injury is OSHA-recordable. TRIR and DART rate are worked out from these: cases x 200,000 / hours worked.
+create table if not exists public.safety_hours (
+  id          uuid primary key default gen_random_uuid(),
+  company_id  uuid references public.companies (id),
+  month       text not null check (month ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'),
+  job_id      uuid references public.jobs (id),          -- null = the whole company for that month
+  hours       numeric not null check (hours >= 0),
+  entered_by  uuid references auth.users (id),
+  updated_at  timestamptz not null default now()
+);
+create unique index if not exists safety_hours_one_idx on public.safety_hours (company_id, month, coalesce(job_id, '00000000-0000-0000-0000-000000000000'::uuid));
+alter table public.safety_hours enable row level security;
+revoke all on public.safety_hours from anon, authenticated;
+grant all on public.safety_hours to service_role;
+
+alter table public.incident_reports add column if not exists osha_class text check (osha_class in ('not_recordable', 'recordable', 'dart'));
+alter table public.incident_reports add column if not exists job_id uuid references public.jobs (id);
+alter table public.incident_reports add column if not exists classified_by uuid references auth.users (id);
+alter table public.incident_reports add column if not exists classified_at timestamptz;
+
+-- The failed items of every audit, without the photos (which can be large), so the metrics can show which items fail most often.
+-- It reads public.audits with the caller's own rights, so the same lock applies: only the server (service_role) can read it.
+create or replace view public.audit_failed_items with (security_invoker = true) as
+  select a.id as audit_id, a.company_id, a.created_at, a.template_title, left(i ->> 'text', 300) as item_text, i ->> 'section' as section
+  from public.audits a cross join lateral jsonb_array_elements(a.answers) as i
+  where i ->> 'result' = 'fail';
+revoke all on public.audit_failed_items from anon, authenticated;
+grant select on public.audit_failed_items to service_role;

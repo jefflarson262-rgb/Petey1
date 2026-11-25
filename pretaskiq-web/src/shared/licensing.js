@@ -8,13 +8,14 @@ export const FEATURES = {
   audits:             'Safety audits',
   rca:                'Root cause analysis assistant and reenactments',
   construction_admin: 'Construction Admin: project overview',
+  metrics:            'Safety metrics: leading indicators, TRIR and DART, by month and by job',
   jobs:               'Jobs: job folders with scope documents, RFIs, revisions, permits and 811 tickets',
 };
 
 export const TIERS = {
   basic:    { label: 'Basic',    features: ['planning', 'knowledge_base'] },
-  standard: { label: 'Standard', features: ['planning', 'knowledge_base', 'incidents', 'protection', 'audits', 'jobs'] },
-  full:     { label: 'Full',     features: ['planning', 'knowledge_base', 'incidents', 'protection', 'audits', 'rca', 'construction_admin', 'jobs'] },
+  standard: { label: 'Standard', features: ['planning', 'knowledge_base', 'incidents', 'protection', 'audits', 'jobs', 'metrics'] },
+  full:     { label: 'Full',     features: ['planning', 'knowledge_base', 'incidents', 'protection', 'audits', 'rca', 'construction_admin', 'jobs', 'metrics'] },
 };
 
 export const COMPANY_STATUSES = ['active', 'suspended'];

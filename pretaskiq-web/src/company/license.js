@@ -7,6 +7,7 @@ const HIDE = {
   protection: ['openProtectionObserve('],
   audits: ['openAuditHome('],
   jobs: ['openJobs('],
+  metrics: ['openMetrics('],
   rca: ['openRCAAssistant('],
   knowledge_base: ['openSettingsToKb('],
   construction_admin: ["setRole('construction')"],

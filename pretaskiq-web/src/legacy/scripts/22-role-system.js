@@ -31,6 +31,7 @@ var ROLE_MENUS = {
       {
         label: 'Dashboards & Alerts',
         items: [
+          { icon: '📈', label: 'Safety Metrics', sub: 'Leading indicators, TRIR and DART, by month and by job', action: "closeNavDropdown(); openMetrics();" },
           { icon: '📊', label: 'Safety Dashboard', sub: 'Live JHA completion across all crews', action: "switchRole('admin'); closeNavDropdown();" },
           { icon: '🚨', label: 'Safety Alerts Inbox', sub: 'Hazards flagged by crews (needs sign-in)', action: "closeNavDropdown(); if (window.PreTaskIQAlerts && PreTaskIQAlerts.enabled()) PreTaskIQAlerts.openDialog(); else alert('The safety inbox works once sign-in is turned on.');" },
         ]

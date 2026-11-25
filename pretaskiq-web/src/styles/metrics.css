@@ -1,0 +1,39 @@
+/* Safety metrics */
+#screen-metrics .mx-wrap { max-width: 1040px; }
+.mx-light { color: #C5D0E0 !important; }
+.mx-bar { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; margin-bottom: 14px; color: #fff; font-weight: 600; font-size: 14px; }
+.mx-bar select { margin-left: 6px; padding: 8px 10px; border-radius: 10px; border: 2px solid rgba(110,160,230,.6); background: #0E2242; color: #fff; font: inherit; }
+.mx-h { color: #fff; font-size: 18px; margin: 0 0 10px; }
+.mx-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.mx-card { position: relative; padding: 14px 14px 10px; border-radius: 16px; color: #fff; background: linear-gradient(180deg, rgba(20,46,88,.82), rgba(9,25,52,.9)); border: 1.5px solid rgba(110,160,230,.5); }
+.mx-card small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #B7C4D9; }
+.mx-card b { display: block; font-family: "Space Grotesk", "Inter", sans-serif; font-size: 30px; line-height: 1.15; margin-top: 4px; }
+.mx-card .mx-na { font-size: 16px; font-family: inherit; font-weight: 700; color: #FF9A4D; }
+.mx-delta { display: block; font-size: 12px; color: #B7C4D9; min-height: 16px; } .mx-delta.good { color: #6EE7B7; } .mx-delta.bad { color: #FF9A4D; }
+.mx-spark { display: block; width: 100%; height: 28px; margin-top: 6px; color: #8FB8F5; }
+.mx-na { color: #98a2b3; font-weight: 500; }
+.mx-todo { margin-bottom: 14px; }
+.mx-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.mx-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.mx-table th, .mx-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+.mx-table th:first-child { text-align: left; position: sticky; left: 0; background: #fff; font-weight: 600; color: var(--navy); }
+.mx-table thead th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--slate); }
+.mx-hours input { width: 110px; padding: 8px; border: 2px solid var(--line); border-radius: 8px; font: inherit; font-size: 15px; text-align: right; }
+.mx-inj select { max-width: 100%; padding: 9px; border: 2px solid var(--line); border-radius: 8px; font: inherit; font-size: 14px; background: #fff; }
+.mx-open { background: #FFF7ED; margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 8px; }
+.ov-metrics-btn { display: block; width: 100%; margin-top: 14px; padding: 11px 12px; border-radius: 12px; border: 1.5px solid rgba(244,121,32,.7); background: rgba(244,121,32,.14); color: #fff; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; text-align: left; }
+.ov-metrics-btn:hover { background: rgba(244,121,32,.26); }
+@media (max-width: 760px) { .mx-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mx-card b { font-size: 26px; } }
+#screen-metrics .inf-sec { min-width: 0; overflow: hidden; }
+.mx-inj .jb-doc-side { min-width: 0; max-width: 100%; }
+@media (max-width: 760px) { .mx-inj .jb-doc-side { flex: 1 1 100%; } .mx-inj select { width: 100%; } .mx-bar .btn-primary { width: 100%; } }
+
+.mx-bar-l, .mx-bar-r { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.mx-card.mx-lag { border-color: rgba(160,170,190,.45); }
+.mx-panel { border: 2px solid var(--orange); }
+.mx-panel h4, #screen-metrics .inf-sec h4 { margin: 16px 0 8px; font-size: 14px; color: var(--navy); text-transform: uppercase; letter-spacing: .05em; }
+.mx-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; } .mx-checks-1 { grid-template-columns: 1fr; }
+.mx-check { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 15px; color: var(--navy); cursor: pointer; } .mx-check input { width: 20px; height: 20px; accent-color: var(--orange); flex-shrink: 0; }
+.mx-off { color: #98a2b3; cursor: default; }
+.mx-table td { max-width: 320px; overflow: hidden; text-overflow: ellipsis; } .mx-table th:first-child { max-width: 300px; white-space: normal; }
+@media (max-width: 760px) { .mx-bar-l label, .mx-bar-l select { width: 100%; margin-left: 0; } .mx-bar-r, .mx-bar-r button { width: 100%; } }

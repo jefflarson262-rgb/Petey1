@@ -41,6 +41,10 @@
     {
       "source": "/api/jobs",
       "destination": "/api/account?area=jobs"
+    },
+    {
+      "source": "/api/metrics",
+      "destination": "/api/account?area=metrics"
     }
   ]
 }

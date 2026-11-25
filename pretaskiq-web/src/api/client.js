@@ -38,6 +38,11 @@ export function friendlyMessage(status, code, body) {
     case 'scope_code_in_use': return 'That scope code is already used on this job.';
     case 'scope_not_found': return 'That scope could not be found.';
     case 'invalid_scope': return 'Pick a scope that belongs to this job.';
+    case 'invalid_month': return 'That month does not look right.';
+    case 'invalid_hours': return 'Hours must be a number, zero or more.';
+    case 'invalid_class': return 'Pick one of the classifications.';
+    case 'not_an_injury': return 'Only injury reports are classified.';
+    case 'incident_not_found': return 'That incident report could not be found.';
     case 'job_not_found': return 'That job could not be found. It may have been removed.';
     case 'document_not_found': return 'That document could not be found. It may have been removed.';
     case 'file_not_found': return 'The original file could not be found.';
