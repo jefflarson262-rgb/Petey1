@@ -125,3 +125,35 @@ body:has(:is(#screen-document, #screen-rca, #screen-incident, #screen-incident-f
 /* "Talk to Petey" uses the same text size and weight as "Type my plan" (voice.css was shrinking it to 14px) */
 .intake-actions .intake-talk-btn { font-size: 20px; font-weight: 700; letter-spacing: -0.005em; }
 @media (max-width: 480px) { .intake-actions .intake-talk-btn { font-size: 19px; } }
+
+/* ── Site Overview (Safety Admin), lower half: the same dark glass as Project Overview ── */
+html:has(#screen-admin.active), body:has(#screen-admin.active) { background-color: #08142B; }
+body:has(#screen-admin.active) { background: linear-gradient(180deg, #071327 0%, #0A1B38 55%, #08142B 100%); min-height: 100vh; }
+#screen-admin { background: transparent; }
+#screen-admin .ov-hero { background: linear-gradient(180deg, #08142A 0%, rgba(14,33,66,.0) 100%); margin-bottom: 8px; }
+#screen-admin .ov-card, #screen-admin .ov-right { background: linear-gradient(180deg, rgba(20,46,88,.82), rgba(9,25,52,.9)); border: 1.5px solid rgba(110,160,230,.6); border-radius: 20px;
+  box-shadow: 0 0 0 1px rgba(110,160,230,.2), 0 0 26px rgba(70,130,230,.28), 0 10px 28px rgba(0,0,0,.45); }
+#screen-admin .ov-card { padding: 20px 20px 22px; margin-bottom: 16px; }
+#screen-admin .ov-right { padding: 18px 16px 10px; }
+#screen-admin .admin-card-label { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 13px; font-weight: 800; letter-spacing: .1em; margin-bottom: 10px; }
+#screen-admin .admin-card-label::before { content: ''; width: 6px; height: 16px; background: var(--orange); transform: skewX(-22deg); flex-shrink: 0; }
+#screen-admin .ov-right .admin-card-label { color: #fff; margin-bottom: 14px !important; }
+#screen-admin .admin-completion-num { color: #fff; font-family: "Space Grotesk", "Inter", sans-serif; font-size: 76px; text-shadow: 0 0 28px rgba(244,121,32,.35); }
+#screen-admin .admin-completion-denom { color: #9FB0C8; font-size: 24px; }
+#screen-admin .admin-completion-sub { color: #B7C4D9; font-size: 13.5px; line-height: 1.45; margin-top: 12px; }
+#screen-admin .ov-bar { background: rgba(255,255,255,.12); height: 10px; box-shadow: inset 0 1px 2px rgba(0,0,0,.4); }
+#screen-admin .ov-bar i { background: linear-gradient(90deg, var(--orange), #FFB066); box-shadow: 0 0 12px rgba(244,121,32,.6); }
+#screen-admin .ov-pct { background: rgba(244,121,32,.16); border: 1px solid rgba(244,121,32,.55); color: #fff; }
+#screen-admin .ov-ins-row { gap: 10px; margin-top: 4px; }
+#screen-admin .ov-ins-row > div { background: rgba(255,255,255,.06); border: 1px solid rgba(110,160,230,.3); border-radius: 14px; padding: 12px 6px 10px; }
+#screen-admin .ov-ins-row b { color: #fff; font-family: "Space Grotesk", "Inter", sans-serif; font-size: 30px; line-height: 1.1; }
+#screen-admin .ov-ins-row small { color: #B7C4D9; margin-top: 4px; }
+#screen-admin .ov-ins-warn { border-color: rgba(244,121,32,.55) !important; background: rgba(244,121,32,.1) !important; }
+#screen-admin .ov-ins-warn b { color: #FF9A4D; }
+#screen-admin .crew-row-card { border: 0; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+#screen-admin .ov-right .admin-card { background: rgba(255,255,255,.05); border: 1.5px dashed rgba(110,160,230,.45); box-shadow: none; color: #C5D0E0 !important; text-align: center; padding: 26px 16px; border-radius: 14px; }
+#screen-admin .admin-flag-card { background: linear-gradient(90deg, #C45A12, #9E3F0C 70%, #7A2F0A); border: 1.5px solid rgba(255,170,90,.7); box-shadow: 0 0 24px rgba(244,121,32,.4); margin-bottom: 16px; }
+#screen-admin .admin-flag-chip { background: rgba(255,255,255,.16); color: #fff; }
+#screen-admin .admin-flag-time { color: #FBE3D0; }
+#screen-admin .admin-flag-title { color: #fff; }
+#screen-admin .admin-flag-sub { color: #FBE3D0; }
