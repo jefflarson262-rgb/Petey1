@@ -14,6 +14,21 @@ export function friendlyMessage(status, code, body) {
     case 'not_signed_in':
     case 'invalid_session': return 'Your session ended. Sign in again, then repeat that.';
     case 'not_approved': return 'Your account has not been approved yet. Ask your administrator to approve it.';
+    case 'license_inactive': return 'Your company license is not active. Contact your administrator.';
+    case 'feature_not_licensed': return 'That feature is not part of your company license.';
+    case 'no_company': return 'Your account is not attached to a company yet. Contact your administrator.';
+    case 'seat_limit_reached': return 'Your license has no free seats. Switch someone off, or ask to add seats.';
+    case 'email_in_use': return 'That email already has an account.';
+    case 'invalid_email': return 'That email address does not look right.';
+    case 'invalid_role': return 'Pick a valid role.';
+    case 'cannot_deactivate_self': return 'You cannot switch off your own access.';
+    case 'cannot_suspend_own_company': return 'You cannot suspend your own company.';
+    case 'owner_only': return 'Only the platform owner can do that.';
+    case 'account_create_failed': return 'The account could not be created. Try again.';
+    case 'name_required': return 'Enter a company name.';
+    case 'invalid_tier': return 'Pick a tier.';
+    case 'invalid_seat_limit': return 'Seats must be a whole number of 1 or more (or blank for no limit).';
+    case 'admin_required': return 'Enter the first administrator\'s email.';
     case 'wrong_role': return 'Your account is not allowed to do that.';
     case 'read_only': return 'You can read this plan but not change it, so your change was not saved.';
     case 'plan_not_found': return 'That plan could not be found.';

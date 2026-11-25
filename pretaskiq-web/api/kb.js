@@ -39,8 +39,8 @@ function mayWrite(profile, kbType) { return (MAY_WRITE[profile.role] || []).incl
 export default handle(async (req, res) => {
   const method = req.method;
   if (method !== 'GET' && method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
-  const me = await requireUser(req);
-  const { admin } = me;
+  const me = await requireUser(req, { feature: 'knowledge_base' });
+  const admin = me.db;   // this company's data only
 
   if (method === 'GET') {
     const { data, error } = await admin.from('kb_entries').select(COLUMNS).is('archived_at', null).order('created_at', { ascending: true }).limit(1000);

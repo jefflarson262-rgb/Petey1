@@ -2,6 +2,8 @@
 import { readConfig } from './config.js';
 import { adminClient, authClient, dbError } from './supabase.js';
 import { HttpError } from './http.js';
+import { companyDb } from './company.js';
+import { featuresFor } from '../src/shared/licensing.js';
 
 export const ROLES = ['foreman', 'safety', 'construction'];
 
@@ -12,7 +14,8 @@ export function requireSupabaseMode(cfg = readConfig()) {
 }
 
 // Returns { cfg, user, profile, admin }. Throws 401 (not signed in), 403 (signed in but not approved / wrong role).
-export async function requireUser(req, { roles } = {}) {
+// Options: roles (allowed roles), feature (a licensed feature this endpoint needs), allowInactive (let a suspended company through, for /api/me and the owner tools).
+export async function requireUser(req, { roles, feature, allowInactive } = {}) {
   const cfg = requireSupabaseMode();
   const match = /^Bearer\s+(.+)$/i.exec(String(req.headers.authorization || ''));
   if (!match) throw new HttpError(401, 'not_signed_in');
@@ -32,5 +35,12 @@ export async function requireUser(req, { roles } = {}) {
   if (error) throw dbError(error);
   if (!profile || !profile.approved) throw new HttpError(403, 'not_approved');
   if (roles && !roles.includes(profile.role)) throw new HttpError(403, 'wrong_role');
-  return { cfg, user, profile, admin };
+  if (!profile.company_id) throw new HttpError(403, 'no_company');
+  const { data: company, error: ce } = await admin.from('companies').select('*').eq('id', profile.company_id).maybeSingle();
+  if (ce) throw dbError(ce);
+  if (!company) throw new HttpError(403, 'no_company');
+  if (company.status !== 'active' && !allowInactive) throw new HttpError(403, 'license_inactive');
+  const features = featuresFor(company.tier);
+  if (feature && !features.includes(feature)) throw new HttpError(403, 'feature_not_licensed', { feature });
+  return { cfg, user, profile, admin, company, features, isOwner: !!profile.is_owner, db: companyDb(admin, company.id) };
 }

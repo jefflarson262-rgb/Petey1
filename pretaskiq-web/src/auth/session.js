@@ -9,6 +9,7 @@
 //   error          the server or database could not be reached; "Try again" is shown
 import { createClient } from '@supabase/supabase-js';
 import { nativeFetch } from '../api/nativeFetch.js';
+import { applyLicense } from '../company/license.js';
 
 const ROLE_VIEWS = { foreman: ['foreman'], construction: ['foreman', 'construction'], safety: ['foreman', 'safety', 'construction'] };
 export const allowedViews = (role) => ROLE_VIEWS[role] || ['foreman'];
@@ -16,7 +17,7 @@ export const allowedViews = (role) => ROLE_VIEWS[role] || ['foreman'];
 const LOCAL_KEYS_TO_CLEAR = ['pretaskiq_sync_queue', 'jha_signatures'];
 const LOCAL_PREFIXES_TO_CLEAR = ['pretaskiq_jha_cache_'];
 
-let state = { phase: 'loading', mode: null, user: null, profile: null, notice: '', error: '', missing: [], problem: '' };
+let state = { phase: 'loading', mode: null, user: null, profile: null, company: null, notice: '', error: '', missing: [], problem: '' };
 const listeners = new Set();
 const set = (next) => { state = { ...state, ...next }; listeners.forEach((fn) => fn()); };
 export const subscribe = (fn) => { listeners.add(fn); return () => listeners.delete(fn); };
@@ -79,10 +80,16 @@ async function loadProfile(token) {
   if (res.ok && body && body.profile) {
     if (expiredUserId && body.user && body.user.id !== expiredUserId) { location.reload(); return { ok: true }; }   // a different person: start clean
     expiredUserId = null;
-    set({ phase: 'signed_in', user: body.user, profile: body.profile, notice: '', error: '' });
+    set({ phase: 'signed_in', user: body.user, profile: body.profile, company: body.company || null, notice: '', error: '' });
+    applyLicense(body.company);
     return { ok: true };
   }
   if (res.status === 401) { await localSignOut(); set({ phase: 'signed_out', notice: 'Your session expired. Sign in again.' }); return { ok: false, message: 'Your session expired. Sign in again.' }; }
+  if (res.status === 403 && code === 'no_company') {
+    const message = 'Your account is not attached to a company yet. Ask your administrator.';
+    await localSignOut(); set({ phase: 'signed_out', notice: '' });
+    return { ok: false, message };
+  }
   if (res.status === 403 && code === 'not_approved') {
     const message = 'Your account has not been approved yet. Ask your administrator to approve it, then sign in again.';
     await localSignOut(); set({ phase: 'signed_out', notice: '' });

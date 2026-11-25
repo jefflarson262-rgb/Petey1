@@ -94,3 +94,17 @@ test('setup.sql: valid, repeatable, creates profiles correctly, and locks the br
   }
   await db.close();
 });
+
+test('setup.sql section 12: first person becomes owner of a starting company, later people have no company, existing data is moved in', async () => {
+  const db = new PGlite();
+  await db.exec(standIn);
+  await db.exec(setup);
+  await db.exec(`insert into auth.users (email) values ('first@example.com'), ('second@example.com');`);
+  const r = await db.query(`select p.email, p.is_owner, c.name, c.tier from public.profiles p left join public.companies c on c.id = p.company_id order by p.email`);
+  assert.deepEqual(r.rows, [{ email: 'first@example.com', is_owner: true, name: 'My company', tier: 'full' }, { email: 'second@example.com', is_owner: false, name: null, tier: null }]);
+  await db.exec(setup);                                                       // running again changes nothing
+  assert.equal((await db.query(`select count(*)::int n from public.companies`)).rows[0].n, 1);
+  await assert.rejects(db.query(`insert into public.companies (name, tier) values ('X', 'gold')`), /check constraint/);
+  await db.exec('set role anon');
+  await assert.rejects(db.query(`select * from public.companies`), /permission denied/);
+});

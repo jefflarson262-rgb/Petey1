@@ -90,3 +90,9 @@
 .rx-dlg .settings-input { width: 100%; box-sizing: border-box; min-height: 40px; }
 .rx-dlg .plans-link { min-height: 44px; }
 .rx-dlg .plans-close { min-width: 44px; min-height: 44px; }
+
+/* Team and Companies screens */
+.team-created { margin: 12px 0; padding: 14px; border: 1.5px solid var(--orange); border-radius: 12px; background: var(--cream); }
+.team-pw { display: block; margin: 8px 0 12px; padding: 10px 12px; font-size: 18px; letter-spacing: 0.04em; background: #fff; border-radius: 8px; user-select: all; }
+.co-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: center; }
+.co-small { width: auto; min-width: 110px; max-width: 160px; padding: 8px 10px; font-size: 14px; }

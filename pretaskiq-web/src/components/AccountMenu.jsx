@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { getSnapshot, signOut, subscribe } from '../auth/session.js';
 import PlansDialog from './PlansDialog.jsx';
+import { openTeam, openCompanies } from '../company/store.js';
 import { getSnapshot as alertsSnapshot, openCount, openDialog as openAlerts, subscribe as subscribeAlerts } from '../alerts/store.js';
 
 const ROLE_LABEL = { foreman: 'Foreman', safety: 'Safety Admin', construction: 'Construction Admin' };
@@ -49,7 +50,9 @@ export default function AccountMenu() {
           </button>
           {open && (
             <div className="acct-menu" role="menu">
-              {signedIn && <div className="acct-who"><div>{auth.user.email}</div><div className="acct-role">{ROLE_LABEL[auth.profile.role] || auth.profile.role}</div></div>}
+              {signedIn && <div className="acct-who"><div>{auth.user.email}</div><div className="acct-role">{ROLE_LABEL[auth.profile.role] || auth.profile.role}{auth.company ? ` · ${auth.company.name} (${auth.company.tierLabel})` : ''}</div></div>}
+              {signedIn && isSafety && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openTeam(); }}>Team and access</button>}
+              {signedIn && auth.profile.isOwner && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openCompanies(); }}>Companies (owner)</button>}
               {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openAlerts(); }}>{isSafety ? `Safety alerts${waiting ? ` (${waiting})` : ''}` : 'Hazards I flagged'}</button>}
               {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); setPlansOpen(true); }}>My plans</button>}
               <button type="button" role="menuitem" className="acct-item" onClick={demo}>Guided demo</button>

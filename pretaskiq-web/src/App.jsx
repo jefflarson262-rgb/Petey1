@@ -5,6 +5,8 @@ import AuthGate from './components/AuthGate.jsx';
 import AccountMenu from './components/AccountMenu.jsx';
 import SaveStatus from './components/SaveStatus.jsx';
 import AlertsDialog from './components/AlertsDialog.jsx';
+import TeamDialog from './components/TeamDialog.jsx';
+import CompaniesDialog from './components/CompaniesDialog.jsx';
 import ReenactDialog from './components/ReenactDialog.jsx';
 import AlertBanner from './components/AlertBanner.jsx';
 import * as alerts from './alerts/store.js';
@@ -65,6 +67,8 @@ export default function App() {
       <SaveStatus />
       <AlertBanner />
       <AlertsDialog />
+      <TeamDialog />
+      <CompaniesDialog />
       <ReenactDialog />
       <AuthGate />
     </>

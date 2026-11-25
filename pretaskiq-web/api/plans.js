@@ -30,8 +30,8 @@ async function loadPlan(admin, id) {
 export default handle(async (req, res) => {
   const method = req.method;
   if (method !== 'GET' && method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
-  const me = await requireUser(req);
-  const { admin } = me;
+  const me = await requireUser(req, { feature: 'planning' });
+  const admin = me.db;   // this company's data only
   const url = new URL(req.url || '/', 'http://x');
   const id = url.searchParams.get('id');
 

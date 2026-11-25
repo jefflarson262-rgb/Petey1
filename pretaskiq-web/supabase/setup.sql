@@ -229,3 +229,79 @@ create index if not exists audits_created_idx on public.audits (created_at desc)
 alter table public.audits enable row level security;
 revoke all on public.audits from anon, authenticated;
 grant all on public.audits to service_role;
+
+-- 12. Companies and licenses. Each company has its own people and its own data; nothing is shared between companies.
+--     'tier' decides which features a company has (what each tier includes is set in src/shared/licensing.js), 'seat_limit' caps how many
+--     people can be active (null = no cap), and 'status' = suspended switches the whole company off.
+--     Existing data is moved into one starting company, so a single-company setup keeps working. The earliest approved safety
+--     administrator becomes the platform owner (is_owner), the only account that can create companies.
+create table if not exists public.companies (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  tier       text not null default 'basic' check (tier in ('basic', 'standard', 'full')),
+  seat_limit integer check (seat_limit is null or seat_limit >= 1),
+  status     text not null default 'active' check (status in ('active', 'suspended')),
+  created_at timestamptz not null default now()
+);
+alter table public.companies enable row level security;
+revoke all on public.companies from anon, authenticated;
+grant all on public.companies to service_role;
+
+alter table public.profiles add column if not exists company_id uuid references public.companies (id);
+alter table public.profiles add column if not exists is_owner boolean not null default false;
+create index if not exists profiles_company_idx on public.profiles (company_id);
+
+do $$
+declare cid uuid; owner_id uuid;
+begin
+  select id into cid from public.companies order by created_at limit 1;
+  if cid is null and exists (select 1 from public.profiles) then
+    insert into public.companies (name, tier) values ('My company', 'full') returning id into cid;
+  end if;
+  if cid is not null then
+    update public.profiles set company_id = cid where company_id is null and approved;
+    select id into owner_id from public.profiles where approved and role = 'safety' order by created_at limit 1;
+    if owner_id is not null and not exists (select 1 from public.profiles where is_owner) then
+      update public.profiles set is_owner = true where id = owner_id;
+    end if;
+  end if;
+end $$;
+
+-- Every table that holds a company's data gets a company_id (existing rows go to the starting company).
+do $$
+declare t text; cid uuid;
+begin
+  select id into cid from public.companies order by created_at limit 1;
+  foreach t in array array['plans', 'plan_revisions', 'alerts', 'kb_entries', 'incident_reports', 'protection_checklists', 'protection_observations', 'audit_templates', 'audits']
+  loop
+    execute format('alter table public.%I add column if not exists company_id uuid references public.companies (id)', t);
+    execute format('create index if not exists %I on public.%I (company_id)', t || '_company_idx', t);
+    if cid is not null then execute format('update public.%I set company_id = $1 where company_id is null', t) using cid; end if;
+  end loop;
+end $$;
+
+-- Sign-up trigger, replaced: the FIRST person ever added becomes the safety administrator, the platform owner, and joins the starting
+-- company (created if needed). Everyone else starts unapproved and in no company; the app attaches them to a company when an administrator adds them.
+create or replace function public.handle_new_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare first_user boolean; cid uuid;
+begin
+  select not exists (select 1 from public.profiles) into first_user;
+  if first_user then
+    select id into cid from public.companies order by created_at limit 1;
+    if cid is null then insert into public.companies (name, tier) values ('My company', 'full') returning id into cid; end if;
+  end if;
+  insert into public.profiles (id, email, display_name, role, approved, company_id, is_owner)
+  values (
+    new.id,
+    new.email,
+    coalesce(nullif(new.raw_user_meta_data ->> 'display_name', ''), split_part(new.email, '@', 1)),
+    case when first_user then 'safety' else 'foreman' end,
+    first_user,
+    cid,
+    first_user
+  )
+  on conflict (id) do nothing;
+  return new;
+end $$;
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
