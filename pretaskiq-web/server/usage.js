@@ -17,3 +17,16 @@ export async function checkAndRecordAiUse(admin, userId, limit = callsPerHour())
   const { error: insertError } = await admin.from('ai_usage').insert({ user_id: userId });
   if (insertError) throw dbError(insertError);
 }
+
+// What each company uses, so the cost of serving it can be worked out from the Anthropic and ElevenLabs bills:
+//   ai          one request to Petey; input_tokens and output_tokens as Anthropic reported them
+//   speech      Petey's spoken reply; units = characters sent to be spoken
+//   transcribe  the person's speech turned into text; units = seconds of audio
+// Recording is best-effort: a failure here must never break the request the person is waiting on.
+export async function recordUsage(me, kind, { inputTokens = null, outputTokens = null, units = null } = {}) {
+  try {
+    if (!me || !me.admin || !me.company) return;
+    const num = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 && v !== null ? Number(v) : null);
+    await me.admin.from('usage_log').insert({ company_id: me.company.id, user_id: me.user.id, kind, input_tokens: num(inputTokens), output_tokens: num(outputTokens), units: num(units) });
+  } catch { /* never in the way */ }
+}

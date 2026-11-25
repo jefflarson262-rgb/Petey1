@@ -15,6 +15,7 @@
 // Request format used here (ElevenLabs "Create speech" API reference): POST {base}/v1/text-to-speech/{voice_id}?output_format=...
 //   header `xi-api-key`; JSON body { text, model_id }; the reply body is the audio.
 import { requireVoiceAccess } from '../server/gate.js';
+import { recordUsage } from '../server/usage.js';
 import { HttpError, send, readJson, handle } from '../server/http.js';
 
 const UPSTREAM_BASE = (process.env.ELEVENLABS_API_URL || 'https://api.elevenlabs.io').replace(/\/+$/, '');   // override is for tests
@@ -39,7 +40,7 @@ export default handle(async (req, res) => {
   if (req.method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(res, 405, { error: 'method_not_allowed' }); }
 
   if (!key) throw new HttpError(503, 'speech_not_configured');         // fail closed
-  await requireVoiceAccess(req);
+  const me = await requireVoiceAccess(req);
 
   const body = await readJson(req);
   const text = body && typeof body === 'object' && !Array.isArray(body) && typeof body.text === 'string' ? body.text.trim() : '';
@@ -81,5 +82,6 @@ export default handle(async (req, res) => {
   res.setHeader('Content-Type', type.toLowerCase().startsWith('audio/') ? type : 'audio/mpeg');
   res.setHeader('Content-Length', String(audio.length));
   res.setHeader('Cache-Control', 'no-store');
+  await recordUsage(me, 'speech', { units: text.length });
   res.end(audio);
 });

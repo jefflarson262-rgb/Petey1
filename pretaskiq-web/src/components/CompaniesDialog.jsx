@@ -12,6 +12,13 @@ function Row({ c, busy }) {
       <div className="alert-main">
         <div className="alert-hazard">{c.name}{c.status === 'suspended' ? ' · SUSPENDED' : ''}</div>
         <div className="alert-meta">{c.seatsUsed} seats in use</div>
+        {c.usage && (
+          <div className="alert-meta co-usage">
+            Last 30 days: {c.usage.aiRequests.toLocaleString()} request{c.usage.aiRequests === 1 ? '' : 's'} to Petey
+            {c.usage.aiRequests > 0 && <> ({c.usage.inputTokens.toLocaleString()} tokens in, {c.usage.outputTokens.toLocaleString()} out)</>}
+            {' · '}{c.usage.speechChars.toLocaleString()} characters spoken{' · '}{(Math.round(c.usage.transcribeSeconds / 6) / 10).toLocaleString()} min transcribed
+          </div>
+        )}
         <div className="co-controls">
           <select aria-label={`Tier for ${c.name}`} className="auth-input co-small" value={c.tier} disabled={busy} onChange={(e) => updateCompany(c.id, { tier: e.target.value })}>{tierOptions}</select>
           <input aria-label={`Seat limit for ${c.name}`} className="auth-input co-small" inputMode="numeric" placeholder="No limit" value={seats} onChange={(e) => setSeats(e.target.value)} onBlur={saveSeats} />
@@ -69,6 +76,7 @@ export default function CompaniesDialog() {
           <button id="tester-add" className="auth-submit" type="submit" disabled={s.busy || !t.email.trim()}>{s.busy ? 'Adding…' : 'Add tester'}</button>
         </form>
         <h3 className="alert-heading">Companies</h3>
+        <p className="auth-text">Usage is what each company cost you to serve: multiply the tokens, characters and minutes by the rates on your Anthropic and ElevenLabs bills.</p>
         {!s.companies && !s.error && <p className="auth-text">Loading…</p>}
         <ul className="plans-list">{(s.companies || []).map((c) => <Row key={c.id + c.tier + c.status + c.seatLimit} c={c} busy={s.busy} />)}</ul>
         <h3 className="alert-heading">New company</h3>

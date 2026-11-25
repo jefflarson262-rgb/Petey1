@@ -404,3 +404,21 @@ create or replace view public.audit_failed_items with (security_invoker = true) 
   where i ->> 'result' = 'fail';
 revoke all on public.audit_failed_items from anon, authenticated;
 grant select on public.audit_failed_items to service_role;
+
+-- 15. What each company uses (requests to Petey with token counts, characters spoken, seconds transcribed), so the cost of serving a company
+-- can be worked out from the Anthropic and ElevenLabs bills. Written by the server only; read by the platform owner's screen.
+create table if not exists public.usage_log (
+  id            bigint generated always as identity primary key,
+  company_id    uuid references public.companies (id),
+  user_id       uuid,
+  kind          text not null check (kind in ('ai', 'speech', 'transcribe')),
+  input_tokens  integer,
+  output_tokens integer,
+  units         numeric,
+  used_at       timestamptz not null default now()
+);
+create index if not exists usage_log_company_idx on public.usage_log (company_id, used_at desc);
+alter table public.usage_log enable row level security;
+revoke all on public.usage_log from anon, authenticated;
+grant all on public.usage_log to service_role;
+grant usage, select on all sequences in schema public to service_role;
