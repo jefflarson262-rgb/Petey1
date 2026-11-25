@@ -53,7 +53,7 @@ export default function AccountMenu() {
             <div className="acct-menu" role="menu">
               {signedIn && <div className="acct-who"><div>{auth.user.email}</div><div className="acct-role">{ROLE_LABEL[auth.profile.role] || auth.profile.role}{auth.company ? ` · ${auth.company.name} (${auth.company.tierLabel})` : ''}</div></div>}
               {signedIn && isSafety && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openTeam(); }}>Team and access</button>}
-              {signedIn && auth.profile.isOwner && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openCompanies(); }}>Companies (owner)</button>}
+              {signedIn && auth.profile.isOwner && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openCompanies(); }}>Testers and companies (owner)</button>}
               {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openAlerts(); }}>{isSafety ? `Safety alerts${waiting ? ` (${waiting})` : ''}` : 'Hazards I flagged'}</button>}
               {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); setPlansOpen(true); }}>My plans</button>}
               <button type="button" role="menuitem" className="acct-item" onClick={tour}>Take the tour</button>

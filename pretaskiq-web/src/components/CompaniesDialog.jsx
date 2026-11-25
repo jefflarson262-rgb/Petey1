@@ -27,6 +27,7 @@ export default function CompaniesDialog() {
   const s = useSyncExternalStore(subscribe, getSnapshot);
   const [f, setF] = useState({ name: '', tier: 'basic', seats: '', email: '', adminName: '' });
   const [made, setMade] = useState(null);
+  const [t, setT] = useState({ email: '', name: '' });
   if (!s.companiesOpen) return null;
   const up = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const create = async (e) => {
@@ -34,22 +35,40 @@ export default function CompaniesDialog() {
     const r = await createCompany({ name: f.name, tier: f.tier, seatLimit: f.seats.trim() === '' ? null : Number(f.seats), admin: { email: f.email, displayName: f.adminName } });
     if (r.ok) { setMade(r.out); setF({ name: '', tier: 'basic', seats: '', email: '', adminName: '' }); }
   };
+  // A tester gets a practice company of their own (every feature, one seat) as its administrator, so they can try all three views
+  // without seeing or changing anyone's real data.
+  const addTester = async (e) => {
+    e.preventDefault();
+    const who = t.name.trim() || t.email.trim();
+    const r = await createCompany({ name: ('Tester: ' + who).slice(0, 120), tier: 'full', seatLimit: 1, admin: { email: t.email, displayName: t.name } });
+    if (r.ok) { setMade({ ...r.out, tester: true }); setT({ email: '', name: '' }); }
+  };
   return (
     <div className="auth-overlay plans-overlay" role="dialog" aria-modal="true" aria-labelledby="cos-title" onKeyDown={(e) => e.key === 'Escape' && closeCompanies()}>
       <div className="plans-card">
         <div className="plans-head">
-          <h2 id="cos-title" className="display plans-title">Companies</h2>
+          <h2 id="cos-title" className="display plans-title">Testers and companies</h2>
           <button type="button" className="plans-close" onClick={closeCompanies} aria-label="Close">✕</button>
         </div>
         {s.error && <p className="auth-error" role="alert">{s.error}</p>}
         {made && (
           <div className="team-created" role="status">
-            <strong>{made.company.name} was created. Its administrator is {made.admin.email}.</strong>
+            <strong>{made.tester ? `${made.admin.email} can now sign in as a tester, in a practice company of their own.` : `${made.company.name} was created. Its administrator is ${made.admin.email}.`}</strong>
             <p className="auth-text">Give them this temporary password now. It is shown only once:</p>
             <code className="team-pw" id="co-temp-password">{made.temporaryPassword}</code>
             <button type="button" className="plans-open" onClick={() => setMade(null)}>Done</button>
           </div>
         )}
+        <h3 className="alert-heading">Add a tester</h3>
+        <p className="auth-text">A tester sees all three views and every feature, in a practice company of their own. Your data stays separate.</p>
+        <form onSubmit={addTester}>
+          <label className="auth-label" htmlFor="tester-email">Tester's email</label>
+          <input id="tester-email" className="auth-input" type="email" value={t.email} onChange={(e) => setT({ ...t, email: e.target.value })} />
+          <label className="auth-label" htmlFor="tester-name">Tester's name</label>
+          <input id="tester-name" className="auth-input" value={t.name} onChange={(e) => setT({ ...t, name: e.target.value })} />
+          <button id="tester-add" className="auth-submit" type="submit" disabled={s.busy || !t.email.trim()}>{s.busy ? 'Adding…' : 'Add tester'}</button>
+        </form>
+        <h3 className="alert-heading">Companies</h3>
         {!s.companies && !s.error && <p className="auth-text">Loading…</p>}
         <ul className="plans-list">{(s.companies || []).map((c) => <Row key={c.id + c.tier + c.status + c.seatLimit} c={c} busy={s.busy} />)}</ul>
         <h3 className="alert-heading">New company</h3>
