@@ -13,9 +13,9 @@ import kbApi from '../api/kb.js';
 import incidentsApi from '../api/incidents.js';
 import protectionApi from '../api/protection.js';
 import auditsApi from '../api/audits.js';
-import meApi from '../api/me.js';
-import companyApi from '../api/company.js';
-import ownerApi from '../api/owner.js';
+import meApi from '../server/handlers/me.js';
+import companyApi from '../server/handlers/company.js';
+import ownerApi from '../server/handlers/owner.js';
 
 let fake, U, A, B, C;
 const fakeRes = () => { const r = { statusCode: 200, headers: {}, body: '' }; r.setHeader = (k, v) => { r.headers[k.toLowerCase()] = v; }; r.end = (b = '') => { r.body = b; }; r.writeHead = (c, h) => { r.statusCode = c; Object.entries(h || {}).forEach(([k, v]) => r.setHeader(k, v)); }; return r; };
@@ -173,4 +173,15 @@ test('owner tools: only the owner; create a company with its first administrator
   assert.equal((await post(ownerApi, '/api/owner', U.owner, { action: 'update_company', id: made.json.company.id, tier: 'gold' })).status, 400);
   const list = await get(ownerApi, '/api/owner', U.owner);
   assert.ok(list.json.companies.length >= 4); assert.ok(list.json.companies.find((c) => c.name === 'Bravo Builders').seatsUsed >= 2);
+});
+
+test('account endpoint: routes /api/me, /api/company and /api/owner, and the project stays within the 12-function limit', async () => {
+  const { default: account } = await import('../api/account.js');
+  const { readdirSync } = await import('node:fs');
+  const files = readdirSync(new URL('../api/', import.meta.url)).filter((f) => f.endsWith('.js'));
+  assert.ok(files.length <= 12, `${files.length} serverless functions; Vercel's free plan allows 12`);
+  assert.equal((await call(account, { method: 'GET', url: '/api/account?area=me', query: { area: 'me' }, headers: as(U.bAdmin) })).json.company.name, 'Bravo Builders');
+  assert.equal((await call(account, { method: 'GET', url: '/api/company', headers: as(U.bAdmin) })).json.company.name, 'Bravo Builders');   // area found from the path
+  assert.equal((await call(account, { method: 'GET', url: '/api/owner', query: { area: 'owner' }, headers: as(U.bAdmin) })).status, 403);
+  assert.equal((await call(account, { method: 'GET', url: '/api/account?area=x', query: { area: 'x' }, headers: as(U.bAdmin) })).status, 404);
 });

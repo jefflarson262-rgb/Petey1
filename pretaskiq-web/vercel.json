@@ -1,16 +1,42 @@
 {
   "functions": {
-    "api/claude.js": { "maxDuration": 60 },
-    "api/speak.js": { "maxDuration": 30 },
-    "api/transcribe.js": { "maxDuration": 45 }
+    "api/claude.js": {
+      "maxDuration": 60
+    },
+    "api/speak.js": {
+      "maxDuration": 30
+    },
+    "api/transcribe.js": {
+      "maxDuration": 45
+    }
   },
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/me",
+      "destination": "/api/account?area=me"
+    },
+    {
+      "source": "/api/company",
+      "destination": "/api/account?area=company"
+    },
+    {
+      "source": "/api/owner",
+      "destination": "/api/account?area=owner"
     }
   ]
 }

@@ -2,10 +2,10 @@
 //   GET  /api/owner                                                      every company with seats used
 //   POST /api/owner { action:'create_company', name, tier, seatLimit, admin:{ email, displayName } }
 //   POST /api/owner { action:'update_company', id, tier?, seatLimit?, status? }
-import { requireUser } from '../server/auth.js';
-import { HttpError, send, handle, readJson } from '../server/http.js';
-import { dbError } from '../server/supabase.js';
-import { isTier, COMPANY_STATUSES, TIERS } from '../src/shared/licensing.js';
+import { requireUser } from '../auth.js';
+import { HttpError, send, handle, readJson } from '../http.js';
+import { dbError } from '../supabase.js';
+import { isTier, COMPANY_STATUSES, TIERS } from '../../src/shared/licensing.js';
 import { createMember } from './company.js';
 
 const COLS = 'id,name,tier,seat_limit,status,created_at';

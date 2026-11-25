@@ -1,7 +1,7 @@
 // Who am I? Returns the signed-in person's profile and role, and their company's license (name, tier, what it includes, whether it is active).
-import { requireUser } from '../server/auth.js';
-import { send, handle } from '../server/http.js';
-import { TIERS } from '../src/shared/licensing.js';
+import { requireUser } from '../auth.js';
+import { send, handle } from '../http.js';
+import { TIERS } from '../../src/shared/licensing.js';
 
 export default handle(async (req, res) => {
   if (req.method !== 'GET') { res.setHeader('Allow', 'GET'); return send(res, 405, { error: 'method_not_allowed' }); }

@@ -2,10 +2,10 @@
 //   GET  /api/company                                  the company, seats used, and its people
 //   POST /api/company { action:'add_member', email, displayName, role }   creates the account (with a temporary password shown once)
 //   POST /api/company { action:'set_active', id, active }                 turns a person's access off or on
-import { requireUser, ROLES } from '../server/auth.js';
-import { HttpError, send, handle, readJson } from '../server/http.js';
-import { dbError } from '../server/supabase.js';
-import { tempPassword, EMAIL_RE } from '../server/company.js';
+import { requireUser, ROLES } from '../auth.js';
+import { HttpError, send, handle, readJson } from '../http.js';
+import { dbError } from '../supabase.js';
+import { tempPassword, EMAIL_RE } from '../company.js';
 
 const MEMBER = 'id,email,display_name,role,approved,created_at';
 const shape = (p) => ({ id: p.id, email: p.email, displayName: p.display_name, role: p.role, active: !!p.approved, createdAt: p.created_at });
