@@ -5,6 +5,7 @@ process.env.NODE_ENV = 'test';
 process.env.PRETASKIQ_SIGN_IN = 'on';
 import { startFakeSupabase, makeJwt } from './helpers/fakeSupabase.mjs';
 import accountApi from '../api/account.js';
+import plansApi from '../api/plans.js';
 import { expiryStatus, isDateString } from '../src/shared/jobs.js';
 
 let fake, U, A, B, C;
@@ -136,4 +137,19 @@ test('archiving hides a job and a document; the plain Jobs address is routed to 
   assert.equal((await post(U.aCons, { action: 'nonsense' })).json.error, 'unknown_action');
   const viaUrl = await call({ method: 'GET', url: '/api/account?area=jobs', headers: as(U.aCons) });     // area read from the URL, as Vercel's rewrite does
   assert.equal(viaUrl.status, 200);
+});
+
+test('a plan can say which job it is for: kept for this company\'s job, dropped for anything else, and a plan without a job is untouched', async () => {
+  const aJob = (await get(U.aCons)).json.jobs.find((j) => j.name === 'Tower 2');
+  const bJob = (await post(U.bCons, { action: 'create_job', name: 'Bravo job' })).json.job;
+  const saveVia = async (u, data) => { const res = fakeRes(); await plansApi({ method: 'POST', url: '/api/plans', query: {}, headers: as(u), body: { data: { jobTitle: 'Conduit', revision: 1, taskSteps: [], ...data } } }, res); const stored = fake.state.tables.plans.find((r) => r.id === JSON.parse(res.body).plan.id); return { status: res.statusCode, plan: stored }; };
+  const own = await saveVia(U.aForeman, { jobId: aJob.id, jobName: 'whatever the browser said' });
+  assert.ok(own.status === 200 || own.status === 201, 'saved: ' + own.status);
+  assert.equal(own.plan.data.jobId, aJob.id); assert.equal(own.plan.data.jobName, 'Tower 2');       // the name comes from the job, not the browser
+  const other = await saveVia(U.aForeman, { jobId: bJob.id, jobName: 'Bravo job' });
+  assert.ok(other.plan.data.jobId === undefined && other.plan.data.jobName === undefined);          // another company's job is dropped, the plan still saves
+  const junk = await saveVia(U.aForeman, { jobId: 'not-a-uuid' });
+  assert.ok(junk.plan.data.jobId === undefined);
+  const none = await saveVia(U.aForeman, {});
+  assert.ok(none.plan.data.jobId === undefined && none.plan.title === 'Conduit');
 });

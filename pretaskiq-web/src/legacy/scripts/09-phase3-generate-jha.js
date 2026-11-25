@@ -17,6 +17,7 @@ async function generateJHA(messages) {
       maxTokens: 6000
     });
     const parsed = extractJson(result);
+    if (typeof jbStampPlan === 'function') jbStampPlan(parsed);      // remembers which job this plan is for
     renderDocument(parsed);
     showScreen("document");
     // Auto-cache for offline use

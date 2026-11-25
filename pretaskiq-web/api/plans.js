@@ -15,6 +15,18 @@ import { summarizePlan } from '../src/shared/siteOverview.js';
 const LIST_COLUMNS = 'id,title,current_revision,created_by,owner_name,created_at,updated_at';
 const SOURCES = ['planning', 'petey_update', 'edit'];
 const MAX_PLAN_CHARS = 400_000;
+
+// A plan may say which job it is for. The job must belong to this company; otherwise the field is dropped (the plan still saves).
+// The job's current name is stored beside the id so the plan reads right even if the job is later renamed or removed.
+async function checkJobOnPlan(admin, content) {
+  if (content.jobId === undefined && content.jobName === undefined) return;
+  let found = null;
+  if (typeof content.jobId === 'string' && UUID.test(content.jobId)) {
+    try { const { data } = await admin.from('jobs').select('id,name').eq('id', content.jobId).maybeSingle(); found = data || null; } catch { found = null; }
+  }
+  if (found) content.jobName = String(found.name || '').slice(0, 120);
+  else { delete content.jobId; delete content.jobName; }
+}
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const canRead = (plan, me) => plan.created_by === me.user.id || me.profile.role === 'safety' || me.profile.role === 'construction';
@@ -70,6 +82,7 @@ export default handle(async (req, res) => {
   const { data: content } = body;
   if (!content || typeof content !== 'object' || Array.isArray(content)) throw new HttpError(400, 'invalid_plan');
   if (JSON.stringify(content).length > MAX_PLAN_CHARS) throw new HttpError(413, 'plan_too_large');
+  await checkJobOnPlan(admin, content);
   const source = SOURCES.includes(body.source) ? body.source : 'planning';
   const note = typeof body.note === 'string' ? body.note.slice(0, 500) : null;
   const revision = Number.isInteger(content.revision) && content.revision >= 1 && content.revision < 100000 ? content.revision : 1;
