@@ -6,8 +6,8 @@ import { getSnapshot as alertsSnapshot, openCount, openDialog as openAlerts, sub
 
 const ROLE_LABEL = { foreman: 'Foreman', safety: 'Safety Admin', construction: 'Construction Admin' };
 
-// Lives in the top bar (the empty #account-slot in the prototype's markup). With an account: name, My plans, Guided demo, Sign out.
-// With the old shared-code mode there is no account, so it offers just the guided demo.
+// Lives in the top bar (the empty #account-slot in the prototype's markup). With an account: name, My plans, the overview video, Sign out.
+// With the old shared-code mode there is no account, so it offers just the overview video.
 export default function AccountMenu() {
   const auth = useSyncExternalStore(subscribe, getSnapshot);
   const alerts = useSyncExternalStore(subscribeAlerts, alertsSnapshot);
@@ -33,7 +33,7 @@ export default function AccountMenu() {
   const signedIn = auth.phase === 'signed_in';
   if (!slot || !(signedIn || auth.phase === 'code')) return null;
 
-  const demo = () => { setOpen(false); window.PreTaskIQ?.openDemo(); };
+  const video = () => { setOpen(false); window.open('/promo.mp4', '_blank', 'noopener'); };
   const isSafety = signedIn && auth.profile.role === 'safety';
   const waiting = isSafety ? openCount(alerts) : 0;
   const name = signedIn ? (auth.profile.displayName || auth.user.email || 'Account') : 'Menu';
@@ -52,7 +52,7 @@ export default function AccountMenu() {
               {signedIn && <div className="acct-who"><div>{auth.user.email}</div><div className="acct-role">{ROLE_LABEL[auth.profile.role] || auth.profile.role}</div></div>}
               {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); openAlerts(); }}>{isSafety ? `Safety alerts${waiting ? ` (${waiting})` : ''}` : 'Hazards I flagged'}</button>}
               {signedIn && <button type="button" role="menuitem" className="acct-item" onClick={() => { setOpen(false); setPlansOpen(true); }}>My plans</button>}
-              <button type="button" role="menuitem" className="acct-item" onClick={demo}>Guided demo</button>
+              <button type="button" role="menuitem" className="acct-item" onClick={video}>Watch the overview video</button>
               {signedIn && <button type="button" role="menuitem" className="acct-item acct-signout" onClick={signOut}>Sign out</button>}
             </div>
           )}
