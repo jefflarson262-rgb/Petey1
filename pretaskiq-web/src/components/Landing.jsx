@@ -24,14 +24,6 @@ const STEPS = [
   { n: 2, t: 'Review the questions, hazards, and lessons that apply', d: 'Petey asks the follow-up questions a seasoned safety lead would, and raises your own incidents, policies and drawings when they match the work.', img: '/demo/conversation.jpg', alt: 'Petey asking a foreman a follow-up question about the work, drawing on a past incident' },
   { n: 3, t: 'Brief, sign, and submit the plan', d: 'Steps, hazards and controls are written from the conversation. The crew signs on the phone, the foreman submits, and safety sees it right away.', img: '/demo/doc_top.jpg', alt: 'A finished pre-task plan with its high-risk activities, ready to be signed and submitted' },
 ];
-// The feature row under the hero. Each opens its role tab below and scrolls to the matching feature.
-const LINKS = [
-  { id: 'f-plans', tab: 'foreman', label: 'Pre-Task Plans' },
-  { id: 'f-audits', tab: 'safety', label: 'Audits & Observations' },
-  { id: 'f-incidents', tab: 'safety', label: 'Incident Reporting & RCA' },
-  { id: 'f-jobs', tab: 'construction', label: 'Job Documents' },
-  { id: 'f-metrics', tab: 'safety', label: 'Safety Metrics' },
-];
 // Petey beyond the morning briefing: who asks him what, and what he draws on. The questions are illustrations.
 const ASK = [
   { who: 'Foreman, mid-shift', q: 'We\u2019re moving the lift to the north side after lunch. What changes in the plan?', a: 'Petey works through the new hazards with the crew and updates the plan from the same screen.' },
@@ -45,30 +37,41 @@ const SOURCES = [
   { t: 'Construction standards', d: 'The OSHA, NFPA and ANSI standards that apply to construction work.' },
 ];
 
-// What each role can do, as the app does it today.
-const ROLES = [
-  { key: 'foreman', label: 'Foreman', img: '/demo/conversation.jpg', alt: 'The foreman talking through the day’s work with Petey',
-    intro: 'Describe the work by voice or text with Petey, review and brief the pre-task plan, collect crew signatures, and submit the plan.',
+// The feature buttons under the hero. Tapping one opens its panel right under the buttons. Everything here is what the app does today; screens are real, data is sample.
+const FEATURES = [
+  { key: 'plans', label: 'Pre-Task Plans', used: 'Foreman · Safety Admin', img: '/demo/conversation.jpg', alt: 'The foreman talking through the day’s work with Petey',
     items: [
-      { id: 'f-plans', t: 'Pre-task plans with Petey', d: 'Talk or type through the day’s work. Petey asks follow-up questions and writes the steps, hazards and controls, including the high-risk activities to brief.' },
+      { t: 'Plan the work with Petey', d: 'Talk or type through the day’s work. Petey asks follow-up questions and writes the steps, hazards and controls, including the high-risk activities to brief.' },
       { t: 'Brief and sign on the phone', d: 'Review the plan with the crew, collect each signature on the phone, and submit. Changes after submission are tracked as revisions.' },
-      { t: 'Petey on through the shift', d: 'Talk to Petey by voice when the work changes, and update the plan from the same screen.', q: ASK[0].q },
+      { t: 'Safety sees it right away', d: 'Site Overview shows today’s plans, which are submitted and signed, and any changed after submission.' },
     ] },
-  { key: 'safety', label: 'Safety Admin', img: '/demo/dash.jpg', alt: 'The safety administrator’s Site Overview of today’s plans',
-    intro: 'Review submitted plans, check whether controls are in place through audits and observations, manage incident reporting and root cause analysis, and track leading indicators.',
+  { key: 'petey', label: 'Talk to Petey', used: 'Foreman · Safety Admin', img: '/demo/petey_loto.jpg', alt: 'Petey’s shift companion screen with the microphone',
     items: [
-      { t: 'Ask Petey', d: 'Ask by voice about a policy, a procedure, a regulation or a pattern in your incidents, and see which source the answer comes from.', q: ASK[1].q },
-      { t: 'Review submitted plans', d: 'Site Overview shows today’s plans, which are submitted and signed, and any changed after submission.' },
-      { id: 'f-audits', t: 'Audits & observations', d: 'Pass or fail audits with comments and photos, and observations that check whether life-saving controls are really in place.' },
-      { id: 'f-incidents', t: 'Incident reporting & RCA', d: 'A quick first report from the field, then a full report and a root cause analysis with Petey. Approved reenactments help crews see what happened.' },
-      { id: 'f-metrics', t: 'Safety metrics', d: 'Leading indicators from what crews record every day, by month and by job, with a spreadsheet report to download.' },
+      { t: 'Through the shift', d: 'Talk to Petey by voice when the work changes, and update the plan from the same screen.', q: ASK[0].q },
+      { t: 'For the safety team', d: 'Ask by voice about a policy, a procedure, a regulation or a pattern in your incidents, and see which source the answer comes from.', q: ASK[1].q },
+    ],
+    sources: true },
+  { key: 'audits', label: 'Audits & Observations', used: 'Foreman · Safety Admin', img: '/demo/aud_fail.jpg', alt: 'An audit with a failed item, a comment and a photo',
+    items: [
+      { t: 'Audits', d: 'Pass or fail audits with comments and photos.' },
+      { t: 'Observations', d: 'Check whether life-saving controls are really in place on the job.' },
     ] },
-  { key: 'construction', label: 'Construction Admin', img: '/demo/jobs.jpg', alt: 'A job folder with drawing revisions, permits and 811 tickets',
-    intro: 'Give crews access to job folders with drawings, RFIs, revisions, permits, and 811 tickets.',
+  { key: 'incidents', label: 'Incident Reporting & RCA', used: 'Foreman · Safety Admin', img: '/demo/rca.jpg', alt: 'A root cause analysis worked through with Petey',
     items: [
-      { id: 'f-jobs', t: 'Job documents', d: 'One folder per job for scope documents, RFIs, drawing revisions, permits and 811 tickets, with the original files kept.' },
+      { t: 'Report from the field', d: 'A quick first report from the field, then a full report.' },
+      { t: 'Root cause analysis with Petey', d: 'Work through the root cause and the corrective actions with Petey. The lessons are what Petey brings up in future plans.' },
+      { t: 'Reenactments', d: 'Approved reenactments help crews see what happened.' },
+    ] },
+  { key: 'jobs', label: 'Job Documents', used: 'Construction Admin · Foreman', img: '/demo/jobs.jpg', alt: 'A job folder with drawing revisions, permits and 811 tickets',
+    items: [
+      { t: 'One folder per job', d: 'Scope documents, RFIs, drawing revisions, permits and 811 tickets, with the original files kept.' },
       { t: 'Current revisions reach the crew', d: 'When a foreman plans work on a job, Petey uses its documents and checks the crew is working from the current revision.' },
       { t: 'Expiry dates flagged', d: 'Permits and 811 tickets carry the expiry date from the document, and expired or expiring items are flagged.' },
+    ] },
+  { key: 'metrics', label: 'Safety Metrics', used: 'Safety Admin',
+    items: [
+      { t: 'Leading indicators first', d: 'Leading indicators from what crews record every day, by month and by job.' },
+      { t: 'Reports', d: 'Choose what goes in the report and download it as a spreadsheet.' },
     ] },
 ];
 
@@ -147,10 +150,9 @@ function Bubble({ children }) {
 
 export default function Landing({ onLogin }) {
   const [video, setVideo] = useState(false);
-  const [tab, setTab] = useState('foreman');
+  const [feat, setFeat] = useState(null);
   const mail = demoMailto();
   const rxRef = useRef(null);
-  const tabRefs = useRef({});
   const reduceMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const behavior = reduceMotion ? 'auto' : 'smooth';
   const [rxPlaying, setRxPlaying] = useState(false);
@@ -158,16 +160,15 @@ export default function Landing({ onLogin }) {
   const toggleRx = () => { const v = rxRef.current; if (!v) return; if (v.paused) v.play().catch(() => {}); else v.pause(); };
   // Section links scroll inside the page (the page is its own scrolling layer, so a plain #link would not move it on every browser).
   const go = (e, id) => { if (e) e.preventDefault(); const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior, block: 'start' }); };
-  const openFeature = (e, link) => {
-    e.preventDefault(); setTab(link.tab);
-    requestAnimationFrame(() => { const el = document.getElementById(link.id); if (!el) return; el.scrollIntoView({ behavior, block: 'center' }); el.classList.remove('lp-flash'); void el.offsetWidth; el.classList.add('lp-flash'); try { el.focus({ preventScroll: true }); } catch { /* old browser */ } });
-  };
-  const onTabKey = (e) => {
-    const keys = ROLES.map((r) => r.key); const i = keys.indexOf(tab); let n = null;
-    if (e.key === 'ArrowRight') n = keys[(i + 1) % keys.length]; else if (e.key === 'ArrowLeft') n = keys[(i - 1 + keys.length) % keys.length];
-    else if (e.key === 'Home') n = keys[0]; else if (e.key === 'End') n = keys[keys.length - 1];
-    if (n) { e.preventDefault(); setTab(n); const b = tabRefs.current[n]; if (b) b.focus(); }
-  };
+  const pickFeature = (key) => setFeat((cur) => (cur === key ? null : key));
+  // When a panel opens low on the screen, bring the buttons and the panel up so the description can be read.
+  useEffect(() => {
+    if (!feat) return;
+    requestAnimationFrame(() => {
+      const panel = document.getElementById('lp-feat-panel'); if (!panel) return;
+      if (panel.getBoundingClientRect().top > window.innerHeight * 0.55) panel.scrollIntoView({ behavior, block: 'start' });
+    });
+  }, [feat]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!video) return undefined;
     const esc = (e) => { if (e.key === 'Escape') setVideo(false); };
@@ -180,7 +181,7 @@ export default function Landing({ onLogin }) {
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>Watch the Walkthrough
     </button>
   );
-  const role = ROLES.find((r) => r.key === tab);
+  const open = FEATURES.find((f) => f.key === feat);
   return (
     <div className="lp" id="landing">
       <a className="lp-skip" href="#lp-main" onClick={(e) => go(e, 'lp-main')}>Skip to content</a>
@@ -217,12 +218,33 @@ export default function Landing({ onLogin }) {
           </figure>
         </section>
 
-        <nav className="lp-feat-links" aria-labelledby="lp-feat-links-h">
+        <section className="lp-feat-links" id="lp-features" aria-labelledby="lp-feat-links-h">
           <div className="lp-feat-box">
             <p className="lp-feat-lead"><b id="lp-feat-links-h">PreTaskIQ levels up your whole safety process</b><span>Tap a feature to see what it does.</span></p>
-            <ul>{LINKS.map((l) => <li key={l.id}><a href={'#' + l.id} onClick={(e) => openFeature(e, l)}>{l.label}</a></li>)}</ul>
+            <ul>{FEATURES.map((f) => (
+              <li key={f.key}><button type="button" className="lp-feat-btn" id={'lp-fb-' + f.key} aria-expanded={feat === f.key} aria-controls="lp-feat-panel" onClick={() => pickFeature(f.key)}>{f.label}</button></li>
+            ))}</ul>
+            {open && (
+              <div className="lp-feat-panel" id="lp-feat-panel" role="region" aria-labelledby={'lp-fb-' + open.key}>
+                {open.img && <div className="lp-phone lp-phone-sm lp-panel-shot"><img src={open.img} alt={open.alt} /></div>}
+                <div className="lp-panel-text">
+                  <span className="lp-feat-used">Used by: {open.used}</span>
+                  <ul className="lp-feat-list">{open.items.map((it) => (
+                    <li key={it.t}><h3>{it.t}</h3><p>{it.d}</p>{it.q && <p className="lp-feat-q">Example: &ldquo;{it.q}&rdquo;</p>}</li>))}
+                  </ul>
+                  {open.sources && (
+                    <div className="lp-src">
+                      <h3>What Petey draws on</h3>
+                      <ul>{SOURCES.map((x) => <li key={x.t}><b>{x.t}</b><span>{x.d}</span></li>)}</ul>
+                      <p className="lp-src-note">Petey&rsquo;s references to OSHA, NFPA and ANSI standards come from the AI&rsquo;s general knowledge, not a stored copy of the regulations. Check them against the current standard before relying on a specific requirement.</p>
+                    </div>
+                  )}
+                  <p className="lp-panel-note">{open.img ? 'Real screens, sample data. ' : ''}{open.items.some((it) => it.q) ? 'Example questions are illustrative.' : ''}</p>
+                </div>
+              </div>
+            )}
           </div>
-        </nav>
+        </section>
 
         <section className="lp-how" id="lp-how" aria-labelledby="lp-how-h">
           <div className="lp-eyebrow"><i /><i />How it works</div>
@@ -274,32 +296,6 @@ export default function Landing({ onLogin }) {
 
 
 
-        <section className="lp-feat-sec" id="lp-features" aria-labelledby="lp-feat-h">
-          <div className="lp-eyebrow"><i /><i />Features</div>
-          <h2 className="lp-h2" id="lp-feat-h">What your team can do with PreTaskIQ</h2>
-          <div className="lp-tabs" role="tablist" aria-label="Roles">
-            {ROLES.map((r) => (
-              <button key={r.key} type="button" role="tab" id={'lp-tab-' + r.key} aria-controls={'lp-panel-' + r.key} aria-selected={tab === r.key} tabIndex={tab === r.key ? 0 : -1}
-                ref={(el) => { tabRefs.current[r.key] = el; }} onClick={() => setTab(r.key)} onKeyDown={onTabKey} className="lp-tab">{r.label}</button>
-            ))}
-          </div>
-          <div className="lp-panel" role="tabpanel" id={'lp-panel-' + role.key} aria-labelledby={'lp-tab-' + role.key}>
-            <div className="lp-phone lp-phone-sm lp-panel-shot"><img src={role.img} alt={role.alt} loading="lazy" /></div>
-            <div className="lp-panel-text">
-              <p className="lp-panel-intro">{role.intro}</p>
-              <ul className="lp-feat-list">{role.items.map((it) => (
-                <li key={it.t} id={it.id} tabIndex={it.id ? -1 : undefined}><h3>{it.t}</h3><p>{it.d}</p>{it.q && <p className="lp-feat-q">Example: &ldquo;{it.q}&rdquo;</p>}</li>))}
-              </ul>
-              <p className="lp-panel-note">Real screens, sample data.</p>
-            </div>
-          </div>
-          <div className="lp-src">
-            <h3>What Petey draws on</h3>
-            <ul>{SOURCES.map((x) => <li key={x.t}><b>{x.t}</b><span>{x.d}</span></li>)}</ul>
-            <p className="lp-src-note">Petey&rsquo;s references to OSHA, NFPA and ANSI standards come from the AI&rsquo;s general knowledge, not a stored copy of the regulations. Check them against the current standard before relying on a specific requirement.</p>
-          </div>
-          <p className="lp-ask-ill">Example questions are illustrative.</p>
-        </section>
 
         {mail && (
           <section className="lp-final" id="lp-demo" aria-labelledby="lp-final-h">
