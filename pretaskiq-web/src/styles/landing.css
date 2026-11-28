@@ -245,7 +245,10 @@
 
 /* hero: the pick-a-task example */
 .lp-hero-try { max-width: none; text-align: left; }
-.lp-hero-try .lp-try-box { margin: 0; padding: 14px; }
+.lp-hero-try-head { padding: 18px 16px 0; }
+.lp-hero-try-head h2 { margin: 0 0 6px; font-size: 19px; line-height: 1.25; font-weight: 800; color: #fff; }
+.lp-hero-try-head p { margin: 0; font-size: 14.5px; line-height: 1.45; color: rgba(255,255,255,.72); }
+.lp-hero-try .lp-try-box { margin: 0; padding: 16px 14px 14px; }
 .lp-hero-try .lp-try-picks { justify-content: flex-start; margin-bottom: 12px; }
 .lp-hero-try .lp-try-pick { font-size: 14px; padding: 8px 13px; }
 .lp-hero-try .lp-try-grid { grid-template-columns: minmax(0, 1fr); padding: 12px; }
