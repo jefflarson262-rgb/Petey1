@@ -5,13 +5,16 @@ import '../styles/landing.css';
 // The public front page, shown to visitors who are not signed in. Everything on it describes what the app does today:
 // the pictures are real screens, and there are no statistics or promises beyond that.
 const I = (d) => <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>;
-// The example the page leads with. It is the sample conversation from the app's own demo data (a made-up company's incident history),
-// shown as an example and labelled that way.
-const STORY = [
-  { who: 'foreman', label: 'Foreman', text: 'Cut bolts off the Bay 4 structure from a ladder, then stage the cut sections.' },
-  { who: 'petey', label: 'Petey', tag: 'From your company\u2019s incident history', text: 'Heads up: we had a worker hit in the eye by a metal fragment from overhead bolt cutting while standing below in safety glasses. Will anyone be working or walking below you while you cut?' },
-  { who: 'foreman', label: 'Foreman', text: 'Yes, my helper will be handing me tools from below.' },
-  { who: 'petey', label: 'Petey', text: 'Good to know. Your helper below changes the plan. What face and eye protection will he have on?' },
+// The example the page leads with: one past incident, the question Petey asks because of it, and what ends up in today's plan.
+// It is an illustration (not a real company's record) and is labelled that way on the page.
+const ICON = {
+  warn: <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z" /><path d="M12 10v5M12 18v.01" /></svg>,
+  shield: <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>,
+};
+const FLOW = [
+  { key: 'incident', label: 'Past incident', text: 'An electrician was shocked after the crew locked out the wrong breaker.' },
+  { key: 'petey', label: 'Petey asks', text: 'Who will verify the correct isolation and absence of voltage at the point of work?' },
+  { key: 'plan', label: 'Today\u2019s plan', text: 'The foreman holds the work until a qualified person verifies the isolation and confirms absence of voltage.' },
 ];
 const STEPS = [
   { n: 1, t: 'The foreman describes today\u2019s work', d: 'Said out loud or typed, the way it would be at the tailgate. No forms to fill in.', img: '/demo/intake_typed.jpg', alt: 'The foreman screen, where the day\u2019s tasks are typed or spoken to Petey' },
@@ -52,29 +55,27 @@ export default function Landing({ onLogin }) {
         <div className="lp-sky" aria-hidden="true" />
         <div className="lp-hero-text">
           <div className="lp-eyebrow"><i /><i />The AI safety companion for construction</div>
-          <h1 className="lp-h1">Your foreman describes the job. <em>Petey remembers what went wrong last time.</em></h1>
-          <p className="lp-sub">PreTaskIQ turns the morning talk into a pre-task plan the crew can brief and sign, and brings your company&rsquo;s own lessons into the conversation before the work starts.</p>
+          <h1 className="lp-h1">Keep lessons learned <em>in the hands of your crew.</em></h1>
+          <p className="lp-sub">PreTaskIQ brings your company&rsquo;s past incidents and corrective actions into the pre-task plan your crew briefs and signs.</p>
           <div className="lp-cta">
             {demoBtn('lp-btn lp-solid lp-big')}
             <button type="button" className={`lp-btn lp-big ${mail ? 'lp-outline' : 'lp-solid'}`} id="lp-video" onClick={() => setVideo(true)}>
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>See How It Works
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>Watch the walkthrough
             </button>
           </div>
         </div>
         <div className="lp-hero-art">
-          <figure className="lp-story" aria-label="Example conversation between a foreman and Petey">
-            <figcaption>Example · planning a bolt-cutting task</figcaption>
-            {STORY.map((m, k) => (
-              <div key={k} className={`lp-msg lp-msg-${m.who}`}>
-                {m.who === 'petey' && <img className="lp-msg-face" src="/petey-head.png" alt="" aria-hidden="true" />}
-                <div className="lp-bubble">
-                  <span className="lp-msg-who">{m.label}</span>
-                  {m.tag && <span className="lp-msg-tag">{m.tag}</span>}
-                  <p>{m.text}</p>
+          <figure className="lp-flow" aria-label="Illustrative example: a past incident, the question Petey asks, and what goes in today's plan">
+            {FLOW.map((f, k) => (
+              <div key={f.key} className="lp-flow-item">
+                {k > 0 && <div className="lp-flow-arrow" aria-hidden="true">&darr;</div>}
+                <div className={`lp-flow-card lp-flow-${f.key}`}>
+                  <div className="lp-flow-ico">{f.key === 'petey' ? <img src="/petey-head.png" alt="" aria-hidden="true" /> : f.key === 'plan' ? ICON.shield : ICON.warn}</div>
+                  <div className="lp-flow-body"><span className="lp-flow-label">{f.label}</span><p>{f.text}</p></div>
                 </div>
               </div>
             ))}
-            <div className="lp-story-end"><b>Plan ready to brief and sign</b><span>Steps, hazards and controls, with the helper&rsquo;s face protection written in.</span></div>
+            <figcaption>Illustrative example</figcaption>
           </figure>
           <img className="lp-petey" src="/petey-full.png" alt="Petey, the PreTaskIQ safety companion" />
         </div>

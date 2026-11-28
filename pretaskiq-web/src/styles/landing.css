@@ -83,3 +83,22 @@
 .lp-how { padding-bottom: 40px; }
 .lp-step-text p { max-width: 320px; }
 @media (max-width: 900px) { .lp-hero-art { padding-left: 0; justify-content: center; } .lp-hero-art .lp-petey { display: none; } .lp-story { max-width: 560px; } }
+
+/* Hero example as three cards: past incident -> Petey asks -> today's plan */
+.lp-hero-art { padding-left: 150px; }
+.lp-hero-art .lp-petey { left: -6px; width: 168px; }
+.lp-flow { position: relative; z-index: 2; width: 100%; max-width: 480px; margin: 0; }
+.lp-flow-arrow { text-align: center; color: var(--orange); font-size: 22px; font-weight: 800; line-height: 1; padding: 7px 0; }
+.lp-flow-card { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 18px; background: linear-gradient(180deg, rgba(20,46,88,.92), rgba(9,25,52,.95)); border: 1.5px solid rgba(110,160,230,.7); box-shadow: 0 0 22px rgba(70,130,230,.25), 0 12px 28px rgba(0,0,0,.45); }
+.lp-flow-ico { flex-shrink: 0; width: 58px; display: flex; justify-content: center; color: #fff; padding-right: 16px; border-right: 1px solid rgba(255,255,255,.35); box-sizing: content-box; }
+.lp-flow-ico img { width: 58px; height: 58px; border-radius: 50%; background: #fff; }
+.lp-flow-label { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #D5DDEA; margin-bottom: 4px; }
+.lp-flow-body p { margin: 0; font-size: clamp(17px, 1.55vw, 21px); font-weight: 700; line-height: 1.22; color: #fff; }
+.lp-flow-petey .lp-flow-body p { position: relative; background: #fff; color: #0E2242; padding: 10px 14px; border-radius: 14px; }
+.lp-flow-petey .lp-flow-body p::before { content: ''; position: absolute; left: -7px; top: 50%; width: 14px; height: 14px; background: #fff; transform: translateY(-50%) rotate(45deg); }
+.lp-flow-petey .lp-flow-ico { border-right: 0; padding-right: 4px; }
+.lp-flow-plan { border: 2px solid var(--orange); background: linear-gradient(180deg, rgba(34,28,34,.96), rgba(16,18,30,.97)); box-shadow: 0 0 26px rgba(244,121,32,.4), 0 12px 28px rgba(0,0,0,.45); }
+.lp-flow-plan .lp-flow-ico { color: var(--orange); }
+.lp-flow figcaption { margin-top: 10px; text-align: center; font-size: 13px; font-style: italic; color: #B7C4D9; }
+@media (max-width: 900px) { .lp-hero-art { padding-left: 0; } .lp-flow { max-width: 560px; } }
+@media (max-width: 600px) { .lp-flow-card { padding: 14px; gap: 12px; } .lp-flow-ico { width: 44px; padding-right: 12px; } .lp-flow-ico img { width: 44px; height: 44px; } .lp-flow-ico svg { width: 30px; height: 30px; } }
