@@ -141,7 +141,11 @@
 .lp-preview figcaption { padding: 0 16px 12px; text-align: right; font-size: 13px; font-style: italic; color: #B7C4D9; }
 /* feature links */
 .lp-feat-links { max-width: 1180px; margin: 0 auto; padding: 4px clamp(16px, 4vw, 48px) 8px; }
-.lp-feat-links ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0; padding: 14px; list-style: none; border-radius: 18px; background: rgba(14,34,66,.6); border: 1px solid rgba(110,160,230,.3); }
+.lp-feat-box { padding: 16px 14px 14px; border-radius: 18px; background: rgba(14,34,66,.6); border: 1px solid rgba(110,160,230,.3); text-align: center; }
+.lp-feat-lead { margin: 0 0 12px; }
+.lp-feat-lead b { display: block; font-size: 17px; line-height: 1.3; color: #fff; }
+.lp-feat-lead span { display: block; margin-top: 3px; font-size: 14px; color: rgba(255,255,255,.7); }
+.lp-feat-links ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .lp-feat-links a { display: inline-block; padding: 9px 16px; border-radius: 999px; border: 1.5px solid rgba(110,160,230,.65); color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; background: rgba(255,255,255,.04); }
 .lp-feat-links a:hover { border-color: var(--orange); background: rgba(244,121,32,.14); }
 /* incident story: three cards in a row, then the reenactment */
@@ -196,7 +200,7 @@
   .lp-links { display: flex; gap: 14px; margin-left: 0; order: 3; width: 100%; justify-content: center; } .lp-links a { font-size: 14px; }
   .lp-nav { flex-wrap: wrap; row-gap: 8px; }
   .lp-pv-bubble, .lp-pv-me { font-size: 15px; } .lp-pv-row { font-size: 14px; grid-template-columns: 70px 1fr; }
-  .lp-feat-links ul { padding: 10px; gap: 8px; } .lp-feat-links a { font-size: 14px; padding: 8px 13px; }
+  .lp-feat-box { padding: 14px 10px 10px; } .lp-feat-links ul { gap: 8px; } .lp-feat-links a { font-size: 14px; padding: 8px 13px; }
   .lp-tab { padding: 10px 14px; font-size: 15px; } .lp-panel-intro { font-size: 16.5px; }
 }
 @media (max-width: 600px) { .lp .lp-nav-demo { display: inline-flex; padding: 8px 12px; font-size: 14px; } .lp-nav .lp-ghost { padding: 8px 12px; font-size: 14px; } }
