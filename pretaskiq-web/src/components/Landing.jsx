@@ -208,33 +208,39 @@ export default function Landing({ onLogin }) {
               {walkBtn(`lp-btn lp-big ${mail ? 'lp-outline' : 'lp-solid'}`, 'lp-video')}
             </div>
           </div>
-          <figure className="lp-preview" aria-label="Illustrative example in four steps: the safety admin logs a lesson, the foreman describes today's work, Petey recalls the lesson and asks a question, and the answer goes into today's pre-task plan">
-            <div className="lp-pv-bar"><span>Talk to Petey</span><span className="lp-pv-job">Panel LP-2 · Room 112</span></div>
-            <div className="lp-pv-lesson">
-              <span className="lp-pv-stage"><span className="lp-flow-n">1</span>{FLOW[0].label}</span>
-              <p>{FLOW[0].text}</p>
-            </div>
-            <div className="lp-pv-grid">
-              <div className="lp-pv-chat">
-                <span className="lp-pv-stage"><span className="lp-flow-n">2</span>{FLOW[1].label}</span>
-                <div className="lp-pv-me">{FLOW[1].text}</div>
-                <span className="lp-pv-stage"><span className="lp-flow-n">3</span>{FLOW[2].label}</span>
-                <Bubble>
-                  <span className="lp-pv-tag">From your incident history</span>
-                  <p>Your team logged a shock from a wrong-breaker lockout. {FLOW[2].text}</p>
-                </Bubble>
-              </div>
-              <div>
-                <span className="lp-pv-stage"><span className="lp-flow-n">4</span>{FLOW[3].label}</span>
-                <div className="lp-pv-plan">
+          <figure className="lp-preview lp-comp" aria-labelledby="lp-comp-h">
+            <div className="lp-pv-bar"><span id="lp-comp-h">Petey, your AI safety companion for the shift</span></div>
+            <div className="lp-comp-grid">
+              <article className="lp-comp-card">
+                <span className="lp-comp-label">Before work starts</span>
+                <h3>Build the pre-task plan</h3>
+                <div className="lp-pv-me">We&rsquo;re setting rooftop units with a crane today.</div>
+                <div className="lp-pv-plan lp-comp-plan" aria-label="Cropped pre-task plan preview">
                   <div className="lp-pv-plan-h">Today&rsquo;s pre-task plan</div>
-                  <div className="lp-pv-step"><b>Step 2 · Isolate the circuit</b>
-                    <div className="lp-pv-row"><span className="lp-pv-k">Hazard</span><span>Contact with energized conductors if the wrong breaker is locked out</span></div>
-                    <div className="lp-pv-row lp-pv-hold"><span className="lp-pv-k">Hold point</span><span>{FLOW[3].text}</span></div>
+                  <div className="lp-pv-step"><b>Step 3 · Make the pick</b>
+                    <div className="lp-pv-row"><span className="lp-pv-k">Hazard</span><span>Suspended load over workers</span></div>
+                    <div className="lp-pv-row lp-pv-hold"><span className="lp-pv-k">Control</span><span>Barricade the swing radius and use tag lines on every pick.</span></div>
                   </div>
-                  <div className="lp-pv-sign">Crew signatures · 0 of 4</div>
                 </div>
-              </div>
+                <p className="lp-comp-body">Petey asks follow-up questions, brings up relevant past incidents and corrective actions, and helps the foreman build a plan the crew can brief and sign.</p>
+              </article>
+              <article className="lp-comp-card">
+                <span className="lp-comp-label">As the shift changes</span>
+                <h3>Ask Petey by voice or text</h3>
+                <div className="lp-comp-chat">
+                  <div className="lp-pv-me">What does our company policy say about barricading the lift area?</div>
+                  <Bubble>
+                    <span className="lp-pv-tag">From your company policies</span>
+                    <p>Barricade the area under and around the lift before it goes up. Want me to add that to today&rsquo;s plan?</p>
+                  </Bubble>
+                  <div className="lp-comp-input" aria-hidden="true">
+                    <span className="lp-comp-mic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg></span>
+                    <span className="lp-comp-field">Ask Petey…</span>
+                    <span className="lp-comp-send"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z" /></svg></span>
+                  </div>
+                </div>
+                <p className="lp-comp-body">Foremen and safety teams can ask about company policies or pull up past incidents and corrective actions from their knowledge base.</p>
+              </article>
             </div>
             <figcaption>Illustrative example</figcaption>
           </figure>
@@ -247,6 +253,17 @@ export default function Landing({ onLogin }) {
         <section className="lp-story" id="lp-rx" aria-labelledby="lp-rx-h">
           <div className="lp-eyebrow"><i /><i />Incident reenactment</div>
           <h2 className="lp-h2" id="lp-rx-h">See how a past incident changes today&rsquo;s plan</h2>
+          <ol className="lp-flow lp-flow-row">
+            {FLOW.map((f, k) => (
+              <li key={f.key} className="lp-flow-item">
+                <div className={`lp-flow-card lp-flow-${f.key}`}>
+                  <div className="lp-flow-ico">{f.key === 'petey' ? <img src="/petey-head.png" alt="" aria-hidden="true" /> : f.key === 'plan' ? ICON.shield : f.key === 'foreman' ? ICON.talk : ICON.doc}</div>
+                  <div className="lp-flow-body"><span className="lp-flow-label"><span className="lp-flow-n">{k + 1}</span>{f.label}</span><p>{f.text}</p></div>
+                </div>
+                {k < FLOW.length - 1 && <div className="lp-flow-arrow" aria-hidden="true">&rarr;</div>}
+              </li>
+            ))}
+          </ol>
           <div className="lp-rx">
             <figure className="lp-rx-video">
               {/* The captions are drawn in the bottom of the picture, so the browser's own control bar (which would cover them) is not used. */}
