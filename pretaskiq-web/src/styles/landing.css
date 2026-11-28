@@ -171,6 +171,9 @@
 .lp-feat-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .lp-feat-list li { padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,.05); border: 1px solid rgba(110,160,230,.3); outline: none; }
 .lp-feat-list li[id] { border-left: 4px solid var(--orange); }
+.lp-feat-list .lp-feat-q { margin-top: 8px; padding: 8px 12px; border-radius: 12px 12px 4px 12px; background: rgba(255,255,255,.08); font-style: italic; color: #E2E8F0; }
+.lp-feat-sec .lp-src { margin-top: 22px; }
+.lp-feat-sec .lp-ask-ill { text-align: center; }
 .lp-feat-list h3 { margin: 0 0 4px; font-size: 17px; } .lp-feat-list p { margin: 0; font-size: 15px; line-height: 1.5; color: #C5D0E0; }
 .lp-flash { animation: lp-flash 1.6s ease-out; }
 @keyframes lp-flash { 0%, 30% { box-shadow: 0 0 0 3px var(--orange), 0 0 24px rgba(244,121,32,.5); } 100% { box-shadow: none; } }
