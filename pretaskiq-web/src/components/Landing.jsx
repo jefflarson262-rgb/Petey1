@@ -208,46 +208,9 @@ export default function Landing({ onLogin }) {
               {walkBtn(`lp-btn lp-big ${mail ? 'lp-outline' : 'lp-solid'}`, 'lp-video')}
             </div>
           </div>
-          <figure className="lp-preview lp-comp" aria-labelledby="lp-comp-h">
-            <div className="lp-pv-bar"><span id="lp-comp-h">Petey, your AI safety companion for the shift</span></div>
-            <div className="lp-comp-grid">
-              <article className="lp-comp-card">
-                <span className="lp-comp-label">Before work starts</span>
-                <h3>Build the pre-task plan</h3>
-                <div className="lp-pv-me">We&rsquo;re setting rooftop units with a crane today.</div>
-                <div className="lp-comp-chat">
-                  <Bubble>
-                    <span className="lp-pv-tag">From your incident history</span>
-                    <p>On a past crane pick, a unit swung into the parapet because no tag line was used. Who&rsquo;s on the tag lines today?</p>
-                  </Bubble>
-                </div>
-                <div className="lp-pv-plan lp-comp-plan" aria-label="Cropped pre-task plan preview">
-                  <div className="lp-pv-plan-h">Today&rsquo;s pre-task plan</div>
-                  <div className="lp-pv-step"><b>Step 3 · Make the pick</b>
-                    <div className="lp-pv-row"><span className="lp-pv-k">Hazard</span><span>Suspended load over workers</span></div>
-                    <div className="lp-pv-row lp-pv-hold"><span className="lp-pv-k">Control</span><span>Barricade the swing radius and use tag lines on every pick.</span></div>
-                  </div>
-                </div>
-                <p className="lp-comp-body">Petey asks follow-up questions, brings up relevant past incidents and corrective actions, and helps the foreman build a plan the crew can brief and sign.</p>
-              </article>
-              <article className="lp-comp-card">
-                <span className="lp-comp-label">As the shift changes</span>
-                <h3>Talk to Petey</h3>
-                <div className="lp-comp-voice" aria-hidden="true">
-                  <span className="lp-comp-mic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg></span>
-                  <div className="lp-comp-btns"><span>Enable Petey</span><span>&#127897; Tap and talk</span></div>
-                </div>
-                <div className="lp-comp-chat">
-                  <div className="lp-pv-me">What does our company policy say about barricading the lift area?</div>
-                  <Bubble>
-                    <span className="lp-pv-tag">From your company policies</span>
-                    <p>Barricade the area under and around the lift before it goes up. Want me to add that to today&rsquo;s plan?</p>
-                  </Bubble>
-                </div>
-                <p className="lp-comp-body">Foremen and safety teams can ask about company policies or pull up past incidents and corrective actions from their knowledge base.</p>
-              </article>
-            </div>
-            <figcaption>Illustrative example</figcaption>
+          <figure className="lp-preview lp-try lp-hero-try" aria-labelledby="lp-hero-try-h">
+            <div className="lp-pv-bar"><span id="lp-hero-try-h">Pick a task. See how Petey plans it.</span></div>
+            <TryExample />
           </figure>
         </section>
 
@@ -345,13 +308,13 @@ export default function Landing({ onLogin }) {
           </div>
         </section>
 
-        <section className="lp-final lp-try" id="lp-demo" aria-labelledby="lp-final-h">
-          <div className="lp-eyebrow"><i /><i />Try a quick example</div>
-          <h2 className="lp-h2" id="lp-final-h">Pick a task. See how Petey plans it.</h2>
-          <p>Choose one of these common tasks to see Petey question the foreman, flag a past incident, and turn the answers into the plan.</p>
-          <TryExample />
-          {mail && <div className="lp-cta lp-cta-center">{demoBtn('lp-btn lp-solid lp-big', 'lp-demo-final')}</div>}
-        </section>
+        {mail && (
+          <section className="lp-final" id="lp-demo" aria-labelledby="lp-final-h">
+            <h2 className="lp-h2" id="lp-final-h">See Petey on your jobs</h2>
+            <p>We&rsquo;ll walk you through a pre-task plan built from your own tasks and lessons.</p>
+            <div className="lp-cta lp-cta-center">{demoBtn('lp-btn lp-solid lp-big', 'lp-demo-final')}</div>
+          </section>
+        )}
       </main>
 
       <footer className="lp-foot">
