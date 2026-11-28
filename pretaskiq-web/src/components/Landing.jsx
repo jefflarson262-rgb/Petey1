@@ -247,17 +247,6 @@ export default function Landing({ onLogin }) {
         <section className="lp-story" id="lp-rx" aria-labelledby="lp-rx-h">
           <div className="lp-eyebrow"><i /><i />Incident reenactment</div>
           <h2 className="lp-h2" id="lp-rx-h">See how a past incident changes today&rsquo;s plan</h2>
-          <ol className="lp-flow lp-flow-row">
-            {FLOW.map((f, k) => (
-              <li key={f.key} className="lp-flow-item">
-                <div className={`lp-flow-card lp-flow-${f.key}`}>
-                  <div className="lp-flow-ico">{f.key === 'petey' ? <img src="/petey-head.png" alt="" aria-hidden="true" /> : f.key === 'plan' ? ICON.shield : f.key === 'foreman' ? ICON.talk : ICON.doc}</div>
-                  <div className="lp-flow-body"><span className="lp-flow-label"><span className="lp-flow-n">{k + 1}</span>{f.label}</span><p>{f.text}</p></div>
-                </div>
-                {k < FLOW.length - 1 && <div className="lp-flow-arrow" aria-hidden="true">&rarr;</div>}
-              </li>
-            ))}
-          </ol>
           <div className="lp-rx">
             <figure className="lp-rx-video">
               {/* The captions are drawn in the bottom of the picture, so the browser's own control bar (which would cover them) is not used. */}
