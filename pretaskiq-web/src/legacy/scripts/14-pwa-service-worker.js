@@ -69,7 +69,7 @@ function showPWABanner(platform) {
     ? 'Tap <strong>Share</strong> then <strong>Add to Home Screen</strong> to install.'
     : 'Add to your home screen for quick access and offline use.';
   banner.innerHTML = `
-    <img src="${PTQ_ICON}" class="pwa-install-icon" alt="">
+    <img src="/icon-192.png" class="pwa-install-icon" alt="">
     <div class="pwa-install-text">
       <div class="pwa-install-title">Install PreTaskIQ</div>
       <div class="pwa-install-sub">${sub}</div>
