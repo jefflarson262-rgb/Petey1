@@ -232,18 +232,17 @@ export default function Landing({ onLogin }) {
               </article>
               <article className="lp-comp-card">
                 <span className="lp-comp-label">As the shift changes</span>
-                <h3>Ask Petey by voice or text</h3>
+                <h3>Ask Petey by voice</h3>
+                <div className="lp-comp-voice" aria-hidden="true">
+                  <span className="lp-comp-mic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg></span>
+                  <div className="lp-comp-btns"><span>Enable Petey</span><span>&#127897; Tap and talk</span></div>
+                </div>
                 <div className="lp-comp-chat">
                   <div className="lp-pv-me">What does our company policy say about barricading the lift area?</div>
                   <Bubble>
                     <span className="lp-pv-tag">From your company policies</span>
                     <p>Barricade the area under and around the lift before it goes up. Want me to add that to today&rsquo;s plan?</p>
                   </Bubble>
-                  <div className="lp-comp-input" aria-hidden="true">
-                    <span className="lp-comp-mic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg></span>
-                    <span className="lp-comp-field">Ask Petey…</span>
-                    <span className="lp-comp-send"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z" /></svg></span>
-                  </div>
                 </div>
                 <p className="lp-comp-body">Foremen and safety teams can ask about company policies or pull up past incidents and corrective actions from their knowledge base.</p>
               </article>
