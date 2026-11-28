@@ -5,22 +5,25 @@ import '../styles/landing.css';
 // The public front page, shown to visitors who are not signed in. Everything on it describes what the app does today:
 // the pictures are real screens, and there are no statistics or promises beyond that.
 const I = (d) => <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>;
-const FEATURES = [
-  { t: 'Smart Work Planning', i: I(<><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 3h6v3H9zM8.5 11l2 2 4-4M8.5 17h7" /></>) },
-  { t: 'Hazards Caught Early', i: I(<><path d="M12 3l10 18H2z" /><path d="M12 10v5M12 18v.01" /></>) },
-  { t: 'Field-Ready Answers', i: I(<path d="M13 2L4 14h7l-1 8 9-12h-7z" />) },
-  { t: 'Built for Your Crew', i: I(<><circle cx="9" cy="8" r="3" /><circle cx="17" cy="9" r="2.4" /><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.2c3-.6 6 1.5 6 4.8" /></>) },
-];
-const BENEFITS = [
-  { t: 'Build Safer Plans', d: 'Talk through the day’s work. Petey asks the questions a safety pro would and writes the pre-task plan.' },
-  { t: 'Identify Hazards', d: 'Petey flags high-risk activities, checks the controls, and draws on your own incidents and policies.' },
-  { t: 'Work From Current Documents', d: 'Job folders hold drawings, RFIs, permits and 811 tickets. Petey confirms the crew is on the latest revision.' },
-  { t: 'Empower Your Crew', d: 'Every crew member signs the plan on the phone, and Petey stays on through the shift for questions.' },
+// The example the page leads with. It is the sample conversation from the app's own demo data (a made-up company's incident history),
+// shown as an example and labelled that way.
+const STORY = [
+  { who: 'foreman', label: 'Foreman', text: 'Cut bolts off the Bay 4 structure from a ladder, then stage the cut sections.' },
+  { who: 'petey', label: 'Petey', tag: 'From your company\u2019s incident history', text: 'Heads up: we had a worker hit in the eye by a metal fragment from overhead bolt cutting while standing below in safety glasses. Will anyone be working or walking below you while you cut?' },
+  { who: 'foreman', label: 'Foreman', text: 'Yes, my helper will be handing me tools from below.' },
+  { who: 'petey', label: 'Petey', text: 'Good to know. Your helper below changes the plan. What face and eye protection will he have on?' },
 ];
 const STEPS = [
-  { n: 1, t: 'Tell Petey the plan', d: 'Say or type the day’s tasks, the way you would at the tailgate.', img: '/demo/intake_typed.jpg', alt: 'The foreman screen, where the day’s tasks are typed or spoken to Petey' },
-  { n: 2, t: 'Answer a few questions', d: 'Petey asks about the hazards that matter for that work and what controls are in place.', img: '/demo/conversation.jpg', alt: 'Petey asking a foreman about people working below overhead cutting' },
-  { n: 3, t: 'Review, sign and start', d: 'The plan is written for you. The crew signs, you submit, and safety sees it right away.', img: '/demo/doc_top.jpg', alt: 'A finished job hazard analysis ready to be submitted' },
+  { n: 1, t: 'The foreman describes today\u2019s work', d: 'Said out loud or typed, the way it would be at the tailgate. No forms to fill in.', img: '/demo/intake_typed.jpg', alt: 'The foreman screen, where the day\u2019s tasks are typed or spoken to Petey' },
+  { n: 2, t: 'Petey brings up what your company already learned', d: 'He asks the follow-up questions a seasoned safety lead would, and raises your own incidents, policies and drawings when they match the work.', img: '/demo/conversation.jpg', alt: 'Petey telling a foreman about a past eye injury from overhead bolt cutting and asking who will be below' },
+  { n: 3, t: 'The crew gets a plan they can brief and sign', d: 'Steps, hazards and controls written from the conversation. Everyone signs on the phone, the foreman submits, and safety sees it right away.', img: '/demo/doc_top.jpg', alt: 'A finished pre-task plan with its high-risk activities, ready to be signed and submitted' },
+];
+// Everything else the product does, shown after the daily workflow is clear.
+const DEPTH = [
+  { t: 'Audits and observations', d: 'Pass or fail audits with photos, and checks on whether life-saving controls are really in place.' },
+  { t: 'Incident reporting', d: 'A two-minute first report from the field, then a full report and root cause analysis with Petey.' },
+  { t: 'Current documents', d: 'Job folders for drawings, RFIs, permits and 811 tickets. Petey confirms the crew is on the latest revision.' },
+  { t: 'Safety metrics', d: 'Leading indicators from what crews record every day, by month and by job, with a report to download.' },
 ];
 
 export default function Landing({ onLogin }) {
@@ -48,10 +51,9 @@ export default function Landing({ onLogin }) {
       <section className="lp-hero">
         <div className="lp-sky" aria-hidden="true" />
         <div className="lp-hero-text">
-          <div className="lp-eyebrow"><i /><i />Construction safety, simplified</div>
-          <h1 className="lp-h1">The AI Safety Companion <em>for the Construction Industry.</em></h1>
-          <p className="lp-sub">Plan safer work, identify hazards, and keep your crews aligned, with Petey, your AI-powered safety partner.</p>
-          <ul className="lp-features">{FEATURES.map((f) => <li key={f.t}><span>{f.i}</span>{f.t}</li>)}</ul>
+          <div className="lp-eyebrow"><i /><i />The AI safety companion for construction</div>
+          <h1 className="lp-h1">Your foreman describes the job. <em>Petey remembers what went wrong last time.</em></h1>
+          <p className="lp-sub">PreTaskIQ turns the morning talk into a pre-task plan the crew can brief and sign, and brings your company&rsquo;s own lessons into the conversation before the work starts.</p>
           <div className="lp-cta">
             {demoBtn('lp-btn lp-solid lp-big')}
             <button type="button" className={`lp-btn lp-big ${mail ? 'lp-outline' : 'lp-solid'}`} id="lp-video" onClick={() => setVideo(true)}>
@@ -60,19 +62,27 @@ export default function Landing({ onLogin }) {
           </div>
         </div>
         <div className="lp-hero-art">
-          <div className="lp-phone lp-phone-back"><img src="/demo/dash.jpg" alt="The safety administrator's Site Overview screen" loading="lazy" /></div>
-          <div className="lp-phone"><img src="/demo/intake_typed.jpg" alt="The foreman's planning screen with Petey" /></div>
+          <figure className="lp-story" aria-label="Example conversation between a foreman and Petey">
+            <figcaption>Example · planning a bolt-cutting task</figcaption>
+            {STORY.map((m, k) => (
+              <div key={k} className={`lp-msg lp-msg-${m.who}`}>
+                {m.who === 'petey' && <img className="lp-msg-face" src="/petey-head.png" alt="" aria-hidden="true" />}
+                <div className="lp-bubble">
+                  <span className="lp-msg-who">{m.label}</span>
+                  {m.tag && <span className="lp-msg-tag">{m.tag}</span>}
+                  <p>{m.text}</p>
+                </div>
+              </div>
+            ))}
+            <div className="lp-story-end"><b>Plan ready to brief and sign</b><span>Steps, hazards and controls, with the helper&rsquo;s face protection written in.</span></div>
+          </figure>
           <img className="lp-petey" src="/petey-full.png" alt="Petey, the PreTaskIQ safety companion" />
         </div>
       </section>
 
-      <section className="lp-benefits" aria-label="What PreTaskIQ does">
-        {BENEFITS.map((b) => <div key={b.t}><h3>{b.t}</h3><p>{b.d}</p></div>)}
-      </section>
-
       <section className="lp-how" id="lp-how">
         <div className="lp-eyebrow"><i /><i />How it works</div>
-        <h2 className="lp-h2">From tailgate talk to a signed plan</h2>
+        <h2 className="lp-h2">One conversation, every morning</h2>
         <ol className="lp-steps">{STEPS.map((s) => (
           <li key={s.n}>
             <div className="lp-phone lp-phone-sm"><img src={s.img} alt={s.alt} loading="lazy" /></div>
@@ -83,6 +93,12 @@ export default function Landing({ onLogin }) {
           <button type="button" className="lp-btn lp-outline lp-big" onClick={() => setVideo(true)}>Watch the overview video</button>
           {demoBtn('lp-btn lp-solid lp-big')}
         </div>
+      </section>
+
+      <section className="lp-depth" aria-labelledby="lp-depth-h">
+        <div className="lp-eyebrow"><i /><i />Once the daily plan is in place</div>
+        <h2 className="lp-h2" id="lp-depth-h">The same record does more work</h2>
+        <div className="lp-benefits">{DEPTH.map((b) => <div key={b.t}><h3>{b.t}</h3><p>{b.d}</p></div>)}</div>
       </section>
 
       <footer className="lp-foot">
