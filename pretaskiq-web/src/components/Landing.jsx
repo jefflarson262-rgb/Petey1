@@ -68,6 +68,70 @@ const ROLES = [
     ] },
 ];
 
+// The closing example: a few common tasks, each a short scripted exchange (not a live AI call). The incidents are fictional and labelled so.
+const EXAMPLES = [
+  { key: 'trench', label: 'Trench for a water line',
+    foreman: 'Digging a trench for a water service line on the east side today.',
+    lesson: 'Last spring a laborer was partly buried when a trench wall caved in. The spoil pile was right at the edge.',
+    ask: 'How deep will you go, and what protective system will you use?',
+    reply: 'About 6 feet. We have a trench box on site.',
+    step: 'Excavate and set the trench box', hazard: 'Cave-in and soil falling from the spoil pile',
+    controls: ['Trench box in place before anyone enters', 'Spoil kept at least 2 feet back from the edge', 'Competent person inspects the trench before each shift', 'Ladder within 25 feet of anyone in the trench'] },
+  { key: 'crane', label: 'Set rooftop units with a crane',
+    foreman: 'Setting two rooftop units with the crane this morning.',
+    lesson: 'We had a near miss when a tag line slipped and a load swung toward a worker standing under it.',
+    ask: 'Who will keep people out from under the load during each pick?',
+    reply: 'Our signal person, plus a spotter at the barricade.',
+    step: 'Rig and lift each unit', hazard: 'Struck by a swinging or falling load',
+    controls: ['Barricade the swing radius and fall zone', 'Nobody under a suspended load', 'Tag lines on every pick', 'One qualified signal person in charge of the lift'] },
+  { key: 'bolts', label: 'Cut overhead bolts from a ladder',
+    foreman: 'Cutting old anchor bolts overhead from a ladder in Bay 4.',
+    lesson: 'A worker standing below was hit in the eye by a metal fragment from overhead bolt cutting.',
+    ask: 'Will anyone be working or walking below you while you cut?',
+    reply: 'My helper hands me tools from below.',
+    step: 'Cut the bolts overhead', hazard: 'Flying fragments striking people below',
+    controls: ['Exclusion zone marked below the work', 'Helper stays outside the zone while cutting is under way', 'Face shield over safety glasses for anyone who must enter', 'Tools passed up between cuts, not during'] },
+];
+
+function TryExample() {
+  const [pick, setPick] = useState(EXAMPLES[0].key);
+  const [shown, setShown] = useState(0);
+  const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ex = EXAMPLES.find((e) => e.key === pick);
+  const TOTAL = 4;
+  useEffect(() => {
+    if (reduce) { setShown(TOTAL); return undefined; }
+    setShown(1);
+    const timers = [2, 3, 4].map((n, i) => setTimeout(() => setShown(n), 900 * (i + 1)));
+    return () => timers.forEach(clearTimeout);
+  }, [pick, reduce]);
+  return (
+    <div className="lp-try-box">
+      <div className="lp-try-picks" role="group" aria-label="Pick a task">
+        {EXAMPLES.map((e) => <button key={e.key} type="button" className="lp-try-pick" aria-pressed={pick === e.key} onClick={() => setPick(e.key)}>{e.label}</button>)}
+      </div>
+      <div className="lp-try-grid" aria-live="polite">
+        <div className="lp-pv-chat lp-try-chat">
+          <div className="lp-pv-me"><span className="lp-pv-who lp-pv-who-me">Foreman</span>{ex.foreman}</div>
+          {shown >= 2 && <Bubble><span className="lp-pv-tag">Past incident · fictional</span><p>{ex.lesson} {ex.ask}</p></Bubble>}
+          {shown >= 3 && <div className="lp-pv-me"><span className="lp-pv-who lp-pv-who-me">Foreman</span>{ex.reply}</div>}
+          {shown < TOTAL && <div className="lp-try-typing" aria-hidden="true"><span /><span /><span /></div>}
+        </div>
+        <div className={`lp-pv-plan lp-try-plan${shown >= TOTAL ? ' lp-try-on' : ''}`}>
+          <div className="lp-pv-plan-h">Today&rsquo;s pre-task plan</div>
+          {shown >= TOTAL ? (
+            <div className="lp-pv-step"><b>{ex.step}</b>
+              <div className="lp-pv-row"><span className="lp-pv-k">Hazard</span><span>{ex.hazard}</span></div>
+              <div className="lp-pv-row lp-pv-hold"><span className="lp-pv-k">Controls</span><ul className="lp-try-ctl">{ex.controls.map((c) => <li key={c}>{c}</li>)}</ul></div>
+            </div>
+          ) : <p className="lp-try-wait">The plan fills in from the conversation&hellip;</p>}
+        </div>
+      </div>
+      <p className="lp-try-note">A short scripted example, not a live conversation. The incidents are fictional. In the app, Petey asks more questions and the plan covers every step of the task.</p>
+    </div>
+  );
+}
+
 function Bubble({ children }) {
   return (
     <div className="lp-pv-msg">
@@ -257,10 +321,12 @@ export default function Landing({ onLogin }) {
           </div>
         </section>
 
-        <section className="lp-final" id="lp-demo" aria-labelledby="lp-final-h">
-          <h2 className="lp-h2" id="lp-final-h">See PreTaskIQ on one of your scopes</h2>
-          <p>Bring a scope your crews perform regularly. We&rsquo;ll walk through how a foreman builds a plan with Petey and what your safety team sees after it&rsquo;s submitted.</p>
-          <div className="lp-cta lp-cta-center">{mail ? demoBtn('lp-btn lp-solid lp-big', 'lp-demo-final') : walkBtn('lp-btn lp-solid lp-big', 'lp-video-final')}</div>
+        <section className="lp-final lp-try" id="lp-demo" aria-labelledby="lp-final-h">
+          <div className="lp-eyebrow"><i /><i />Try a quick example</div>
+          <h2 className="lp-h2" id="lp-final-h">Pick a task. See how Petey plans it.</h2>
+          <p>Choose one of these common tasks to see Petey question the foreman, flag a past incident, and turn the answers into the plan.</p>
+          <TryExample />
+          {mail && <div className="lp-cta lp-cta-center">{demoBtn('lp-btn lp-solid lp-big', 'lp-demo-final')}</div>}
         </section>
       </main>
 
