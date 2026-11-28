@@ -211,7 +211,7 @@ export default function Landing({ onLogin }) {
           <figure className="lp-preview lp-try lp-hero-try" aria-labelledby="lp-hero-try-h">
             <div className="lp-hero-try-head">
               <h2 id="lp-hero-try-h">See a sample pre-task plan</h2>
-              <p>Choose a task to follow the conversation and see the plan take shape.</p>
+              <p>Choose a task to follow the conversation, see Petey recall a past incident, and watch the plan take shape.</p>
             </div>
             <TryExample />
           </figure>
