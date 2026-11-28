@@ -191,3 +191,23 @@
   .lp-tab { padding: 10px 14px; font-size: 15px; } .lp-panel-intro { font-size: 16.5px; }
 }
 @media (max-width: 600px) { .lp .lp-nav-demo { display: inline-flex; padding: 8px 12px; font-size: 14px; } .lp-nav .lp-ghost { padding: 8px 12px; font-size: 14px; } }
+/* Petey beyond the briefing */
+.lp-ask { max-width: 1180px; margin: 0 auto; padding: 8px clamp(16px, 4vw, 48px) 40px; text-align: center; }
+.lp-ask .lp-eyebrow { justify-content: center; }
+.lp-ask .lp-h2 { margin-bottom: 10px; }
+.lp-ask-sub { max-width: 640px; margin: 0 auto 26px; font-size: 17px; line-height: 1.55; color: #D5DDEA; }
+.lp-ask-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; text-align: left; }
+.lp-ask-card { margin: 0; padding: 18px; border-radius: 18px; background: linear-gradient(180deg, rgba(20,46,88,.85), rgba(9,25,52,.92)); border: 1.5px solid rgba(110,160,230,.55); }
+.lp-ask-card figcaption { font-size: 12.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #FFB066; margin-bottom: 10px; }
+.lp-ask-q { margin: 0 0 14px; padding: 11px 14px; border-radius: 14px 14px 4px 14px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fff; font-size: 16px; line-height: 1.45; font-weight: 600; }
+.lp-ask-a { display: flex; gap: 10px; align-items: flex-start; }
+.lp-ask-a img { width: 38px; height: 38px; border-radius: 50%; background: #fff; flex-shrink: 0; }
+.lp-ask-a p { margin: 0; padding: 10px 13px; border-radius: 4px 14px 14px 14px; background: #fff; color: #0E2242; font-size: 15px; line-height: 1.45; }
+.lp-src { margin-top: 18px; padding: 20px; border-radius: 18px; text-align: left; background: rgba(14,34,66,.6); border: 1px solid rgba(110,160,230,.35); }
+.lp-src h3 { margin: 0 0 12px; font-size: 18px; color: #fff; }
+.lp-src ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px 18px; }
+.lp-src li { padding-left: 14px; border-left: 3px solid var(--orange); }
+.lp-src b { display: block; font-size: 15px; color: #fff; } .lp-src span { display: block; font-size: 14px; line-height: 1.45; color: #C5D0E0; margin-top: 2px; }
+.lp-src-note { margin: 16px 0 0; font-size: 13.5px; line-height: 1.5; color: #B7C4D9; }
+.lp-ask-ill { margin: 10px 0 0; font-size: 13px; font-style: italic; color: #9FB0C8; }
+@media (max-width: 760px) { .lp-ask-grid { grid-template-columns: minmax(0, 1fr); } }

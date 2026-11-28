@@ -28,6 +28,19 @@ const LINKS = [
   { id: 'f-jobs', tab: 'construction', label: 'Job Documents' },
   { id: 'f-metrics', tab: 'safety', label: 'Safety Metrics' },
 ];
+// Petey beyond the morning briefing: who asks him what, and what he draws on. The questions are illustrations.
+const ASK = [
+  { who: 'Foreman, mid-shift', q: 'We\u2019re moving the lift to the north side after lunch. What changes in the plan?', a: 'Petey works through the new hazards with the crew and updates the plan from the same screen.' },
+  { who: 'Safety professional', q: 'What does our fall protection policy require for tie-off on the scissor lift?', a: 'Petey answers from the policy you uploaded and says which document it came from.' },
+];
+const SOURCES = [
+  { t: 'Your company\u2019s policies and procedures', d: 'Whatever your safety team uploads to the knowledge base.' },
+  { t: 'Your incident history', d: 'Past incidents, near misses, root cause analyses and the corrective actions that came out of them.' },
+  { t: 'Owner and customer requirements', d: 'Upload them as policies, or file them in a job\u2019s folder so they apply on that job.' },
+  { t: 'Job documents', d: 'Scope documents, RFIs, drawing revisions, permits and 811 tickets for the job the crew is on.' },
+  { t: 'Construction standards', d: 'The OSHA, NFPA and ANSI standards that apply to construction work.' },
+];
+
 // What each role can do, as the app does it today.
 const ROLES = [
   { key: 'foreman', label: 'Foreman', img: '/demo/conversation.jpg', alt: 'The foreman talking through the day’s work with Petey',
@@ -40,6 +53,7 @@ const ROLES = [
   { key: 'safety', label: 'Safety Admin', img: '/demo/dash.jpg', alt: 'The safety administrator’s Site Overview of today’s plans',
     intro: 'Review submitted plans, check whether controls are in place through audits and observations, manage incident reporting and root cause analysis, and track leading indicators.',
     items: [
+      { t: 'Ask Petey', d: 'Ask about a policy, a procedure, a regulation or a pattern in your incidents, by voice or text, and see which source the answer comes from.' },
       { t: 'Review submitted plans', d: 'Site Overview shows today’s plans, which are submitted and signed, and any changed after submission.' },
       { id: 'f-audits', t: 'Audits & observations', d: 'Pass or fail audits with comments and photos, and observations that check whether life-saving controls are really in place.' },
       { id: 'f-incidents', t: 'Incident reporting & RCA', d: 'A quick first report from the field, then a full report and a root cause analysis with Petey. Approved reenactments help crews see what happened.' },
@@ -199,6 +213,27 @@ export default function Landing({ onLogin }) {
               <div className="lp-step-text"><span className="lp-num">{s.n}</span><h3>{s.t}</h3><p>{s.d}</p></div>
             </li>))}
           </ol>
+        </section>
+
+        <section className="lp-ask" id="lp-ask" aria-labelledby="lp-ask-h">
+          <div className="lp-eyebrow"><i /><i />Beyond the morning briefing</div>
+          <h2 className="lp-h2" id="lp-ask-h">Petey on the job, not just at the briefing</h2>
+          <p className="lp-ask-sub">Petey stays available through the shift for the foreman and for the safety team, by voice or text.</p>
+          <div className="lp-ask-grid">
+            {ASK.map((x) => (
+              <figure key={x.who} className="lp-ask-card">
+                <figcaption>{x.who}</figcaption>
+                <p className="lp-ask-q">&ldquo;{x.q}&rdquo;</p>
+                <div className="lp-ask-a"><img src="/petey-head.png" alt="" aria-hidden="true" /><p>{x.a}</p></div>
+              </figure>
+            ))}
+          </div>
+          <div className="lp-src">
+            <h3>What Petey draws on</h3>
+            <ul>{SOURCES.map((x) => <li key={x.t}><b>{x.t}</b><span>{x.d}</span></li>)}</ul>
+            <p className="lp-src-note">Petey&rsquo;s references to OSHA, NFPA and ANSI standards come from the AI&rsquo;s general knowledge, not a stored copy of the regulations. Check them against the current standard before relying on a specific requirement.</p>
+          </div>
+          <p className="lp-ask-ill">Example questions are illustrative.</p>
         </section>
 
         <section className="lp-feat-sec" id="lp-features" aria-labelledby="lp-feat-h">
