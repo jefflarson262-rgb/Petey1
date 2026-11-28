@@ -209,7 +209,10 @@ export default function Landing({ onLogin }) {
             </div>
           </div>
           <figure className="lp-preview lp-try lp-hero-try" aria-labelledby="lp-hero-try-h">
-            <div className="lp-pv-bar"><span id="lp-hero-try-h">Pick a task. See how Petey plans it.</span></div>
+            <div className="lp-hero-try-head">
+              <h2 id="lp-hero-try-h">Try a pre-task plan with Petey</h2>
+              <p>Pick a sample task to see what Petey asks and how lessons from past incidents can shape the crew&rsquo;s plan.</p>
+            </div>
             <TryExample />
           </figure>
         </section>
