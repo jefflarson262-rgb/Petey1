@@ -68,9 +68,9 @@ const FEATURES = [
       { t: 'Current revisions reach the crew', d: 'When a foreman plans work on a job, Petey uses its documents and checks the crew is working from the current revision.' },
       { t: 'Expiry dates flagged', d: 'Permits and 811 tickets carry the expiry date from the document, and expired or expiring items are flagged.' },
     ] },
-  { key: 'metrics', label: 'Safety Metrics', used: 'Safety Admin',
+  { key: 'metrics', label: 'Safety Metrics', used: 'Safety Admin', img: '/demo/metrics.jpg', alt: 'The safety metrics dashboard: leading indicator cards with the change against last month and a small trend line',
     items: [
-      { t: 'Leading indicators first', d: 'Leading indicators from what crews record every day, by month and by job.' },
+      { t: 'Leading indicators first', d: 'Leading indicators from what crews record every day, by month and by job. Each dashboard card shows the change against last month and a small trend line.' },
       { t: 'Reports', d: 'Choose what goes in the report and download it as a spreadsheet.' },
     ] },
 ];
