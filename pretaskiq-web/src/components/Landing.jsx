@@ -217,8 +217,11 @@ export default function Landing({ onLogin }) {
           </figure>
         </section>
 
-        <nav className="lp-feat-links" aria-label="Features">
-          <ul>{LINKS.map((l) => <li key={l.id}><a href={'#' + l.id} onClick={(e) => openFeature(e, l)}>{l.label}</a></li>)}</ul>
+        <nav className="lp-feat-links" aria-labelledby="lp-feat-links-h">
+          <div className="lp-feat-box">
+            <p className="lp-feat-lead"><b id="lp-feat-links-h">What&rsquo;s in PreTaskIQ</b><span>Tap a feature to see what it does.</span></p>
+            <ul>{LINKS.map((l) => <li key={l.id}><a href={'#' + l.id} onClick={(e) => openFeature(e, l)}>{l.label}</a></li>)}</ul>
+          </div>
         </nav>
 
         <section className="lp-how" id="lp-how" aria-labelledby="lp-how-h">
