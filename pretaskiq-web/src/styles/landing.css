@@ -59,3 +59,46 @@
   .lp-benefits { grid-template-columns: 1fr; } .lp-benefits div { border-right: 0; border-bottom: 1px solid rgba(110,160,230,.3); } .lp-benefits div:last-child { border-bottom: 0; }
   .lp-steps { grid-template-columns: 1fr; gap: 40px; }
 }
+
+/* Hero example: the conversation the page leads with */
+.lp-h1 { font-size: clamp(30px, 4.1vw, 48px); }
+.lp-hero-art { min-height: 0; align-items: stretch; justify-content: flex-end; padding-left: 128px; }
+.lp-story { position: relative; z-index: 2; width: 100%; max-width: 470px; margin: 0; padding: 16px 16px 14px; border-radius: 22px; background: linear-gradient(180deg, rgba(20,46,88,.9), rgba(9,25,52,.95)); border: 1.5px solid rgba(110,160,230,.6); box-shadow: 0 0 40px rgba(244,121,32,.22), 0 24px 50px rgba(0,0,0,.55); }
+.lp-story figcaption { font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #B7C4D9; margin-bottom: 10px; }
+.lp-msg { display: flex; gap: 8px; margin-bottom: 10px; align-items: flex-start; }
+.lp-msg-foreman { justify-content: flex-end; }
+.lp-msg-face { width: 34px; height: 34px; border-radius: 50%; background: #fff; flex-shrink: 0; margin-top: 2px; }
+.lp-bubble { max-width: 86%; padding: 10px 13px; border-radius: 14px; font-size: 14.5px; line-height: 1.45; }
+.lp-bubble p { margin: 0; }
+.lp-msg-petey .lp-bubble { background: #fff; color: #0E2242; border-top-left-radius: 4px; }
+.lp-msg-foreman .lp-bubble { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fff; border-top-right-radius: 4px; }
+.lp-msg-who { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; opacity: .65; margin-bottom: 3px; }
+.lp-msg-tag { display: inline-block; margin: 1px 0 6px; padding: 3px 9px; border-radius: 999px; background: #FFE9D6; border: 1px solid var(--orange); color: #9A4405; font-size: 11.5px; font-weight: 800; }
+.lp-story-end { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; padding: 11px 13px; border-radius: 14px; background: rgba(244,121,32,.16); border: 1.5px solid rgba(244,121,32,.75); }
+.lp-story-end b { font-size: 15px; } .lp-story-end b::before { content: '\2713\00a0'; color: #FF9A4D; } .lp-story-end span { font-size: 13px; color: #E1E8F3; }
+.lp-hero-art .lp-petey { left: -14px; bottom: 0; height: auto; width: 140px; max-height: none; }
+.lp-depth { max-width: 1180px; margin: 0 auto; padding: 8px clamp(16px, 4vw, 48px) 64px; text-align: center; }
+.lp-depth .lp-eyebrow { justify-content: center; }
+.lp-depth .lp-benefits { width: 100%; margin-top: 0; text-align: left; }
+.lp-how { padding-bottom: 40px; }
+.lp-step-text p { max-width: 320px; }
+@media (max-width: 900px) { .lp-hero-art { padding-left: 0; justify-content: center; } .lp-hero-art .lp-petey { display: none; } .lp-story { max-width: 560px; } }
+
+/* Hero example as three cards: past incident -> Petey asks -> today's plan */
+.lp-hero-art { padding-left: 150px; }
+.lp-hero-art .lp-petey { left: -6px; width: 168px; }
+.lp-flow { position: relative; z-index: 2; width: 100%; max-width: 480px; margin: 0; }
+.lp-flow-arrow { text-align: center; color: var(--orange); font-size: 22px; font-weight: 800; line-height: 1; padding: 7px 0; }
+.lp-flow-card { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 18px; background: linear-gradient(180deg, rgba(20,46,88,.92), rgba(9,25,52,.95)); border: 1.5px solid rgba(110,160,230,.7); box-shadow: 0 0 22px rgba(70,130,230,.25), 0 12px 28px rgba(0,0,0,.45); }
+.lp-flow-ico { flex-shrink: 0; width: 58px; display: flex; justify-content: center; color: #fff; padding-right: 16px; border-right: 1px solid rgba(255,255,255,.35); box-sizing: content-box; }
+.lp-flow-ico img { width: 58px; height: 58px; border-radius: 50%; background: #fff; }
+.lp-flow-label { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #D5DDEA; margin-bottom: 4px; }
+.lp-flow-body p { margin: 0; font-size: clamp(17px, 1.55vw, 21px); font-weight: 700; line-height: 1.22; color: #fff; }
+.lp-flow-petey .lp-flow-body p { position: relative; background: #fff; color: #0E2242; padding: 10px 14px; border-radius: 14px; }
+.lp-flow-petey .lp-flow-body p::before { content: ''; position: absolute; left: -7px; top: 50%; width: 14px; height: 14px; background: #fff; transform: translateY(-50%) rotate(45deg); }
+.lp-flow-petey .lp-flow-ico { border-right: 0; padding-right: 4px; }
+.lp-flow-plan { border: 2px solid var(--orange); background: linear-gradient(180deg, rgba(34,28,34,.96), rgba(16,18,30,.97)); box-shadow: 0 0 26px rgba(244,121,32,.4), 0 12px 28px rgba(0,0,0,.45); }
+.lp-flow-plan .lp-flow-ico { color: var(--orange); }
+.lp-flow figcaption { margin-top: 10px; text-align: center; font-size: 13px; font-style: italic; color: #B7C4D9; }
+@media (max-width: 900px) { .lp-hero-art { padding-left: 0; } .lp-flow { max-width: 560px; } }
+@media (max-width: 600px) { .lp-flow-card { padding: 14px; gap: 12px; } .lp-flow-ico { width: 44px; padding-right: 12px; } .lp-flow-ico img { width: 44px; height: 44px; } .lp-flow-ico svg { width: 30px; height: 30px; } }
