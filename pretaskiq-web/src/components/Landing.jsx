@@ -7,13 +7,17 @@ import '../styles/landing.css';
 // labelled as an illustration.
 const ICON = {
   warn: <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z" /><path d="M12 10v5M12 18v.01" /></svg>,
+  doc: <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 4h6v3H9z" /><path d="M15 5h3v16H6V5h3" /><path d="M9 11h6M9 15h6M9 19h3" /></svg>,
+  talk: <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H10l-5 4v-4H4z" /><path d="M8 9h8M8 12h5" /></svg>,
   shield: <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>,
 };
-// The wrong-breaker example: one past incident, the question Petey asks because of it, and what goes in today's plan.
+// The wrong-breaker example: the safety admin records the lesson, a foreman describes similar work,
+// Petey recalls the lesson and asks about it, and the answer goes in today's plan.
 const FLOW = [
-  { key: 'incident', label: 'Past incident', text: 'An electrician was shocked after the crew locked out the wrong breaker.' },
-  { key: 'petey', label: 'Petey asks', text: 'Who will verify the correct isolation and absence of voltage at the point of work?' },
-  { key: 'plan', label: 'Today’s plan', text: 'The foreman holds the work until a qualified person verifies the isolation and confirms absence of voltage.' },
+  { key: 'admin', label: 'Safety admin logs the lesson', text: 'An electrician was shocked after the crew locked out the wrong breaker. Root cause: the breaker labels were never checked against the panel schedule.' },
+  { key: 'foreman', label: 'Foreman describes today\u2019s work', text: 'We\u2019re pulling wire to the new panel in Room 112.' },
+  { key: 'petey', label: 'Petey recalls the lesson', text: 'Who will verify the correct isolation and absence of voltage at the point of work?' },
+  { key: 'plan', label: 'Today\u2019s plan', text: 'The foreman holds the work until a qualified person verifies the isolation and confirms absence of voltage.' },
 ];
 const STEPS = [
   { n: 1, t: 'Tell Petey what the crew is doing', d: 'Said out loud or typed, the way it would be at the morning briefing. No forms to fill in.', img: '/demo/intake_typed.jpg', alt: 'The foreman screen, where the day’s tasks are typed or spoken to Petey' },
@@ -238,7 +242,7 @@ export default function Landing({ onLogin }) {
             {FLOW.map((f, k) => (
               <li key={f.key} className="lp-flow-item">
                 <div className={`lp-flow-card lp-flow-${f.key}`}>
-                  <div className="lp-flow-ico">{f.key === 'petey' ? <img src="/petey-head.png" alt="" aria-hidden="true" /> : f.key === 'plan' ? ICON.shield : ICON.warn}</div>
+                  <div className="lp-flow-ico">{f.key === 'petey' ? <img src="/petey-head.png" alt="" aria-hidden="true" /> : f.key === 'plan' ? ICON.shield : f.key === 'foreman' ? ICON.talk : ICON.doc}</div>
                   <div className="lp-flow-body"><span className="lp-flow-label"><span className="lp-flow-n">{k + 1}</span>{f.label}</span><p>{f.text}</p></div>
                 </div>
                 {k < FLOW.length - 1 && <div className="lp-flow-arrow" aria-hidden="true">&rarr;</div>}
