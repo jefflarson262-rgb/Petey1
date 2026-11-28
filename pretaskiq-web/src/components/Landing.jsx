@@ -15,7 +15,7 @@ const ICON = {
 // Petey recalls the lesson and asks about it, and the answer goes in today's plan.
 const FLOW = [
   { key: 'admin', label: 'Safety admin logs the lesson', text: 'An electrician was shocked after the crew locked out the wrong breaker. Root cause: the breaker labels were never checked against the panel schedule.' },
-  { key: 'foreman', label: 'Foreman describes today\u2019s work', text: 'We\u2019re pulling wire to the new panel in Room 112.' },
+  { key: 'foreman', label: 'Foreman describes today\u2019s work', text: 'We\u2019re locking out the panel in Room 112 and pulling new wire to it.' },
   { key: 'petey', label: 'Petey recalls the lesson', text: 'Who will verify the correct isolation and absence of voltage at the point of work?' },
   { key: 'plan', label: 'Today\u2019s plan', text: 'The foreman holds the work until a qualified person verifies the isolation and confirms absence of voltage.' },
 ];
