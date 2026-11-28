@@ -300,7 +300,7 @@ export default function Landing({ onLogin }) {
 
         {mail && (
           <section className="lp-final" id="lp-demo" aria-labelledby="lp-final-h">
-            <h2 className="lp-h2" id="lp-final-h">See Petey on your jobs</h2>
+            <h2 className="lp-h2" id="lp-final-h">See Petey&rsquo;s impact on your jobs</h2>
             <p>We&rsquo;ll walk you through a pre-task plan built from your own tasks and lessons.</p>
             <div className="lp-cta lp-cta-center">{demoBtn('lp-btn lp-solid lp-big', 'lp-demo-final')}</div>
           </section>
