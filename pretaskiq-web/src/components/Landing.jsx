@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { demoMailto } from '../shared/site.js';
 import '../styles/landing.css';
 
@@ -32,6 +32,11 @@ const DEPTH = [
 export default function Landing({ onLogin }) {
   const [video, setVideo] = useState(false);
   const mail = demoMailto();
+  const rxRef = useRef(null);
+  const reduceMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [rxPlaying, setRxPlaying] = useState(false);
+  const showRx = () => { const sec = document.getElementById('lp-rx'); if (sec) sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); const v = rxRef.current; if (v) { try { v.currentTime = 0; } catch { /* not loaded yet */ } v.play().catch(() => {}); } };
+  const toggleRx = () => { const v = rxRef.current; if (!v) return; if (v.paused) v.play().catch(() => {}); else v.pause(); };
   useEffect(() => {
     if (!video) return undefined;
     const esc = (e) => { if (e.key === 'Escape') setVideo(false); };
@@ -71,7 +76,9 @@ export default function Landing({ onLogin }) {
                 {k > 0 && <div className="lp-flow-arrow" aria-hidden="true">&darr;</div>}
                 <div className={`lp-flow-card lp-flow-${f.key}`}>
                   <div className="lp-flow-ico">{f.key === 'petey' ? <img src="/petey-head.png" alt="" aria-hidden="true" /> : f.key === 'plan' ? ICON.shield : ICON.warn}</div>
-                  <div className="lp-flow-body"><span className="lp-flow-label">{f.label}</span><p>{f.text}</p></div>
+                  <div className="lp-flow-body"><span className="lp-flow-label">{f.label}</span><p>{f.text}</p>
+                    {f.key === 'incident' && <button type="button" className="lp-flow-rx" id="lp-flow-rx" onClick={showRx}><span aria-hidden="true">&#9654;</span> Watch the reenactment</button>}
+                  </div>
                 </div>
               </div>
             ))}
@@ -94,6 +101,27 @@ export default function Landing({ onLogin }) {
           <button type="button" className="lp-btn lp-outline lp-big" onClick={() => setVideo(true)}>Watch the overview video</button>
           {demoBtn('lp-btn lp-solid lp-big')}
         </div>
+      </section>
+
+      <section className="lp-rx" id="lp-rx" aria-labelledby="lp-rx-h">
+        <div className="lp-rx-text">
+          <div className="lp-eyebrow"><i /><i />The same incident, as a reenactment</div>
+          <h2 className="lp-h2" id="lp-rx-h">Show the crew what happened, not just a report</h2>
+          <p>PreTaskIQ drafts a short animated replay from the written incident record: what happened, then the same task with the corrective actions in place. When Petey raises that lesson, the crew can open the replay right from the conversation or the plan.</p>
+          <ul>
+            <li>Drawn only from what is in the incident record</li>
+            <li>Reviewed and approved by a safety administrator before crews see it</li>
+            <li>Ready for a toolbox talk or a safety meeting</li>
+          </ul>
+        </div>
+        <figure className="lp-rx-video">
+          {/* The captions are drawn in the bottom of the picture, so the browser's own control bar (which would cover them) is not used. */}
+          <video ref={rxRef} src="/reenactment.mp4" poster="/reenactment-poster.jpg" muted loop playsInline preload="metadata" autoPlay={!reduceMotion}
+            onClick={toggleRx} onPlay={() => setRxPlaying(true)} onPause={() => setRxPlaying(false)}
+            aria-label="Animated reenactment: an electrician is shocked after the wrong breaker was locked out, then the same task with the isolation verified and absence of voltage confirmed" />
+          <button type="button" className="lp-rx-toggle" id="lp-rx-toggle" onClick={toggleRx}>{rxPlaying ? 'Pause the replay' : 'Play the replay'}</button>
+          <figcaption>Illustrative example. An animation drawn from an incident record, not video footage.</figcaption>
+        </figure>
       </section>
 
       <section className="lp-depth" aria-labelledby="lp-depth-h">

@@ -1,0 +1,160 @@
+{
+  "title": "Electrician shocked after the wrong breaker was locked out",
+  "kind": "Incident",
+  "setting": "indoor",
+  "actors": [
+    {
+      "id": "p1",
+      "label": "Electrician",
+      "x": 74,
+      "level": "ground",
+      "ppe": []
+    },
+    {
+      "id": "p2",
+      "label": "Crew member",
+      "x": 30,
+      "level": "ground",
+      "ppe": []
+    },
+    {
+      "id": "p3",
+      "label": "Qualified person",
+      "x": 50,
+      "level": "ground",
+      "ppe": []
+    }
+  ],
+  "objects": [
+    {
+      "id": "o1",
+      "type": "panel",
+      "label": "Breaker panel",
+      "x": 19
+    },
+    {
+      "id": "o2",
+      "type": "sign",
+      "label": "Lock and tag",
+      "x": 7
+    },
+    {
+      "id": "o3",
+      "type": "panel",
+      "label": "Point of work",
+      "x": 90
+    },
+    {
+      "id": "o4",
+      "type": "energy",
+      "label": "",
+      "x": 90,
+      "phase": "happened"
+    },
+    {
+      "id": "o5",
+      "type": "tool",
+      "label": "Tester",
+      "x": 80,
+      "phase": "controls"
+    }
+  ],
+  "beats": [
+    {
+      "phase": "happened",
+      "caption": [
+        "A crew member locks out a breaker at the panel.",
+        ""
+      ],
+      "focus": "p2"
+    },
+    {
+      "phase": "happened",
+      "caption": [
+        "It is the wrong breaker.",
+        "The circuit at the point of work stays live."
+      ],
+      "event": "hazard",
+      "to": "o4"
+    },
+    {
+      "phase": "happened",
+      "caption": [
+        "The electrician starts work without testing.",
+        ""
+      ],
+      "focus": "p1"
+    },
+    {
+      "phase": "happened",
+      "caption": [
+        "He contacts an energized conductor and is shocked.",
+        ""
+      ],
+      "event": "energized",
+      "to": "p1"
+    },
+    {
+      "phase": "controls",
+      "caption": [
+        "Same task. The foreman holds the work.",
+        ""
+      ],
+      "focus": "p1"
+    },
+    {
+      "phase": "controls",
+      "caption": [
+        "A qualified person verifies the isolation.",
+        ""
+      ],
+      "focus": "p3",
+      "move": [
+        {
+          "id": "p3",
+          "x": 43
+        }
+      ]
+    },
+    {
+      "phase": "controls",
+      "caption": [
+        "Absence of voltage is confirmed",
+        "at the point of work."
+      ],
+      "event": "safe",
+      "to": "o5",
+      "move": [
+        {
+          "id": "p3",
+          "x": 62
+        }
+      ]
+    },
+    {
+      "phase": "controls",
+      "caption": [
+        "Work starts only after the test.",
+        ""
+      ],
+      "event": "safe",
+      "to": "p1"
+    }
+  ],
+  "controls": [
+    {
+      "short": "Verify the isolation point",
+      "full": "A qualified person verifies the correct isolation point before work starts."
+    },
+    {
+      "short": "Confirm absence of voltage",
+      "full": "Confirm absence of voltage at the point of work before touching conductors."
+    },
+    {
+      "short": "Hold the work until verified",
+      "full": "The foreman holds the work until both checks are done."
+    }
+  ],
+  "unknowns": [],
+  "note": "Illustrative example, not a real company's record."
+}
