@@ -102,3 +102,20 @@
 .lp-flow figcaption { margin-top: 10px; text-align: center; font-size: 13px; font-style: italic; color: #B7C4D9; }
 @media (max-width: 900px) { .lp-hero-art { padding-left: 0; } .lp-flow { max-width: 560px; } }
 @media (max-width: 600px) { .lp-flow-card { padding: 14px; gap: 12px; } .lp-flow-ico { width: 44px; padding-right: 12px; } .lp-flow-ico img { width: 44px; height: 44px; } .lp-flow-ico svg { width: 30px; height: 30px; } }
+
+/* Incident reenactment example */
+.lp-rx { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(20px, 4vw, 48px); align-items: center; max-width: 1180px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 48px) 72px; }
+.lp-rx .lp-h2 { margin: 12px 0 14px; text-align: left; }
+.lp-rx-text p { margin: 0 0 14px; font-size: 16.5px; line-height: 1.55; color: #D5DDEA; }
+.lp-rx-text ul { margin: 0; padding: 0; list-style: none; }
+.lp-rx-text li { position: relative; padding: 6px 0 6px 28px; font-size: 15.5px; color: #E1E8F3; }
+.lp-rx-text li::before { content: '\2713'; position: absolute; left: 0; top: 5px; width: 19px; height: 19px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.lp-rx-video { margin: 0; }
+.lp-rx-video video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; background: #0b0f17; border: 1.5px solid rgba(110,160,230,.6); box-shadow: 0 0 34px rgba(244,121,32,.25), 0 18px 40px rgba(0,0,0,.55); }
+.lp-rx-video figcaption { margin-top: 10px; font-size: 13px; font-style: italic; color: #B7C4D9; text-align: center; }
+@media (max-width: 900px) { .lp-rx { grid-template-columns: 1fr; } .lp-rx .lp-h2, .lp-rx .lp-eyebrow { text-align: center; justify-content: center; } }
+.lp-rx-video video { cursor: pointer; }
+.lp-rx-toggle { display: block; margin: 12px auto 0; padding: 8px 18px; border-radius: 999px; border: 1.5px solid rgba(110,160,230,.7); background: rgba(14,34,66,.7); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.lp-rx-toggle:hover { border-color: var(--orange); }
+.lp-flow-rx { display: inline-flex; align-items: center; gap: 7px; margin-top: 10px; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--orange); background: rgba(244,121,32,.16); color: #fff; font: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer; }
+.lp-flow-rx:hover { background: rgba(244,121,32,.32); } .lp-flow-rx span { font-size: 10px; color: #FF9A4D; }

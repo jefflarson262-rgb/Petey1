@@ -30,3 +30,16 @@ test('every tour is for a real role and every step names a screen that exists', 
     for (const s of tour.steps) assert.ok(screens.includes(s.screen), `${key}: ${s.title} uses screen ${s.screen}`);
   }
 });
+
+// The homepage's reenactment video is recorded from this storyboard. It must pass the same gate every storyboard passes, unchanged in length,
+// so the video on the homepage is something the real player can draw.
+test('the homepage reenactment storyboard passes the storyboard gate as written', async () => {
+  const { sanitizeStoryboard, LIMITS } = await import('../src/shared/storyboard.js');
+  const fs = await import('node:fs');
+  const raw = JSON.parse(fs.readFileSync(new URL('../src/data/homepageReenactment.json', import.meta.url), 'utf8'));
+  const r = sanitizeStoryboard(raw);
+  assert.equal(r.ok, true);
+  assert.equal(r.storyboard.beats.length, raw.beats.length); assert.equal(r.storyboard.objects.length, raw.objects.length); assert.equal(r.storyboard.controls.length, raw.controls.length);
+  for (const b of raw.beats) for (const line of b.caption) assert.ok(line.length <= LIMITS.line, line);
+  assert.deepEqual(r.storyboard.beats.map((b) => b.event), raw.beats.map((b) => b.event || 'none'));
+});
