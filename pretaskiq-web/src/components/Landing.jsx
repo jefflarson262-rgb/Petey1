@@ -215,6 +215,12 @@ export default function Landing({ onLogin }) {
                 <span className="lp-comp-label">Before work starts</span>
                 <h3>Build the pre-task plan</h3>
                 <div className="lp-pv-me">We&rsquo;re setting rooftop units with a crane today.</div>
+                <div className="lp-comp-chat">
+                  <Bubble>
+                    <span className="lp-pv-tag">From your incident history</span>
+                    <p>On a past crane pick, a unit swung into the parapet because no tag line was used. Who&rsquo;s on the tag lines today?</p>
+                  </Bubble>
+                </div>
                 <div className="lp-pv-plan lp-comp-plan" aria-label="Cropped pre-task plan preview">
                   <div className="lp-pv-plan-h">Today&rsquo;s pre-task plan</div>
                   <div className="lp-pv-step"><b>Step 3 · Make the pick</b>
