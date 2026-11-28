@@ -198,7 +198,7 @@ export default function Landing({ onLogin }) {
           <div className="lp-hero-text">
             <div className="lp-eyebrow"><i /><i />AI-powered pre-task planning for construction</div>
             <h1 className="lp-h1" id="lp-h1">Build today&rsquo;s plan with <em>yesterday&rsquo;s lessons.</em></h1>
-            <p className="lp-sub">Foremen tell Petey what the crew is doing. Petey asks follow-up questions, brings up relevant incidents and corrective actions from your company, and helps build a pre-task plan the crew can brief and sign.</p>
+            <p className="lp-sub">Foremen describe the scope of work and the tasks their crews will perform. Petey asks follow-up questions, brings up relevant incidents and corrective actions from your company, and helps turn the conversation into a pre-task plan the crew can brief and sign.</p>
             <div className="lp-cta">
               {demoBtn('lp-btn lp-solid lp-big', 'lp-demo-hero')}
               {walkBtn(`lp-btn lp-big ${mail ? 'lp-outline' : 'lp-solid'}`, 'lp-video')}
